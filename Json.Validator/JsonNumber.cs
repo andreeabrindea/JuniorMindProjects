@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Json
 {
@@ -6,7 +7,22 @@ namespace Json
     {
         public static bool IsJsonNumber(string input)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            const int BiggestDigit = 9;
+            for (int i = 0; i < input.Length; i++)
+            {
+                int digit = input[i] - '0';
+                if (digit < 0 || digit > BiggestDigit)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
