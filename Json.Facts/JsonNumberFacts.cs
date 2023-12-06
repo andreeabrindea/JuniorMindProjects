@@ -42,38 +42,38 @@ namespace Json.Facts
             Assert.False(IsJsonNumber(string.Empty));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void DoesNotStartWithZero()
         {
             Assert.False(IsJsonNumber("07"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanBeNegative()
         {
             Assert.True(IsJsonNumber("-26"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanBeMinusZero()
         {
             Assert.True(IsJsonNumber("-0"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanBeFractional()
         {
             Assert.True(IsJsonNumber("12.34"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void TheFractionCanHaveLeadingZeros()
         {
             Assert.True(IsJsonNumber("0.00000001"));
             Assert.True(IsJsonNumber("10.00000001"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void DoesNotEndWithADot()
         {
             Assert.False(IsJsonNumber("12."));
@@ -85,7 +85,7 @@ namespace Json.Facts
             Assert.False(IsJsonNumber("12.34.56"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void TheDecimalPartDoesNotAllowLetters()
         {
             Assert.False(IsJsonNumber("12.3x"));
