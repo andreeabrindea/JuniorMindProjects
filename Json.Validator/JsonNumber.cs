@@ -12,11 +12,9 @@ namespace Json
                 return false;
             }
 
-            const int BiggestDigit = 9;
-            for (int i = 0; i < input.Length; i++)
+            foreach (var t in input)
             {
-                int digit = input[i] - '0';
-                if (digit < 0 || digit > BiggestDigit)
+                if (!char.IsDigit(t) && t != '.')
                 {
                     return false;
                 }
