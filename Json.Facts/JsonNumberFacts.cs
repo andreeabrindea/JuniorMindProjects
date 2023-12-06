@@ -91,7 +91,7 @@ namespace Json.Facts
             Assert.False(IsJsonNumber("12.3x"));
         }
 
-        [Fact(Skip = "Remove this Skip as you implement")]
+        [Fact]
         public void CanHaveAnExponent()
         {
             Assert.True(IsJsonNumber("12e3"));

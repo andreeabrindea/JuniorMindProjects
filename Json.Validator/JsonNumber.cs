@@ -14,7 +14,7 @@ namespace Json
 
             foreach (var t in input)
             {
-                if (!char.IsDigit(t) && t != '.' && t != '-')
+                if (!IsValidMathematicalSymbols(t))
                 {
                     return false;
                 }
@@ -27,6 +27,12 @@ namespace Json
         {
             int countDecimalPoints = CountCharInString(number, '.');
             return number[0] != '0' || countDecimalPoints != 0 || number.Length <= 1;
+        }
+
+        private static bool IsValidMathematicalSymbols(char c)
+        {
+            const string mathematicalSymbols = "0123456789.eE-";
+            return mathematicalSymbols.Contains(c);
         }
 
         private static bool IsValidNegativeNumber(string number)
