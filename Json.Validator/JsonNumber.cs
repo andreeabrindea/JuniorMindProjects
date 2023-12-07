@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlTypes;
 using System.Text;
 
 namespace Json
@@ -20,7 +21,7 @@ namespace Json
                 }
             }
 
-            return IsValidNegativeNumber(input) && IsValidFloatNumber(input) && IsValidNumber(input);
+            return IsValidNegativeNumber(input) && IsValidFloatNumber(input) && IsValidNumber(input) && IsValidExponentialNumber(input);
         }
 
         private static bool IsValidNumber(string number)
@@ -31,7 +32,7 @@ namespace Json
 
         private static bool IsValidMathematicalSymbols(char c)
         {
-            const string mathematicalSymbols = "0123456789.eE-";
+            const string mathematicalSymbols = "0123456789.eE-+";
             return mathematicalSymbols.Contains(c);
         }
 
@@ -48,6 +49,8 @@ namespace Json
         private static int CountCharInString(string input, char c)
         {
             int count = 0;
+            c = char.ToLower(c);
+            input = input.ToLower();
             foreach (var i in input)
             {
                 if (i == c)
@@ -57,6 +60,40 @@ namespace Json
             }
 
             return count;
+        }
+
+        private static bool IsValidExponentialNumber(string number)
+        {
+            int countExponentialChar = CountCharInString(number, 'e');
+            if (countExponentialChar > 1)
+            {
+                return false;
+            }
+
+            int indexOfExponent = -1;
+            if (number.IndexOf('e') != -1)
+            {
+                indexOfExponent = number.IndexOf('e');
+            }
+            else if (number.IndexOf('E') != -1)
+            {
+                indexOfExponent = number.IndexOf('E');
+            }
+
+            if (indexOfExponent < 0)
+            {
+                return true;
+            }
+
+            return IsSignFollowedByDigit(number) && indexOfExponent != number.Length - 1;
+        }
+
+        private static bool IsSignFollowedByDigit(string number)
+        {
+            int indexOfSignPlus = number.IndexOf('+');
+            int indexOfSignMinus = number.IndexOf('-');
+
+            return indexOfSignMinus != number.Length - 1 && indexOfSignPlus != number.Length - 1;
         }
     }
 }
