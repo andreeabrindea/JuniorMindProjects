@@ -85,6 +85,12 @@ namespace Json
                 return true;
             }
 
+            string afterExponent = number.Substring(indexOfExponent + 1);
+            if (afterExponent.Contains("."))
+            {
+                return false;
+            }
+
             return IsSignFollowedByDigit(number) && indexOfExponent != number.Length - 1;
         }
 
