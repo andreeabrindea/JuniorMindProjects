@@ -8,7 +8,17 @@ namespace Json
     {
         public static bool IsJsonNumber(string input)
         {
-            if (string.IsNullOrEmpty(input))
+            return IsValidNumber(input) && IsValidFloatNumber(input) && IsValidNegativeNumber(input) && IsValidExponentialNumber(input);
+        }
+
+        private static bool HasContent(string input)
+        {
+            return !string.IsNullOrEmpty(input);
+        }
+
+        private static bool ContainsJustMathematicalSymbols(string input)
+        {
+            if (!HasContent(input))
             {
                 return false;
             }
@@ -21,11 +31,16 @@ namespace Json
                 }
             }
 
-            return IsValidNumber(input) && IsValidFloatNumber(input) && IsValidNegativeNumber(input) && IsValidExponentialNumber(input);
+            return true;
         }
 
         private static bool IsValidNumber(string number)
         {
+            if (!ContainsJustMathematicalSymbols(number))
+            {
+                return false;
+            }
+
             int countDecimalPoints = CountCharInString(number, '.');
             return number[0] != '0' || countDecimalPoints != 0 || number.Length <= 1;
         }
