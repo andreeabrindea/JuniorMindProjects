@@ -83,28 +83,39 @@ namespace Json
                 return false;
             }
 
-            int indexOfExponent = -1;
-            if (number.IndexOf('e') != -1)
-            {
-                indexOfExponent = number.IndexOf('e');
-            }
-            else if (number.IndexOf('E') != -1)
-            {
-                indexOfExponent = number.IndexOf('E');
-            }
-
+            int indexOfExponent = GetIndexOfExponent(number);
             if (indexOfExponent < 0)
             {
                 return true;
             }
 
+            return !IsExponentFollowedByFraction(indexOfExponent, number) && IsSignFollowedByDigit(number) && !IsEndingWithExponent(indexOfExponent, number);
+        }
+
+        private static bool IsEndingWithExponent(int index, string number)
+        {
+            return index == number.Length - 1;
+        }
+
+        private static bool IsExponentFollowedByFraction(int indexOfExponent, string number)
+        {
             string afterExponent = number.Substring(indexOfExponent + 1);
-            if (afterExponent.Contains("."))
+            return afterExponent.Contains(".");
+        }
+
+        private static int GetIndexOfExponent(string number)
+        {
+            if (number.IndexOf('e') != -1)
             {
-                return false;
+                return number.IndexOf('e');
             }
 
-            return IsSignFollowedByDigit(number) && indexOfExponent != number.Length - 1;
+            if (number.IndexOf('E') != -1)
+            {
+                return number.IndexOf('E');
+            }
+
+            return -1;
         }
 
         private static bool IsSignFollowedByDigit(string number)
