@@ -6,7 +6,17 @@ namespace Json
     {
         public static bool IsJsonString(string input)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(input))
+            {
+                return false;
+            }
+
+            return StartsAndEndsWithDoubleQuotes(input);
+        }
+
+        private static bool StartsAndEndsWithDoubleQuotes(string input)
+        {
+            return input[0] == '\"' && input[^1] == '\"';
         }
     }
 }
