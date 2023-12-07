@@ -9,12 +9,13 @@ namespace Json
     {
         public static bool IsJsonString(string input)
         {
-            if (IsEndingWithBackslash(input))
-            {
-                return false;
-            }
+            return IsComplete(input) && !IsEndingWithBackslash(input) && !ContainsControlCharacters(input) && !ContainsUnrecognizedEscapeCharacters(input);
+        }
 
-            return HasContent(input) && StartsAndEndsWithDoubleQuotes(input) && !ContainsControlCharacters(input) && !ContainsUnrecognizedEscapeCharacters(input);
+        private static bool IsComplete(string input)
+        {
+            return HasContent(input) && ContainsCompleteHexadecimalUnicode(input) &&
+                   StartsAndEndsWithDoubleQuotes(input);
         }
 
         private static bool HasContent(string input)
@@ -50,6 +51,17 @@ namespace Json
         {
             const string pattern = "\\\\\"$";
             return HasContent(input) && Regex.IsMatch(input, pattern);
+        }
+
+        private static bool ContainsCompleteHexadecimalUnicode(string input)
+        {
+            if (!input.Contains("\\u"))
+            {
+                return true;
+            }
+
+            const string pattern = @"\\u[0-9a-fA-F]{4}(?![0-9a-fA-F])";
+            return Regex.IsMatch(input, pattern);
         }
     }
 }
