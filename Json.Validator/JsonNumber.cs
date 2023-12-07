@@ -21,7 +21,7 @@ namespace Json
                 }
             }
 
-            return IsValidNegativeNumber(input) && IsValidFloatNumber(input) && IsValidNumber(input) && IsValidExponentialNumber(input);
+            return IsValidNumber(input) && IsValidFloatNumber(input) && IsValidNegativeNumber(input) && IsValidExponentialNumber(input);
         }
 
         private static bool IsValidNumber(string number)
