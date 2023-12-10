@@ -7,7 +7,8 @@ namespace Json
     {
         public static bool IsJsonString(string input)
         {
-            return IsComplete(input) && !IsEndingWithBackslash(input) && !ContainsControlCharacters(input) && !ContainsUnrecognizedEscapeCharacters(input);
+            return IsComplete(input) && !IsEndingWithBackslash(input) && !ContainsControlCharacters(input) &&
+                   !ContainsUnrecognizedEscapeCharacters(input);
         }
 
         private static bool IsComplete(string input)
@@ -41,7 +42,8 @@ namespace Json
 
         private static bool ContainsUnrecognizedEscapeCharacters(string input)
         {
-            const string pattern = @"\\1|\\2|\\3|\\4|\\5|\\6|\\7|\\8|\\9|\\c|\\d|\\e|\\g|\\h|\\i|\\j|\\k|\\l|\\m|\\o|\\p|\\q|\\s|\\w|\\x|\\y|\\z";
+            const string pattern =
+                @"\\1|\\2|\\3|\\4|\\5|\\6|\\7|\\8|\\9|\\c|\\d|\\e|\\g|\\h|\\i|\\j|\\k|\\l|\\m|\\o|\\p|\\q|\\s|\\w|\\x|\\y|\\z";
             return Regex.IsMatch(input, pattern);
         }
 

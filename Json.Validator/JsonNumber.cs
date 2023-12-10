@@ -1,19 +1,15 @@
-using System;
-
 namespace Json
 {
     public static class JsonNumber
     {
-        public static bool IsJsonNumber(string input)
-        {
-            return IsInteger(input) || IsFraction(input) || IsExponentialExpression(input);
-        }
+        public static bool IsJsonNumber(string input) =>
+            IsInteger(input) || IsFraction(input) || IsExponentialExpression(input);
 
         private static bool IsInteger(string number)
         {
             if (IsNegativeInteger(number))
             {
-                return AreDigits(number[1..]) && !ItStartsWithZero(number[1..]);
+                number = number[1..];
             }
 
             return AreDigits(number) && !ItStartsWithZero(number);
@@ -22,12 +18,10 @@ namespace Json
         private static bool IsFraction(string fraction)
         {
             int indexOfDecimalPoint = GetIndexOfCharacter(fraction, '.');
-            if (indexOfDecimalPoint < 0)
-            {
-                return false;
-            }
-
-            return IsDecimalPointPlacedCorrectly(fraction) && AreDigits(fraction[..indexOfDecimalPoint]) && AreDigits(fraction[(indexOfDecimalPoint + 1) ..]);
+            return indexOfDecimalPoint > 0
+                   && IsDecimalPointPlacedCorrectly(fraction)
+                   && AreDigits(fraction[..indexOfDecimalPoint])
+                   && AreDigits(fraction[(indexOfDecimalPoint + 1) ..]);
         }
 
         private static bool IsExponentialExpression(string input)
@@ -37,54 +31,40 @@ namespace Json
                 return false;
             }
 
-            if ((!input.Contains('e') && !input.Contains('E')) || (CountCharInString(input, 'E') > 1 || CountCharInString(input, 'e') > 1))
+            if ((!input.Contains('e') && !input.Contains('E'))
+                || CountCharInString(input, 'E') > 1
+                || CountCharInString(input, 'e') > 1)
             {
                 return false;
             }
 
             int indexOfExponent = GetIndexOfExponent(input);
-            string expression = GetExponent(input, indexOfExponent);
+            string expression = GetExpressionAfterExponent(input, indexOfExponent);
             return IsValidExponentialExpression(expression);
         }
 
         private static bool IsValidExponentialExpression(string expression)
         {
             int signIndex;
-            if (expression.Contains('+'))
+            char[] acceptedOperands = { '+', '-' };
+
+            if (expression.Contains('-') || expression.Contains('+'))
             {
-                signIndex = expression.IndexOf('+');
-                return AreDigits(expression[(signIndex + 1) ..]);
+                signIndex = expression.IndexOfAny(acceptedOperands);
+                expression = expression[(signIndex + 1) ..];
             }
 
-            if (expression.Contains('-'))
-            {
-                signIndex = expression.IndexOf('-');
-                return AreDigits(expression[(signIndex + 1) ..]);
-            }
-
-            return AreDigits(expression[1..]);
+            return AreDigits(expression);
         }
 
-        private static string GetExponent(string input, int indexOfExponent)
-        {
-            return indexOfExponent != -1
-                ? input[indexOfExponent..]
-                : string.Empty;
-        }
+        private static string GetExpressionAfterExponent(string input, int indexOfExponent) => indexOfExponent != -1
+            ? input[(indexOfExponent + 1) ..]
+            : string.Empty;
 
         private static int GetIndexOfExponent(string number)
         {
-            if (number.IndexOf('e') != -1)
-            {
-                return number.IndexOf('e');
-            }
-
-            if (number.IndexOf('E') != -1)
-            {
-                return number.IndexOf('E');
-            }
-
-            return -1;
+            char[] acceptedExponent = { 'e', 'E' };
+            return number.IndexOfAny(acceptedExponent);
         }
 
         private static int GetIndexOfCharacter(string input, char c)
@@ -99,7 +79,10 @@ namespace Json
 
         private static bool IsDecimalPointPlacedCorrectly(string input)
         {
-            return HasContent(input) && input[0] != '.' && input[^1] != '.' && CountCharInString(input, '.') == 1;
+            return HasContent(input)
+                   && input[0] != '.'
+                   && input[^1] != '.'
+                   && CountCharInString(input, '.') == 1;
         }
 
         private static int CountCharInString(string input, char c)
@@ -149,12 +132,16 @@ namespace Json
 
         private static bool ItStartsWithZero(string input)
         {
-            return input[0] == '0' && !input.Contains('.') && input.Length > 1;
+            return input[0] == '0'
+                   && !input.Contains('.')
+                   && input.Length > 1;
         }
 
         private static bool IsNegativeInteger(string input)
         {
-            return HasContent(input) && input[0] == '-' && input.Length > 1;
+            return HasContent(input)
+                   && input[0] == '-'
+                   && input.Length > 1;
         }
     }
 }
