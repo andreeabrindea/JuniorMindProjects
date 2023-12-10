@@ -6,101 +6,70 @@ namespace Json
     {
         public static bool IsJsonNumber(string input)
         {
-            return IsValidNumber(input) && IsValidFloatNumber(input) && IsValidNegativeNumber(input) && IsValidExponentialNumber(input);
+            return IsInteger(input) || IsFraction(input) || IsExponentialExpression(input);
         }
 
-        private static bool HasContent(string input)
+        private static bool IsInteger(string number)
         {
-            return !string.IsNullOrEmpty(input);
+            if (IsNegativeInteger(number))
+            {
+                return AreDigits(number[1..]) && !ItStartsWithZero(number[1..]);
+            }
+
+            return AreDigits(number) && !ItStartsWithZero(number);
         }
 
-        private static bool ContainsJustMathematicalSymbols(string input)
+        private static bool IsFraction(string fraction)
+        {
+            int indexOfDecimalPoint = GetIndexOfCharacter(fraction, '.');
+            if (indexOfDecimalPoint < 0)
+            {
+                return false;
+            }
+
+            return IsDecimalPointPlacedCorrectly(fraction) && AreDigits(fraction[..indexOfDecimalPoint]) && AreDigits(fraction[(indexOfDecimalPoint + 1) ..]);
+        }
+
+        private static bool IsExponentialExpression(string input)
         {
             if (!HasContent(input))
             {
                 return false;
             }
 
-            foreach (var t in input)
-            {
-                if (!IsValidMathematicalSymbols(t))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static bool IsValidNumber(string number)
-        {
-            if (!ContainsJustMathematicalSymbols(number))
+            if ((!input.Contains('e') && !input.Contains('E')) || (CountCharInString(input, 'E') > 1 || CountCharInString(input, 'e') > 1))
             {
                 return false;
             }
 
-            int countDecimalPoints = CountCharInString(number, '.');
-            return number[0] != '0' || countDecimalPoints != 0 || number.Length <= 1;
+            int indexOfExponent = GetIndexOfExponent(input);
+            string expression = GetExponent(input, indexOfExponent);
+            return IsValidExponentialExpression(expression);
         }
 
-        private static bool IsValidMathematicalSymbols(char c)
+        private static bool IsValidExponentialExpression(string expression)
         {
-            const string mathematicalSymbols = "0123456789.eE-+";
-            return mathematicalSymbols.Contains(c);
-        }
-
-        private static bool IsValidNegativeNumber(string number)
-        {
-            return CountCharInString(number, '-') <= 1;
-        }
-
-        private static bool IsValidFloatNumber(string number)
-        {
-            return CountCharInString(number, '.') <= 1 && number[^1] != '.';
-        }
-
-        private static int CountCharInString(string input, char c)
-        {
-            int count = 0;
-            c = char.ToLower(c);
-            input = input.ToLower();
-            foreach (var i in input)
+            int signIndex;
+            if (expression.Contains('+'))
             {
-                if (i == c)
-                {
-                    count++;
-                }
+                signIndex = expression.IndexOf('+');
+                return AreDigits(expression[(signIndex + 1) ..]);
             }
 
-            return count;
-        }
-
-        private static bool IsValidExponentialNumber(string number)
-        {
-            int countExponentialChar = CountCharInString(number, 'e');
-            if (countExponentialChar > 1)
+            if (expression.Contains('-'))
             {
-                return false;
+                signIndex = expression.IndexOf('-');
+                return AreDigits(expression[(signIndex + 1) ..]);
             }
 
-            int indexOfExponent = GetIndexOfExponent(number);
-            if (indexOfExponent < 0)
-            {
-                return true;
-            }
-
-            return !IsExponentFollowedByFraction(indexOfExponent, number) && IsSignFollowedByDigit(number) && !IsEndingWithExponent(indexOfExponent, number);
+            return AreDigits(expression[1..]);
         }
 
-        private static bool IsEndingWithExponent(int index, string number)
+        private static string GetExponent(string input, int indexOfExponent)
         {
-            return index == number.Length - 1;
-        }
-
-        private static bool IsExponentFollowedByFraction(int indexOfExponent, string number)
-        {
-            string afterExponent = number.Substring(indexOfExponent + 1);
-            return afterExponent.Contains(".");
+            return indexOfExponent != -1
+                ? input[indexOfExponent..]
+                : string.Empty;
         }
 
         private static int GetIndexOfExponent(string number)
@@ -118,12 +87,74 @@ namespace Json
             return -1;
         }
 
-        private static bool IsSignFollowedByDigit(string number)
+        private static int GetIndexOfCharacter(string input, char c)
         {
-            int indexOfSignPlus = number.IndexOf('+');
-            int indexOfSignMinus = number.IndexOf('-');
+            if (!HasContent(input))
+            {
+                return -1;
+            }
 
-            return indexOfSignMinus != number.Length - 1 && indexOfSignPlus != number.Length - 1;
+            return input.IndexOf(c);
+        }
+
+        private static bool IsDecimalPointPlacedCorrectly(string input)
+        {
+            return HasContent(input) && input[0] != '.' && input[^1] != '.' && CountCharInString(input, '.') == 1;
+        }
+
+        private static int CountCharInString(string input, char c)
+        {
+            int count = 0;
+            foreach (char character in input)
+            {
+                if (character == c)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private static bool AreDigits(string number)
+        {
+            if (!HasContent(number))
+            {
+                return false;
+            }
+
+            foreach (var digit in number)
+            {
+                if (!IsDigit(digit))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool IsDigit(char c)
+        {
+            int digit = c - '0';
+            const int smallestDigit = 0;
+            const int biggestDigit = 9;
+            return digit >= smallestDigit && digit <= biggestDigit;
+        }
+
+        private static bool HasContent(string input)
+        {
+            return !string.IsNullOrEmpty(input);
+        }
+
+        private static bool ItStartsWithZero(string input)
+        {
+            return input[0] == '0' && !input.Contains('.') && input.Length > 1;
+        }
+
+        private static bool IsNegativeInteger(string input)
+        {
+            return HasContent(input) && input[0] == '-' && input.Length > 1;
         }
     }
 }
