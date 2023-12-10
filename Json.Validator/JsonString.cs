@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 
 namespace Json
@@ -7,14 +6,17 @@ namespace Json
     {
         public static bool IsJsonString(string input)
         {
-            return IsComplete(input) && !IsEndingWithBackslash(input) && !ContainsControlCharacters(input) &&
-                   !ContainsUnrecognizedEscapeCharacters(input);
+            return IsComplete(input)
+                   && !IsEndingWithBackslash(input)
+                   && !ContainsControlCharacters(input)
+                   && !ContainsUnrecognizedEscapeCharacters(input);
         }
 
         private static bool IsComplete(string input)
         {
-            return HasContent(input) && ContainsCompleteHexadecimalUnicode(input) &&
-                   StartsAndEndsWithDoubleQuotes(input);
+            return HasContent(input)
+                   && ContainsCompleteHexadecimalUnicode(input)
+                   && StartsAndEndsWithDoubleQuotes(input);
         }
 
         private static bool HasContent(string input)
