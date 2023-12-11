@@ -4,30 +4,18 @@ namespace Json
 {
     public static class JsonString
     {
-        public static bool IsJsonString(string input)
-        {
-            return IsComplete(input)
-                   && !IsEndingWithBackslash(input)
-                   && !ContainsControlCharacters(input)
-                   && !ContainsUnrecognizedEscapeCharacters(input);
-        }
+        public static bool IsJsonString(string input) => IsComplete(input)
+                                                         && !IsEndingWithBackslash(input)
+                                                         && !ContainsControlCharacters(input)
+                                                         && !ContainsUnrecognizedEscapeCharacters(input);
 
-        private static bool IsComplete(string input)
-        {
-            return HasContent(input)
-                   && ContainsCompleteHexadecimalUnicode(input)
-                   && StartsAndEndsWithDoubleQuotes(input);
-        }
+        private static bool IsComplete(string input) => HasContent(input)
+                                                        && ContainsCompleteHexadecimalUnicode(input)
+                                                        && StartsAndEndsWithDoubleQuotes(input);
 
-        private static bool HasContent(string input)
-        {
-            return !string.IsNullOrEmpty(input);
-        }
+        private static bool HasContent(string input) => !string.IsNullOrEmpty(input);
 
-        private static bool StartsAndEndsWithDoubleQuotes(string input)
-        {
-            return input[0] == '\"' && input[^1] == '\"';
-        }
+        private static bool StartsAndEndsWithDoubleQuotes(string input) => input[0] == '\"' && input[^1] == '\"';
 
         private static bool ContainsControlCharacters(string input)
         {

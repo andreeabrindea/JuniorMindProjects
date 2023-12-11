@@ -77,13 +77,10 @@ namespace Json
             return input.IndexOf(c);
         }
 
-        private static bool IsDecimalPointPlacedCorrectly(string input)
-        {
-            return HasContent(input)
-                   && input[0] != '.'
-                   && input[^1] != '.'
-                   && CountCharInString(input, '.') == 1;
-        }
+        private static bool IsDecimalPointPlacedCorrectly(string input) => HasContent(input)
+                                                                           && input[0] != '.'
+                                                                           && input[^1] != '.'
+                                                                           && CountCharInString(input, '.') == 1;
 
         private static int CountCharInString(string input, char c)
         {
@@ -125,23 +122,14 @@ namespace Json
             return digit >= smallestDigit && digit <= biggestDigit;
         }
 
-        private static bool HasContent(string input)
-        {
-            return !string.IsNullOrEmpty(input);
-        }
+        private static bool HasContent(string input) => !string.IsNullOrEmpty(input);
 
-        private static bool ItStartsWithZero(string input)
-        {
-            return input[0] == '0'
-                   && !input.Contains('.')
-                   && input.Length > 1;
-        }
+        private static bool ItStartsWithZero(string input) => input[0] == '0'
+                                                              && !input.Contains('.')
+                                                              && input.Length > 1;
 
-        private static bool IsNegativeInteger(string input)
-        {
-            return HasContent(input)
-                   && input[0] == '-'
-                   && input.Length > 1;
-        }
+        private static bool IsNegativeInteger(string input) => HasContent(input)
+                                                               && input[0] == '-'
+                                                               && input.Length > 1;
     }
 }
