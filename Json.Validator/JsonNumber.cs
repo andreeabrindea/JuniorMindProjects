@@ -92,6 +92,6 @@ namespace Json
         private static bool HasLeadingZero(string input) =>
             input.StartsWith('0') && input.Length > 1;
 
-        private static bool IsNegativeInteger(string input) => input[0] == '-' && input.Length > 1;
+        private static bool IsNegativeInteger(string input) => input.Length > 1 && input.StartsWith('-');
     }
 }
