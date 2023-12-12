@@ -36,10 +36,7 @@ namespace Json
                 return true;
             }
 
-            if (input.StartsWith('e') || input.StartsWith('E'))
-            {
-                input = input[1..];
-            }
+            input = input[1..];
 
             if (input.StartsWith('-') || input.StartsWith('+'))
             {
