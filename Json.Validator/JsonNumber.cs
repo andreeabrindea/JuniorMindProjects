@@ -24,7 +24,7 @@ namespace Json
                 number = number[1..];
             }
 
-            return AreDigits(number) && !IsLeadingZero(number);
+            return AreDigits(number) && !HasLeadingZero(number);
         }
 
         private static bool IsFraction(string fraction) => !fraction.StartsWith('.') || AreDigits(fraction[1..]) || string.IsNullOrEmpty(fraction);
@@ -89,7 +89,7 @@ namespace Json
             return number.Length > 0;
         }
 
-        private static bool IsLeadingZero(string input) =>
+        private static bool HasLeadingZero(string input) =>
             input.StartsWith('0') && input.Length > 1;
 
         private static bool IsNegativeInteger(string input) => input[0] == '-' && input.Length > 1;
