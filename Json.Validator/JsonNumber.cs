@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 
 namespace Json
 {
@@ -15,9 +13,10 @@ namespace Json
 
             int exponentIndex = input.IndexOfAny("eE".ToCharArray());
             int dotIndex = input.IndexOf('.');
+
             return IsInteger(Integer(input, dotIndex, exponentIndex))
                    && IsFraction(Fraction(input, dotIndex, exponentIndex))
-                   && IsExponentialExpression(Exponent(input, exponentIndex));
+                   && IsExponent(Exponent(input, exponentIndex));
         }
 
         private static bool IsInteger(string number)
@@ -27,33 +26,24 @@ namespace Json
                 number = number[1..];
             }
 
-            return AreDigits(number) && !ItStartsWithZeroAndHasMoreThan1Digit(number);
+            return number.All(char.IsDigit) && !ItStartsWithZeroAndHasMoreThanOneDigit(number);
         }
 
-        private static bool IsFraction(string fraction)
-        {
-            return AreDigits(fraction);
-        }
+        private static bool IsFraction(string fraction) => AreDigits(fraction);
 
-        private static bool IsExponentialExpression(string input) => IsValidExponentialExpression(input)
-                                                                     && input.Count(c => c == 'e') <= 1
-                                                                     && input.Count(c => c == 'E') <= 1;
+        private static bool IsExponent(string input) =>
+            IsValidExponentialExpression(input) && input.Count(c => c == 'e' || c == 'E') <= 1;
 
         private static string Integer(string input, int dotIndex, int exponentIndex)
         {
-            if (dotIndex > -1 && exponentIndex < 0)
+            if (dotIndex > -1)
             {
-                return input[.. dotIndex];
+                return input[..dotIndex];
             }
 
-            if (dotIndex > -1 && exponentIndex > -1)
+            if (exponentIndex > -1)
             {
-                return input[.. dotIndex];
-            }
-
-            if (dotIndex < 0 && exponentIndex > -1)
-            {
-                return input[.. exponentIndex];
+                return input[..exponentIndex];
             }
 
             return input;
@@ -87,7 +77,8 @@ namespace Json
             return AreDigits(expression);
         }
 
-        private static string Exponent(string input, int indexOfExponent) => indexOfExponent != -1 ? input[(indexOfExponent + 1) ..] : "0";
+        private static string Exponent(string input, int indexOfExponent) =>
+            indexOfExponent != -1 ? input[(indexOfExponent + 1) ..] : "0";
 
         private static bool AreDigits(string number)
         {
@@ -102,9 +93,9 @@ namespace Json
             return number.Length > 0;
         }
 
-        private static bool ItStartsWithZeroAndHasMoreThan1Digit(string input) => input.StartsWith('0') && input.Length > 1;
+        private static bool ItStartsWithZeroAndHasMoreThanOneDigit(string input) =>
+            input.StartsWith('0') && input.Length > 1;
 
-        private static bool IsNegativeInteger(string input) => input[0] == '-'
-                                                               && input.Length > 1;
+        private static bool IsNegativeInteger(string input) => input[0] == '-' && input.Length > 1;
     }
 }
