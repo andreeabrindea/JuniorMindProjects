@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Json
 {
     public static class JsonNumber
@@ -26,13 +24,13 @@ namespace Json
                 number = number[1..];
             }
 
-            return number.All(char.IsDigit) && !ItStartsWithZeroAndHasMoreThanOneDigit(number);
+            return AreDigits(number) && !IsLeadingZero(number);
         }
 
-        private static bool IsFraction(string fraction) => AreDigits(fraction);
+        private static bool IsFraction(string fraction) => !fraction.StartsWith('.') || AreDigits(fraction[1..]);
 
-        private static bool IsExponent(string input) =>
-            IsValidExponentialExpression(input) && input.Count(c => c == 'e' || c == 'E') <= 1;
+        private static bool IsExponent(string input) => (!input.StartsWith('e') && !input.StartsWith('E')) ||
+                                                        IsValidExponentialExpression(input[1..]);
 
         private static string Integer(string input, int dotIndex, int exponentIndex)
         {
@@ -53,12 +51,12 @@ namespace Json
         {
             if (dotIndex > -1 && exponentIndex < 0)
             {
-                return input[(dotIndex + 1) ..];
+                return input[dotIndex ..];
             }
 
             if (dotIndex > -1 && exponentIndex > -1)
             {
-                return input[(dotIndex + 1) ..exponentIndex];
+                return input[dotIndex ..exponentIndex];
             }
 
             return "0";
@@ -78,7 +76,7 @@ namespace Json
         }
 
         private static string Exponent(string input, int indexOfExponent) =>
-            indexOfExponent != -1 ? input[(indexOfExponent + 1) ..] : "0";
+            indexOfExponent != -1 ? input[indexOfExponent ..] : "0";
 
         private static bool AreDigits(string number)
         {
@@ -93,7 +91,7 @@ namespace Json
             return number.Length > 0;
         }
 
-        private static bool ItStartsWithZeroAndHasMoreThanOneDigit(string input) =>
+        private static bool IsLeadingZero(string input) =>
             input.StartsWith('0') && input.Length > 1;
 
         private static bool IsNegativeInteger(string input) => input[0] == '-' && input.Length > 1;
