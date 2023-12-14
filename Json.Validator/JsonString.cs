@@ -1,27 +1,56 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Json
 {
     public static class JsonString
     {
-        public static bool IsJsonString(string input) => IsComplete(input)
-                                                         && !IsEndingWithBackslash(input)
-                                                         && !ContainsControlCharacters(input)
-                                                         && !ContainsUnrecognizedEscapeCharacters(input);
-
-        private static bool IsComplete(string input) => HasContent(input)
-                                                        && ContainsCompleteHexadecimalUnicode(input)
-                                                        && StartsAndEndsWithDoubleQuotes(input);
-
-        private static bool HasContent(string input) => !string.IsNullOrEmpty(input);
-
-        private static bool StartsAndEndsWithDoubleQuotes(string input) => input[0] == '\"' && input[^1] == '\"';
-
-        private static bool ContainsControlCharacters(string input)
+        public static bool IsJsonString(string input)
         {
-            foreach (char c in input)
+            if (string.IsNullOrEmpty(input) || !IsDoubleQuoted(input))
             {
-                if (char.IsControl(c))
+                return false;
+            }
+
+            return AreCharacters(input)
+                   && !IsEndingWithBackslash(input)
+                   && !ContainsUnrecognizedEscapeCharacters(input)
+                   && ContainsCompleteHexadecimalUnicode(input);
+        }
+
+        private static bool IsDoubleQuoted(string input) => input.StartsWith('\"') && input.EndsWith('\"');
+
+        private static bool AreCharacters(string input)
+        {
+            foreach (var c in input)
+            {
+                if (!IsCharacter(c) || char.IsControl(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool IsCharacter(char c)
+        {
+            const int lowerBound = 32;
+            return Convert.ToInt32(c) >= lowerBound;
+        }
+
+        private static bool ContainsUnrecognizedEscapeCharacters(string input)
+        {
+            string[] patterns =
+            {
+                "\\1", "\\2", "\\3", "\\4", "\\5", "\\6", "\\7", "\\8", "\\9",
+                "\\c", "\\d", "\\e", "\\g", "\\h", "\\i", "\\j", "\\k", "\\l",
+                "\\m", "\\o", "\\p", "\\q", "\\s", "\\w", "\\x", "\\y", "\\z"
+            };
+
+            foreach (string pattern in patterns)
+            {
+                if (input.Contains(pattern))
                 {
                     return true;
                 }
@@ -30,17 +59,10 @@ namespace Json
             return false;
         }
 
-        private static bool ContainsUnrecognizedEscapeCharacters(string input)
-        {
-            const string pattern =
-                @"\\1|\\2|\\3|\\4|\\5|\\6|\\7|\\8|\\9|\\c|\\d|\\e|\\g|\\h|\\i|\\j|\\k|\\l|\\m|\\o|\\p|\\q|\\s|\\w|\\x|\\y|\\z";
-            return Regex.IsMatch(input, pattern);
-        }
-
         private static bool IsEndingWithBackslash(string input)
         {
-            const string pattern = "\\\\\"$";
-            return HasContent(input) && Regex.IsMatch(input, pattern);
+            int indexOfLastElement = input.Length - 2;
+            return input[indexOfLastElement] == '\\';
         }
 
         private static bool ContainsCompleteHexadecimalUnicode(string input)
