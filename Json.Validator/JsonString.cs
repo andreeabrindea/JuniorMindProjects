@@ -1,5 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
 
 namespace Json
 {
@@ -7,24 +6,26 @@ namespace Json
     {
         public static bool IsJsonString(string input)
         {
-            if (string.IsNullOrEmpty(input) || !IsDoubleQuoted(input))
+            if (string.IsNullOrEmpty(input))
             {
                 return false;
             }
 
-            return AreCharacters(input)
-                   && !IsEndingWithBackslash(input)
-                   && !ContainsUnrecognizedEscapeCharacters(input)
-                   && ContainsCompleteHexadecimalUnicode(input);
+            return AreCharacters(input) && !IsEndingWithBackslash(input);
         }
 
         private static bool IsDoubleQuoted(string input) => input.StartsWith('\"') && input.EndsWith('\"');
 
         private static bool AreCharacters(string input)
         {
+            if (!IsDoubleQuoted(input))
+            {
+                return false;
+            }
+
             foreach (var c in input)
             {
-                if (!IsCharacter(c) || char.IsControl(c))
+                if (!IsCharacter(c) && !IsEscape(c) || char.IsControl(c))
                 {
                     return false;
                 }
@@ -39,24 +40,15 @@ namespace Json
             return Convert.ToInt32(c) >= lowerBound;
         }
 
-        private static bool ContainsUnrecognizedEscapeCharacters(string input)
+        private static bool IsEscape(char c)
         {
-            string[] patterns =
+            if (c.ToString().StartsWith("\\u"))
             {
-                "\\1", "\\2", "\\3", "\\4", "\\5", "\\6", "\\7", "\\8", "\\9",
-                "\\c", "\\d", "\\e", "\\g", "\\h", "\\i", "\\j", "\\k", "\\l",
-                "\\m", "\\o", "\\p", "\\q", "\\s", "\\w", "\\x", "\\y", "\\z"
-            };
-
-            foreach (string pattern in patterns)
-            {
-                if (input.Contains(pattern))
-                {
-                    return true;
-                }
+                return IsCompleteHexadecimalUnicode(c);
             }
 
-            return false;
+            const string pattern = "\\\"\b\f\n\r\t\\/";
+            return pattern.Contains(c);
         }
 
         private static bool IsEndingWithBackslash(string input)
@@ -65,15 +57,35 @@ namespace Json
             return input[indexOfLastElement] == '\\';
         }
 
-        private static bool ContainsCompleteHexadecimalUnicode(string input)
+        private static bool IsCompleteHexadecimalUnicode(char c)
         {
-            if (!input.Contains("\\u"))
+            string escapeUnicodeString = c.ToString();
+            if (escapeUnicodeString.Length < 6)
             {
-                return true;
+                return false;
             }
 
-            const string pattern = @"\\u[0-9a-fA-F]{4}(?![0-9a-fA-F])";
-            return Regex.IsMatch(input, pattern);
+            if (!escapeUnicodeString.StartsWith("\\u"))
+            {
+                return false;
+            }
+
+            const int startIndexForHex = 2;
+            foreach (var character in escapeUnicodeString[startIndexForHex..])
+            {
+                if (!IsHex(character))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool IsHex(char c)
+        {
+            c = char.ToLower(c);
+            return c >= '0' && c <= '9' || c >= 'a' && c <= 'f';
         }
     }
 }
