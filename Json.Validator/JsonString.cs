@@ -25,8 +25,7 @@ namespace Json
                 return false;
             }
 
-            int endIndex = input.Length - 2;
-            input = input[.. (endIndex + 1)];
+            input = input[1.. ^1];
 
             if (input.EndsWith('\\'))
             {
@@ -40,7 +39,7 @@ namespace Json
                     return IsEscape(input[i], input);
                 }
 
-                if (!IsCharacter(input[i]) && !IsEscape(input[i], input))
+                if (!IsCharacter(input[i]))
                 {
                     return false;
                 }
@@ -49,11 +48,7 @@ namespace Json
             return true;
         }
 
-       private static bool IsCharacter(char character)
-        {
-            const int lowerBound = 32;
-            return Convert.ToInt32(character) >= lowerBound && character != '\"' && character != '\\';
-        }
+       private static bool IsCharacter(char character) => character >= ' ';
 
        private static bool IsEscape(char character, string input)
         {
