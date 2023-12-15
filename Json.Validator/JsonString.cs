@@ -11,15 +11,12 @@ namespace Json
                 return false;
             }
 
-            if (input.Length == 2)
-            {
-                return true;
-            }
-
-            return AreCharacters(input);
+            return IsEmptyDoubleQuotedString(input) || AreCharacters(input);
         }
 
        private static bool IsDoubleQuoted(string input) => input.StartsWith('\"') && input.EndsWith('\"');
+
+       private static bool IsEmptyDoubleQuotedString(string input) => input.Length == 2 && IsDoubleQuoted(input);
 
        private static bool AreCharacters(string input)
         {
@@ -52,15 +49,15 @@ namespace Json
             return true;
         }
 
-       private static bool IsCharacter(char c)
+       private static bool IsCharacter(char character)
         {
             const int lowerBound = 32;
-            return Convert.ToInt32(c) >= lowerBound && c != '\"' && c != '\\';
+            return Convert.ToInt32(character) >= lowerBound && character != '\"' && character != '\\';
         }
 
-       private static bool IsEscape(char c, string input)
+       private static bool IsEscape(char character, string input)
         {
-            switch (c)
+            switch (character)
             {
                 case '\"':
                 case '\\':
@@ -81,17 +78,17 @@ namespace Json
        private static bool IsCompleteHexadecimalUnicode(string input)
        {
            int indexOfCharacterU = input.IndexOf("u");
-           const int unicodeLength = 5;
-           int endIndex = indexOfCharacterU + unicodeLength;
+           const int escapeSequenceLength = 5;
+           int endIndex = indexOfCharacterU + escapeSequenceLength;
            if (input.Length < endIndex)
            {
                return false;
            }
 
            input = input[(indexOfCharacterU + 1) ..endIndex];
-           foreach (var c in input)
+           foreach (var character in input)
            {
-               if (!IsHex(c))
+               if (!IsHex(character))
                {
                    return false;
                }
@@ -100,10 +97,10 @@ namespace Json
            return true;
        }
 
-       private static bool IsHex(char c)
+       private static bool IsHex(char character)
         {
-            c = char.ToLower(c);
-            return c >= '0' && c <= '9' || c >= 'a' && c <= 'f';
+            character = char.ToLower(character);
+            return character >= '0' && character <= '9' || character >= 'a' && character <= 'f';
         }
     }
 }
