@@ -132,6 +132,20 @@ namespace Json.Facts
             Assert.False(IsJsonString(Quoted(@"a\u123")));
         }
 
+        [Fact]
+        public void DoesEndWithTwoReverseSolidus()
+        {
+            Assert.True(IsJsonString(Quoted(@"a\\")));
+
+        }
+        
+        [Fact]
+        public void DoesNotEndWithThreeReverseSolidus()
+        {
+            Assert.False(IsJsonString(Quoted(@"a\\\")));
+
+        }
+
         public static string Quoted(string text)
             => $"\"{text}\"";
     }

@@ -1,10 +1,8 @@
-using System;
-
 namespace Json
 {
     public static class JsonString
     {
-       public static bool IsJsonString(string input)
+        public static bool IsJsonString(string input)
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -14,45 +12,50 @@ namespace Json
             return IsEmptyDoubleQuotedString(input) || AreCharacters(input);
         }
 
-       private static bool IsDoubleQuoted(string input) => input.StartsWith('\"') && input.EndsWith('\"');
+        private static bool IsDoubleQuoted(string input) => input.StartsWith('\"') && input.EndsWith('\"');
 
-       private static bool IsEmptyDoubleQuotedString(string input) => input.Length == 2 && IsDoubleQuoted(input);
+        private static bool IsEmptyDoubleQuotedString(string input) => input.Length == 2 && IsDoubleQuoted(input);
 
-       private static bool AreCharacters(string input)
+        private static bool AreCharacters(string input)
         {
             if (!IsDoubleQuoted(input))
             {
                 return false;
             }
 
-            input = input[1.. ^1];
+            input = input[1..^1];
 
-            if (input.EndsWith('\\'))
+            int i = 0;
+            const int skipTwoChars = 2;
+            while (i < input.Length)
             {
-                return false;
-            }
-
-            for (int i = 1; i < input.Length; i++)
-            {
-                if (input[i - 1] == '\\')
+                if ((input[i] == '\\' && i + 1 == input.Length) || input[i] == '\\' && !IsEscape(input.Substring(i + 1)))
                 {
-                    return IsEscape(input[i], input);
+                    return false;
+                }
+
+                if (input[i] == '\\' && input[i + 1] == '\\')
+                {
+                    i += skipTwoChars;
+                    continue;
                 }
 
                 if (!IsCharacter(input[i]))
                 {
                     return false;
                 }
+
+                ++i;
             }
 
             return true;
         }
 
-       private static bool IsCharacter(char character) => character >= ' ';
+        private static bool IsCharacter(char character) => character >= ' ';
 
-       private static bool IsEscape(char character, string input)
+        private static bool IsEscape(string input)
         {
-            switch (character)
+            switch (input[0])
             {
                 case '\"':
                 case '\\':
@@ -70,29 +73,27 @@ namespace Json
             }
         }
 
-       private static bool IsCompleteHexadecimalUnicode(string input)
-       {
-           int indexOfCharacterU = input.IndexOf("u");
-           const int escapeSequenceLength = 5;
-           int endIndex = indexOfCharacterU + escapeSequenceLength;
-           if (input.Length < endIndex)
-           {
-               return false;
-           }
+        private static bool IsCompleteHexadecimalUnicode(string input)
+        {
+            const int escapeSequenceLength = 5;
+            if (input.Length < escapeSequenceLength)
+            {
+                return false;
+            }
 
-           input = input[(indexOfCharacterU + 1) ..endIndex];
-           foreach (var character in input)
-           {
-               if (!IsHex(character))
-               {
-                   return false;
-               }
-           }
+            input = input[1..escapeSequenceLength];
+            foreach (var character in input)
+            {
+                if (!IsHex(character))
+                {
+                    return false;
+                }
+            }
 
-           return true;
-       }
+            return true;
+        }
 
-       private static bool IsHex(char character)
+        private static bool IsHex(char character)
         {
             character = char.ToLower(character);
             return character >= '0' && character <= '9' || character >= 'a' && character <= 'f';
