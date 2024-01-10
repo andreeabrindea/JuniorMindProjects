@@ -48,31 +48,6 @@ public class RankingFacts
     }
 
     [Fact]
-    public void UpdateRankingTest()
-    {
-        Ranking ranking = new Ranking(new List<Team>());
-
-        Player playerA = new Player(1, "playerA", "Romanian", 24, 1.82, DominantFoot.Right);
-        Player playerB = new Player(2, "playerB", "Romanian", 25, 1.85, DominantFoot.Left);
-
-        List<Player> playersA = new List<Player>();
-        playersA.Add(playerA);
-
-        List<Player> playersB = new List<Player>();
-        playersB.Add(playerB);
-
-        Team teamA = new Team(1, "team A", "John", playersA);
-        Team teamB = new Team(2, "team B", "William", playersB);
-        ranking.AddTeam(teamA);
-        ranking.AddTeam(teamB);
-
-        ranking.UpdateRanking("team A");
-
-        Assert.Equal(3, teamA.GetPoints());
-        Assert.Equal(0, teamB.GetPoints());
-    }
-
-    [Fact]
     public void GetTeamAtPositionTest()
     {
         Ranking ranking = new Ranking(new List<Team>());

@@ -14,7 +14,7 @@ public class Team
         this.name = name;
         this.coach = coach;
         this.players = players;
-        this.points = 0;
+        points = 0;
     }
 
     public void AddPoints(int points)
@@ -24,11 +24,11 @@ public class Team
 
     public string GetName()
     {
-        return this.name;
+        return name;
     }
 
     public int GetPoints()
     {
-        return this.points;
+        return points;
     }
 }

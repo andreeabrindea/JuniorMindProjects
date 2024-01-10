@@ -11,22 +11,19 @@ public class Ranking
 
     public void AddTeam(Team team)
     {
-        this.teams.Add(team);
+        teams.Add(team);
+        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
     }
 
     public Team GetTeamAtPosition(int position)
     {
-        return this.teams[position - 1];
+        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
+        return teams[position - 1];
     }
 
     public int GetPositionOfTeam(string name)
     {
-        return this.teams.FindIndex(t => t.GetName() == name) + 1;
-    }
-
-    public void UpdateRanking(string winningTeamName)
-    {
-        Team winningTeam = this.teams.Find(t => t.GetName() == winningTeamName);
-        winningTeam.AddPoints(3);
+        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
+        return teams.FindIndex(t => t.GetName() == name) + 1;
     }
 }
