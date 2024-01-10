@@ -7,7 +7,7 @@ public class RankingFacts
     [Fact]
     public void AddTeamTest()
     {
-        Ranking ranking = new Ranking(new List<Team>());
+        Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
 
         Player player1 = new Player(1, "player 1", "Romanian", 24, 1.82, DominantFoot.Right);
         Player player2 = new Player(2, "player 2", "Romanian", 25, 1.85, DominantFoot.Left);
@@ -26,7 +26,7 @@ public class RankingFacts
     [Fact]
     public void GetPositionOfTeamTest()
     {
-        Ranking ranking = new Ranking(new List<Team>());
+        Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
 
         Player playerA = new Player(1, "playerA", "Romanian", 24, 1.82, DominantFoot.Right);
         Player playerB = new Player(2, "playerB", "Romanian", 25, 1.85, DominantFoot.Left);
@@ -50,7 +50,7 @@ public class RankingFacts
     [Fact]
     public void GetTeamAtPositionTest()
     {
-        Ranking ranking = new Ranking(new List<Team>());
+        Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
 
         Player playerA = new Player(1, "playerA", "Romanian", 24, 1.82, DominantFoot.Right);
         Player playerB = new Player(2, "playerB", "Romanian", 25, 1.85, DominantFoot.Left);
