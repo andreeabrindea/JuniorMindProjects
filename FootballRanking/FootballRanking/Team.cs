@@ -2,13 +2,11 @@ namespace FootballRanking;
 
 public class Team
 {
-    private readonly int id;
     private readonly string name;
     private int points;
 
-    public Team(int id, string name)
+    public Team(string name)
     {
-        this.id = id;
         this.name = name;
         points = 0;
     }

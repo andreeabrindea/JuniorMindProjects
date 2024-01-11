@@ -8,7 +8,7 @@ public class RankingFacts
     public void AddTeamTest()
     {
         Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
-        Team team = new Team(1, "Team 1");
+        Team team = new Team("Team 1");
         team.AddPoints(3);
         ranking.AddTeam(team);
 
@@ -19,8 +19,8 @@ public class RankingFacts
     public void GetPositionOfTeamTest()
     {
         Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
-        Team teamA = new Team(1, "team A");
-        Team teamB = new Team(2, "team B");
+        Team teamA = new Team("team A");
+        Team teamB = new Team("team B");
         ranking.AddTeam(teamA);
         ranking.AddTeam(teamB);
 
@@ -34,8 +34,8 @@ public class RankingFacts
     {
         Ranking ranking = new Ranking(new List<Team>(), new List<Match>());
 
-        Team teamA = new Team(1, "team A");
-        Team teamB = new Team(2, "team B");
+        Team teamA = new Team("team A");
+        Team teamB = new Team("team B");
         ranking.AddTeam(teamA);
         ranking.AddTeam(teamB);
 

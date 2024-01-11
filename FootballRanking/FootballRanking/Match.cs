@@ -2,15 +2,13 @@ namespace FootballRanking;
 
 public class Match
 {
-    private readonly int id;
     private readonly Team homeTeam;
     private readonly Team awayTeam;
     private readonly int homeTeamGoals;
     private readonly int awayTeamGoals;
 
-    public Match(int id, Team homeTeam, Team awayTeam, int homeTeamGoals, int awayTeamGoals)
+    public Match(Team homeTeam, Team awayTeam, int homeTeamGoals, int awayTeamGoals)
     {
-        this.id = id;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeTeamGoals = homeTeamGoals;
