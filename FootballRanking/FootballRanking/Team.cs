@@ -4,16 +4,12 @@ public class Team
 {
     private readonly int id;
     private readonly string name;
-    private readonly string coach;
-    private readonly List<Player> players;
     private int points;
 
-    public Team(int id, string name, string coach, List<Player> players)
+    public Team(int id, string name)
     {
         this.id = id;
         this.name = name;
-        this.coach = coach;
-        this.players = players;
         points = 0;
     }
 
