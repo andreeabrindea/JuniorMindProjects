@@ -16,13 +16,13 @@ public class Team
         this.points += points;
     }
 
-    public string GetName()
+    public bool IsLessThan(Team other)
     {
-        return name;
+        return this.points < other.points;
     }
 
-    public int GetPoints()
+    public bool IsNameEqual(string name)
     {
-        return points;
+        return this.name == name;
     }
 }

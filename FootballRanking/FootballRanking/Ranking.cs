@@ -2,37 +2,60 @@ namespace FootballRanking;
 
 public class Ranking
 {
-    private readonly List<Team> teams;
-    private readonly List<Match> matches;
+    private Team[] teams;
 
-    public Ranking(List<Team> teams, List<Match> matches)
+    public Ranking()
     {
-        this.teams = teams;
-        this.matches = matches;
+        teams = new Team[] { };
     }
 
     public void AddTeam(Team team)
     {
-        teams.Add(team);
-        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
+        int noOfTeams = teams.Length + 1;
+
+        Array.Resize(ref teams,  noOfTeams);
+        teams[noOfTeams - 1] = team;
     }
 
-    public void AddMatch(Match match)
+    public void UpdatePointsAfterMatch(Match match)
     {
         match.UpdatePointsByMatch();
-        matches.Add(match);
-        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
+        teams = SortTeamsByPoints(teams);
     }
 
     public Team GetTeamAtPosition(int position)
     {
-        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
+        teams = SortTeamsByPoints(teams);
         return teams[position - 1];
     }
 
     public int GetPositionOfTeam(string name)
     {
-        teams.Sort((x, y) => x.GetPoints().CompareTo(y.GetPoints()));
-        return teams.FindIndex(t => t.GetName() == name) + 1;
+        teams = SortTeamsByPoints(teams);
+        for (int i = 0; i < teams.Length; i++)
+        {
+            if (teams[i].IsNameEqual(name))
+            {
+                return i + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    public Team[] SortTeamsByPoints(Team[] teams)
+    {
+        for (int i = 0; i < teams.Length - 1; i++)
+        {
+            for (int j = i + 1; j < teams.Length; j++)
+            {
+                if (teams[i].IsLessThan(teams[j]))
+                {
+                    (teams[i], teams[j]) = (teams[j], teams[i]);
+                }
+            }
+        }
+
+        return teams;
     }
 }
