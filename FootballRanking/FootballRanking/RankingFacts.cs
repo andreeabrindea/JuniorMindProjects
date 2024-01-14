@@ -30,6 +30,16 @@ public class RankingFacts
     }
 
     [Fact]
+    public void GetPositionOfATeamThatDoesNotExistTest()
+    {
+        Ranking ranking = new Ranking();
+
+        int position = ranking.GetPositionOfTeam("teamB");
+
+        Assert.Equal(-1, position);
+    }
+
+    [Fact]
     public void GetTeamAtPositionTest()
     {
         Ranking ranking = new Ranking();

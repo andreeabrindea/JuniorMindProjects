@@ -21,13 +21,14 @@ public class Match
         {
             homeTeam.AddPoints(3);
         }
-
-        if (awayTeamGoals > homeTeamGoals)
+        else if (awayTeamGoals > homeTeamGoals)
         {
             awayTeam.AddPoints(3);
         }
-
-        homeTeam.AddPoints(1);
-        awayTeam.AddPoints(1);
+        else
+        {
+            homeTeam.AddPoints(1);
+            awayTeam.AddPoints(1);
+        }
     }
 }
