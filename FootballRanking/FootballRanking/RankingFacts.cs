@@ -24,19 +24,9 @@ public class RankingFacts
         ranking.AddTeam(teamA);
         ranking.AddTeam(teamB);
 
-        int position = ranking.GetPositionOfTeam("teamB");
+        int position = ranking.GetPositionOfTeam(teamB);
 
         Assert.Equal(2, position);
-    }
-
-    [Fact]
-    public void GetPositionOfATeamThatDoesNotExistTest()
-    {
-        Ranking ranking = new Ranking();
-
-        int position = ranking.GetPositionOfTeam("teamB");
-
-        Assert.Equal(-1, position);
     }
 
     [Fact]

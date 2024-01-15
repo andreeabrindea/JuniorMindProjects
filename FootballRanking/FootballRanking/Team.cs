@@ -20,9 +20,4 @@ public class Team
     {
         return this.points < other.points;
     }
-
-    public bool HasSameName(Team other)
-    {
-        return this.name == other.name;
-    }
 }

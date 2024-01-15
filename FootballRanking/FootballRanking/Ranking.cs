@@ -29,12 +29,12 @@ public class Ranking
         return teams[position - 1];
     }
 
-    public int GetPositionOfTeam(string name)
+    public int GetPositionOfTeam(Team givenTeam)
     {
         teams = SortTeamsByPoints(teams);
         for (int i = 0; i < teams.Length; i++)
         {
-            if (teams[i].HasSameName(new Team(name)))
+            if (teams[i].Equals(givenTeam))
             {
                 return i + 1;
             }
