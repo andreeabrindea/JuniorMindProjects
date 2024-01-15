@@ -20,18 +20,18 @@ public class Ranking
     public void UpdatePointsAfterMatch(Match match)
     {
         match.UpdatePointsByMatch();
-        teams = SortTeamsByPoints(teams);
+        SortTeamsByPoints();
     }
 
     public Team GetTeamAtPosition(int position)
     {
-        teams = SortTeamsByPoints(teams);
+        SortTeamsByPoints();
         return teams[position - 1];
     }
 
     public int GetPositionOfTeam(Team givenTeam)
     {
-        teams = SortTeamsByPoints(teams);
+        SortTeamsByPoints();
         for (int i = 0; i < teams.Length; i++)
         {
             if (teams[i].Equals(givenTeam))
@@ -43,19 +43,17 @@ public class Ranking
         return -1;
     }
 
-    public Team[] SortTeamsByPoints(Team[] teams)
+    private void SortTeamsByPoints()
     {
         for (int i = 0; i < teams.Length - 1; i++)
         {
-            for (int j = i + 1; j < teams.Length; j++)
+            for (int j = 0; j < teams.Length - i - 1; j++)
             {
-                if (teams[i].IsLessThan(teams[j]))
+                if (teams[i].IsLessThan(teams[j + 1]))
                 {
-                    (teams[i], teams[j]) = (teams[j], teams[i]);
+                    (teams[i], teams[j + 1]) = (teams[j + 1], teams[i]);
                 }
             }
         }
-
-        return teams;
     }
 }
