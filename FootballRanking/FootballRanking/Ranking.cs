@@ -34,7 +34,7 @@ public class Ranking
         teams = SortTeamsByPoints(teams);
         for (int i = 0; i < teams.Length; i++)
         {
-            if (teams[i].IsNameEqual(name))
+            if (teams[i].HasSameName(new Team(name)))
             {
                 return i + 1;
             }
