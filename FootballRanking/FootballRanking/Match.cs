@@ -15,7 +15,7 @@ public class Match
         this.awayTeamGoals = awayTeamGoals;
     }
 
-    public void UpdatePointsByMatch()
+    public void UpdatePoints()
     {
         if (homeTeamGoals > awayTeamGoals)
         {

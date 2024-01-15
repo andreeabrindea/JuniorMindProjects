@@ -10,7 +10,7 @@ public class RankingFacts
         Ranking ranking = new Ranking();
         Team team = new Team("Team 1");
         team.AddPoints(3);
-        ranking.AddTeam(team);
+        ranking.Add(team);
 
         Assert.Equal(team, ranking.GetTeamAtPosition(1));
     }
@@ -21,8 +21,8 @@ public class RankingFacts
         Ranking ranking = new Ranking();
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
-        ranking.AddTeam(teamA);
-        ranking.AddTeam(teamB);
+        ranking.Add(teamA);
+        ranking.Add(teamB);
 
         int position = ranking.GetPositionOfTeam(teamB);
 
@@ -36,8 +36,8 @@ public class RankingFacts
 
         Team teamA = new Team("team A");
         Team teamB = new Team("team B");
-        ranking.AddTeam(teamA);
-        ranking.AddTeam(teamB);
+        ranking.Add(teamA);
+        ranking.Add(teamB);
 
         Team team = ranking.GetTeamAtPosition(2);
 

@@ -9,29 +9,28 @@ public class Ranking
         teams = new Team[] { };
     }
 
-    public void AddTeam(Team team)
+    public void Add(Team team)
     {
         int noOfTeams = teams.Length + 1;
 
         Array.Resize(ref teams,  noOfTeams);
         teams[noOfTeams - 1] = team;
+        SortTeams();
     }
 
-    public void UpdatePointsAfterMatch(Match match)
+    public void Update(Match match)
     {
-        match.UpdatePointsByMatch();
-        SortTeamsByPoints();
+        match.UpdatePoints();
+        SortTeams();
     }
 
     public Team GetTeamAtPosition(int position)
     {
-        SortTeamsByPoints();
         return teams[position - 1];
     }
 
     public int GetPositionOfTeam(Team givenTeam)
     {
-        SortTeamsByPoints();
         for (int i = 0; i < teams.Length; i++)
         {
             if (teams[i].Equals(givenTeam))
@@ -43,7 +42,7 @@ public class Ranking
         return -1;
     }
 
-    private void SortTeamsByPoints()
+    private void SortTeams()
     {
         for (int i = 0; i < teams.Length - 1; i++)
         {
