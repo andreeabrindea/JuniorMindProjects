@@ -48,7 +48,7 @@ public class Ranking
         {
             for (int j = 0; j < teams.Length - i - 1; j++)
             {
-                if (teams[j + 1].IsLessThan(teams[j]))
+                if (teams[j].IsLessThan(teams[j + 1]))
                 {
                     (teams[i], teams[j + 1]) = (teams[j + 1], teams[i]);
                 }
