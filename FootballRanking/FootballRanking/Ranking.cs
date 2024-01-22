@@ -44,20 +44,24 @@ public class Ranking
 
     private void SortTeams()
     {
-        int n = teams.Length;
-        while (n > 0)
+        for (int i = 0; i < teams.Length; ++i)
         {
-            int lastModifiedIndex = 0;
-            for (int currentIndex = 1; currentIndex < n; currentIndex++)
+            bool swapped = false;
+
+            for (int j = 0; j < teams.Length - i - 1; ++j)
             {
-                if (teams[currentIndex - 1].IsLessThan(teams[currentIndex]))
+                if (teams[j].IsLessThan(teams[j + 1]))
                 {
-                    (teams[currentIndex - 1], teams[currentIndex]) = (teams[currentIndex], teams[currentIndex - 1]);
-                    lastModifiedIndex = currentIndex;
+                    (teams[j], teams[j + 1]) = (teams[j + 1], teams[j]);
+
+                    swapped = true;
                 }
             }
 
-            n = lastModifiedIndex;
+            if (!swapped)
+            {
+                break;
+            }
         }
     }
 }
