@@ -18,7 +18,6 @@ public class Range
             return false;
         }
 
-
         return text[0] >= startCharacter && text[0] <= endCharacter;
     }
 }
