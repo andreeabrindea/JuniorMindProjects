@@ -18,19 +18,7 @@ public class Range
             return false;
         }
 
-        if (startCharacter > endCharacter)
-        {
-            return false;
-        }
 
-        foreach (char c in text)
-        {
-            if (c < startCharacter || c > endCharacter)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return text[0] >= startCharacter && text[0] <= endCharacter;
     }
 }
