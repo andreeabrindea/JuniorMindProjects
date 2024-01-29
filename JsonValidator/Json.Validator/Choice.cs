@@ -1,6 +1,6 @@
 namespace Json
 {
-    public class Choice
+    public class Choice : IPattern
     {
         private readonly IPattern[] patterns;
 

@@ -4,7 +4,7 @@ namespace Json.Facts;
 public class ChoiceFacts
 {
     [Fact]
-    public void IsNull()
+    public void DoesNotMatchNull()
     {
         var digit = new Choice(
             new Character('0'),
@@ -15,7 +15,7 @@ public class ChoiceFacts
     }
     
     [Fact]
-    public void IsEmpty()
+    public void DoesNotMatchEmptyString()
     {
         var digit = new Choice(
             new Character('0'),
@@ -67,5 +67,122 @@ public class ChoiceFacts
         );
         
         Assert.False(digit.Match("bcd"));
+    }
+
+    [Fact]
+    public void HexMatchesDigitsInRange()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('0', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.True(hex.Match("012"));
+    }
+
+    [Fact]
+    public void HexMatchesLowercaseLettersInRange()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('5', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.True(hex.Match("a9"));
+        Assert.True(hex.Match("f8"));
+    }
+
+    [Fact]
+    public void HexMatchesUppercaseLettersInRange()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('5', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.True(hex.Match("A9"));
+        Assert.True(hex.Match("F8"));
+    }
+
+    [Fact]
+    public void HexDoesNotMatchOutOfRangeLetters()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('5', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.False(hex.Match("g8"));
+        Assert.False(hex.Match("G8"));
+    }
+
+    [Fact]
+    public void HexDoesNotMatchEmptyString()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('5', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.False(hex.Match(""));
+    }
+
+    [Fact]
+    public void HexDoesNotMatchNull()
+    {
+        var digit = new Choice(
+            new Character('a'),
+            new Range('5', '9')
+        );
+
+        var hex = new Choice(
+            digit, 
+            new Choice(
+                new Range('a', 'f'),
+                new Range('A', 'F')
+            )
+        );
+
+        Assert.False(hex.Match(null));
     }
 }
