@@ -9,13 +9,13 @@ public class Character : IPattern
         this.pattern = pattern;
     }
 
-    public bool Match(string text)
+    public IMatch Match(string text)
     {
         if (string.IsNullOrEmpty(text))
         {
-            return false;
+            return new Match(false, text);
         }
 
-        return text[0] == pattern;
+        return new Match(text[0] == pattern, text);
     }
 }

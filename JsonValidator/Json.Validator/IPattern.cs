@@ -1,6 +1,12 @@
 namespace Json;
+public interface IMatch
+{
+    bool Success();
+
+    string RemainingText();
+}
 
 public interface IPattern
 {
-    bool Match(string text);
+    IMatch Match(string text);
 }

@@ -11,7 +11,7 @@ public class ChoiceFacts
             new Range('1', '9')
         );
         
-        Assert.False(digit.Match(null));
+        Assert.False(digit.Match(null).Success());
     }
     
     [Fact]
@@ -22,7 +22,7 @@ public class ChoiceFacts
             new Range('1', '9')
         );
         
-        Assert.False(digit.Match(""));
+        Assert.False(digit.Match("").Success());
     }
     
     [Fact]
@@ -33,7 +33,7 @@ public class ChoiceFacts
             new Range('1', '9')
         );
         
-        Assert.True(digit.Match("27"));
+        Assert.True(digit.Match("27").Success());
     }
     
     [Fact]
@@ -44,7 +44,7 @@ public class ChoiceFacts
             new Range('5', '9')
         );
         
-        Assert.False(digit.Match("12"));
+        Assert.False(digit.Match("12").Success());
     }
     
     [Fact]
@@ -55,7 +55,7 @@ public class ChoiceFacts
             new Range('5', '9')
         );
         
-        Assert.True(digit.Match("abc"));
+        Assert.True(digit.Match("abc").Success());
     }
     
     [Fact]
@@ -66,7 +66,7 @@ public class ChoiceFacts
             new Range('5', '9')
         );
         
-        Assert.False(digit.Match("bcd"));
+        Assert.False(digit.Match("bcd").Success());
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("012"));
+        Assert.True(hex.Match("012").Success());
     }
 
     [Fact]
@@ -104,8 +104,8 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("a9"));
-        Assert.True(hex.Match("f8"));
+        Assert.True(hex.Match("a9").Success());
+        Assert.True(hex.Match("f8").Success());
     }
 
     [Fact]
@@ -124,8 +124,8 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("A9"));
-        Assert.True(hex.Match("F8"));
+        Assert.True(hex.Match("A9").Success());
+        Assert.True(hex.Match("F8").Success());
     }
 
     [Fact]
@@ -144,8 +144,8 @@ public class ChoiceFacts
             )
         );
 
-        Assert.False(hex.Match("g8"));
-        Assert.False(hex.Match("G8"));
+        Assert.False(hex.Match("g8").Success());
+        Assert.False(hex.Match("G8").Success());
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public class ChoiceFacts
             )
         );
 
-        Assert.False(hex.Match(""));
+        Assert.False(hex.Match("").Success());
     }
 
     [Fact]
@@ -183,6 +183,6 @@ public class ChoiceFacts
             )
         );
 
-        Assert.False(hex.Match(null));
+        Assert.False(hex.Match(null).Success());
     }
 }

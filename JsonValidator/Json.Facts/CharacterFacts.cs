@@ -8,7 +8,7 @@ namespace Json.Facts
         public void IsNotNull()
         {
             Character character = new Character('a');
-            Assert.False(character.Match(null));
+            Assert.False(character.Match(null).Success());
             
         }
 
@@ -16,21 +16,22 @@ namespace Json.Facts
         public void IsNotEmpty()
         {
             Character character = new Character('a');
-            Assert.False(character.Match(""));
+            Assert.False(character.Match("").Success());
         }
 
         [Fact]
         public void HasPattern()
         {
             Character character = new Character('a');
-            Assert.True(character.Match("abcd"));
+            
+            Assert.True(character.Match("abcd").Success());
         }
         
         [Fact]
         public void DoesNotHavePattern()
         {
             Character character = new Character('x');
-            Assert.False(character.Match("abcd"));
+            Assert.False(character.Match("abcd").Success());
         }
     }
 }

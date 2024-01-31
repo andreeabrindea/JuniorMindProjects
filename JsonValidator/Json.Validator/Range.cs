@@ -11,13 +11,13 @@ public class Range : IPattern
         this.endCharacter = end;
     }
 
-    public bool Match(string text)
+    public IMatch Match(string text)
     {
         if (string.IsNullOrEmpty(text))
         {
-            return false;
+            return new Match(false, text);
         }
 
-        return text[0] >= startCharacter && text[0] <= endCharacter;
+        return new Match(text[0] >= startCharacter && text[0] <= endCharacter, text);
     }
 }
