@@ -13,9 +13,14 @@ public class Character : IPattern
     {
         if (string.IsNullOrEmpty(text))
         {
-            return new Match(false, text);
+            return new FailedMatch(text);
         }
 
-        return new Match(text[0] == pattern, text);
+        if (text[0] == pattern)
+        {
+            return new SuccessMatch(text);
+        }
+
+        return new FailedMatch(text);
     }
 }

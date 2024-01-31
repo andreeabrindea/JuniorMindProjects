@@ -15,9 +15,14 @@ public class Range : IPattern
     {
         if (string.IsNullOrEmpty(text))
         {
-            return new Match(false, text);
+            return new FailedMatch(text);
         }
 
-        return new Match(text[0] >= startCharacter && text[0] <= endCharacter, text);
+        if (text[0] >= startCharacter && text[0] <= endCharacter)
+        {
+            return new SuccessMatch(text);
+        }
+
+        return new FailedMatch(text);
     }
 }

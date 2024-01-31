@@ -1,28 +1,43 @@
+using System.Net.Mime;
+
 namespace Json;
 
-public class Match : IMatch
+public class SuccessMatch : IMatch
 {
-    private readonly bool success;
     private readonly string text;
 
-    public Match(bool success, string text)
+    public SuccessMatch(string text)
     {
-        this.success = success;
         this.text = text;
     }
 
     public bool Success()
     {
-        return success;
+        return true;
     }
 
     public string RemainingText()
     {
-        if (text.Length < 2)
-        {
-            return "";
-        }
+        return text;
+    }
+}
 
-        return text[1..];
+public class FailedMatch : IMatch
+{
+    private readonly string text;
+
+    public FailedMatch(string text)
+    {
+        this.text = text;
+    }
+
+    public bool Success()
+    {
+        return false;
+    }
+
+    public string RemainingText()
+    {
+        return text;
     }
 }

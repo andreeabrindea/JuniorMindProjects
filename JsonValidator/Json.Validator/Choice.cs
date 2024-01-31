@@ -15,11 +15,11 @@ namespace Json
             {
                 if (pattern.Match(text).Success())
                 {
-                    return new Match(true, text);
+                    return new SuccessMatch(text);
                 }
             }
 
-            return new Match(false, text);
+            return new FailedMatch(text);
         }
 }
 }
