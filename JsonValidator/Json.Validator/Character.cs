@@ -18,7 +18,7 @@ public class Character : IPattern
 
         if (text[0] == pattern)
         {
-            return new SuccessMatch(text);
+            return new SuccessMatch(text[1..]);
         }
 
         return new FailedMatch(text);

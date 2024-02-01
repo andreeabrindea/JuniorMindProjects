@@ -7,8 +7,8 @@ public class Range : IPattern
 
     public Range(char start, char end)
     {
-        this.startCharacter = start;
-        this.endCharacter = end;
+        startCharacter = start;
+        endCharacter = end;
     }
 
     public IMatch Match(string text)
@@ -20,7 +20,7 @@ public class Range : IPattern
 
         if (text[0] >= startCharacter && text[0] <= endCharacter)
         {
-            return new SuccessMatch(text);
+            return new SuccessMatch(text[1..]);
         }
 
         return new FailedMatch(text);

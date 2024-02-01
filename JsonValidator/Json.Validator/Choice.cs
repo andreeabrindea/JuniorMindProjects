@@ -15,7 +15,7 @@ namespace Json
             {
                 if (pattern.Match(text).Success())
                 {
-                    return new SuccessMatch(text);
+                    return new SuccessMatch(text[1..]);
                 }
             }
 
