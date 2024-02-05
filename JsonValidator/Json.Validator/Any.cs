@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Json;
 
 public class Any : IPattern
@@ -16,12 +18,11 @@ public class Any : IPattern
             return new FailedMatch(text);
         }
 
-        foreach (var acceptedCharacter in accepted)
+        int index = text.IndexOfAny(accepted.ToCharArray());
+
+        if (index == 0)
         {
-            if (text[0] == acceptedCharacter)
-            {
-                return new SuccessMatch(text[1..]);
-            }
+            return new SuccessMatch(text[1..]);
         }
 
         return new FailedMatch(text);

@@ -1,10 +1,11 @@
+#pragma warning disable CA1724
 namespace Json;
 
-public class TextPattern : IPattern
+public class Text : IPattern
 {
     private readonly string prefix;
 
-    public TextPattern(string prefix)
+    public Text(string prefix)
     {
         this.prefix = prefix;
     }
@@ -13,7 +14,7 @@ public class TextPattern : IPattern
     {
         if (text == null)
         {
-            return new FailedMatch(text);
+            return new FailedMatch(null);
         }
 
         if (!text.StartsWith(prefix))
@@ -29,3 +30,4 @@ public class TextPattern : IPattern
         return new SuccessMatch(text);
     }
 }
+#pragma warning restore CA1724
