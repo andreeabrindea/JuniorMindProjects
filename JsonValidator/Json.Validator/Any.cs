@@ -18,9 +18,7 @@ public class Any : IPattern
             return new FailedMatch(text);
         }
 
-        int index = text.IndexOfAny(accepted.ToCharArray());
-
-        if (index == 0)
+        if (accepted.Contains(text[0]))
         {
             return new SuccessMatch(text[1..]);
         }
