@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis.Operations;
-
 namespace Json;
 
 public class OneOrMore : IPattern
@@ -13,19 +11,14 @@ public class OneOrMore : IPattern
 
     public IMatch Match(string text)
     {
-        var match = pattern.Match(text);
+        IMatch match = pattern.Match(text);
 
         if (!match.Success())
         {
             return new FailedMatch(text);
         }
 
-        while (match.Success())
-        {
-            text = match.RemainingText();
-            match = pattern.Match(text);
-        }
-
-        return new SuccessMatch(text);
+        var manyPattern = new Many(pattern);
+        return manyPattern.Match(match.RemainingText());
     }
 }
