@@ -11,20 +11,23 @@ public class Sequence : IPattern
 
     public IMatch Match(string text)
     {
-        IMatch match;
-        string initialText = text;
+        IMatch match = new SuccessMatch(text);
+
         foreach (var pattern in patterns)
         {
-            match = pattern.Match(text);
+            match = pattern.Match(match.RemainingText());
 
             if (!match.Success())
             {
-                return new FailedMatch(initialText);
+                return new FailedMatch(text);
             }
 
-            text = match.RemainingText();
+            if (string.IsNullOrEmpty(match.RemainingText()))
+            {
+                break;
+            }
         }
 
-        return new SuccessMatch(text);
+        return match;
     }
 }
