@@ -11,14 +11,11 @@ public class Many : IPattern
 
     public IMatch Match(string text)
     {
-        if (string.IsNullOrEmpty(text))
-        {
-            return new SuccessMatch(text);
-        }
+        IMatch match = new SuccessMatch(text);
 
-        foreach (var unused in text)
+        while (match.Success())
         {
-            var match = pattern.Match(text);
+            match = pattern.Match(text);
             text = match.RemainingText();
         }
 
