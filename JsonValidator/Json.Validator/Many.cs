@@ -15,10 +15,9 @@ public class Many : IPattern
 
         while (match.Success())
         {
-            match = pattern.Match(text);
-            text = match.RemainingText();
+            match = pattern.Match(match.RemainingText());
         }
 
-        return new SuccessMatch(text);
+        return new SuccessMatch(match.RemainingText());
     }
 }
