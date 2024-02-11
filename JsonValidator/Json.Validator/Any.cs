@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Json;
 
 public class Any : IPattern

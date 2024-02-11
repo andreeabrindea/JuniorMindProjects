@@ -26,8 +26,8 @@ public class ListFacts
     {
         var a = new List(new Range('0', '9'), new Character(','));
 
-        Assert.True(a.Match("1a").Success());
-        Assert.Equal("a", a.Match("1a").RemainingText());
+        Assert.True(a.Match("123a").Success());
+        Assert.Equal("a", a.Match("123a").RemainingText());
     }
 
     [Fact]
@@ -69,6 +69,6 @@ public class ListFacts
         Assert.Equal("", list.Match("1; 22  ;\n 333 \t; 22").RemainingText());
         
         Assert.True(list.Match("1 \n;").Success());
-        Assert.Equal("\n;",  list.Match("1 \n;").RemainingText());
+        Assert.Equal(" \n;",  list.Match("1 \n;").RemainingText());
     }
 }

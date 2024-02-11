@@ -21,11 +21,6 @@ public class Sequence : IPattern
             {
                 return new FailedMatch(text);
             }
-
-            if (string.IsNullOrEmpty(match.RemainingText()))
-            {
-                break;
-            }
         }
 
         return match;
