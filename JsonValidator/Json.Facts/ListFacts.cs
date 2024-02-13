@@ -27,7 +27,7 @@ public class ListFacts
         var a = new List(new Range('0', '9'), new Character(','));
 
         Assert.True(a.Match("123a").Success());
-        Assert.Equal("a", a.Match("123a").RemainingText());
+        Assert.Equal("23a", a.Match("123a").RemainingText());
     }
 
     [Fact]
