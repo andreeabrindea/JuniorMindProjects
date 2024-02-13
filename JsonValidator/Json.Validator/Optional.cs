@@ -13,10 +13,7 @@ public class Optional : IPattern
 
     public IMatch Match(string text)
     {
-        IMatch match = new SuccessMatch(text);
-        match = pattern.Match(match.RemainingText());
-
-        return new SuccessMatch(match.RemainingText());
+        return new SuccessMatch(pattern.Match(text).RemainingText());
     }
 }
 #pragma warning restore CA1716

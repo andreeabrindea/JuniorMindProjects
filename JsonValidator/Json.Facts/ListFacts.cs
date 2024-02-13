@@ -40,6 +40,7 @@ public class ListFacts
     }
 
     [Fact]
+    
     public void InputStringIsEmpty()
     {
         var a = new List(new Range('0', '9'), new Character(','));
