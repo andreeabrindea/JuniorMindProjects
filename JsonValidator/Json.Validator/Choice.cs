@@ -13,9 +13,11 @@ namespace Json
         {
             foreach (var pattern in patterns)
             {
-                if (pattern.Match(text).Success())
+                IMatch match = pattern.Match(text);
+
+                if (match.Success())
                 {
-                    return new SuccessMatch(text[1..]);
+                    return match;
                 }
             }
 
