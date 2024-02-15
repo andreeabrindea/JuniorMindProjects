@@ -115,6 +115,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.False(number.Match("12.3x").Success());
+            Assert.Equal("x", number.Match("12.2x").RemainingText());
         }
 
         [Fact]
@@ -122,6 +123,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("12e3").Success());
+            Assert.Equal("", number.Match("12E3").RemainingText());
         }
 
         [Fact]
@@ -129,6 +131,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("12E3").Success());
+            Assert.Equal("", number.Match("12E3").RemainingText());
         }
 
         [Fact]
@@ -136,6 +139,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("12e+3").Success());
+            Assert.Equal("", number.Match("12e+3").RemainingText());
         }
 
         [Fact]
@@ -143,6 +147,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("61e-9").Success());
+            Assert.Equal("", number.Match("61e-9").RemainingText());
         }
 
         [Fact]
@@ -150,6 +155,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("12.34E3").Success());
+            Assert.Equal("", number.Match("12.34E3").RemainingText());
         }
 
         [Fact]
@@ -157,6 +163,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.False(number.Match("22e3x3").Success());
+            Assert.Equal("x3", number.Match("22e3x3").RemainingText());
         }
 
         [Fact]
@@ -164,6 +171,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.False(number.Match("22e323e33").Success());
+            Assert.Equal("e33", number.Match("22e323e33").RemainingText());
         }
 
         [Fact]
@@ -171,8 +179,13 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.False(number.Match("22e").Success());
+            Assert.Equal("e", number.Match("22e").RemainingText());
+            
             Assert.False(number.Match("22e+").Success());
+            Assert.Equal("e+", number.Match("22e+").RemainingText());
+            
             Assert.False(number.Match("23E-").Success());
+            Assert.Equal("E-", number.Match("22E-").RemainingText());
         }
 
         [Fact]
@@ -180,5 +193,6 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.False(number.Match("22e3.3").Success());
+            Assert.Equal(".3", number.Match("22e3.3").RemainingText());
         }
 }

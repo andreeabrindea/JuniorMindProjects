@@ -1,3 +1,5 @@
+using System;
+
 namespace Json;
 public class Number : IPattern
 {
@@ -10,7 +12,7 @@ public class Number : IPattern
         var digit = new Choice(new Character('0'), oneNine);
         var digits = new OneOrMore(digit);
 
-        var integer = new Sequence(sign, new Choice(new Sequence(oneNine, digits),  digit));
+        var integer = new Sequence(sign, new Choice(new Sequence(oneNine, digits), digit));
         var fraction = new Sequence(new Character('.'), digits);
         var exponent = new Sequence(new Any("eE"), sign, digits);
 
@@ -19,6 +21,7 @@ public class Number : IPattern
 
     public IMatch Match(string text)
     {
-        return pattern.Match(text);
+        var match = pattern.Match(text);
+        return pattern.Match(text).RemainingText() != string.Empty ? new FailedMatch(match.RemainingText()) : match;
     }
 }
