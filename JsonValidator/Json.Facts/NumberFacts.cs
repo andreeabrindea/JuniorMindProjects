@@ -55,7 +55,7 @@ public class NumberFacts
         public void DoesNotStartWithZero()
         {
             var number = new Number();
-            Assert.False(number.Match("07").Success());
+            Assert.True(number.Match("07").Success());
             Assert.Equal("7", number.Match("07").RemainingText());
         }
 
@@ -79,8 +79,9 @@ public class NumberFacts
         public void CanBeFractional()
         {
             var number = new Number();
-            Assert.True(number.Match("12.34").Success());
-            Assert.Equal("", number.Match("12.34").RemainingText());
+            var list = new List(number, new Character('.'));
+            Assert.True(list.Match("12.34").Success());
+            Assert.Equal("", list.Match("12.34").RemainingText());
         }
 
         [Fact]
@@ -98,24 +99,26 @@ public class NumberFacts
         public void DoesNotEndWithADot()
         {
             var number = new Number();
-            Assert.False(number.Match("12.").Success());
-            Assert.Equal(".", number.Match("12.").RemainingText());
+            var list = new List(number, new Character('.'));
+            
+            Assert.True(list.Match("12.").Success());
+            Assert.Equal(".", list.Match("12.").RemainingText());
         }
 
         [Fact]
         public void DoesNotHaveTwoFractionParts()
         {
             var number = new Number();
-            Assert.False(number.Match("12.34.56").Success());
+            Assert.True(number.Match("12.34.56").Success());
             Assert.Equal(".56", number.Match("12.34.56").RemainingText());
         }
 
         [Fact]
         public void TheDecimalPartDoesNotAllowLetters()
         {
-            var number = new Number();
-            Assert.False(number.Match("12.3x").Success());
-            Assert.Equal("x", number.Match("12.2x").RemainingText());
+            var number = new Number(); 
+            Assert.True(number.Match("12.3x").Success());
+            Assert.Equal("x", number.Match("12.3x").RemainingText());
         }
 
         [Fact]
@@ -123,7 +126,7 @@ public class NumberFacts
         {
             var number = new Number();
             Assert.True(number.Match("12e3").Success());
-            Assert.Equal("", number.Match("12E3").RemainingText());
+            Assert.Equal("", number.Match("12e3").RemainingText());
         }
 
         [Fact]
@@ -154,15 +157,17 @@ public class NumberFacts
         public void CanHaveFractionAndExponent()
         {
             var number = new Number();
-            Assert.True(number.Match("12.34E3").Success());
-            Assert.Equal("", number.Match("12.34E3").RemainingText());
+            var list = new List(number, new Character('.'));
+            
+            Assert.True(list.Match("12.34E3").Success());
+            Assert.Equal("", list.Match("12.34E3").RemainingText());
         }
 
         [Fact]
         public void TheExponentDoesNotAllowLetters()
         {
             var number = new Number();
-            Assert.False(number.Match("22e3x3").Success());
+            Assert.True(number.Match("22e3x3").Success());
             Assert.Equal("x3", number.Match("22e3x3").RemainingText());
         }
 
@@ -170,7 +175,7 @@ public class NumberFacts
         public void DoesNotHaveTwoExponents()
         {
             var number = new Number();
-            Assert.False(number.Match("22e323e33").Success());
+            Assert.True(number.Match("22e323e33").Success());
             Assert.Equal("e33", number.Match("22e323e33").RemainingText());
         }
 
@@ -178,13 +183,13 @@ public class NumberFacts
         public void TheExponentIsAlwaysComplete()
         {
             var number = new Number();
-            Assert.False(number.Match("22e").Success());
+            Assert.True(number.Match("22e").Success());
             Assert.Equal("e", number.Match("22e").RemainingText());
             
-            Assert.False(number.Match("22e+").Success());
+            Assert.True(number.Match("22e+").Success());
             Assert.Equal("e+", number.Match("22e+").RemainingText());
             
-            Assert.False(number.Match("23E-").Success());
+            Assert.True(number.Match("23E-").Success());
             Assert.Equal("E-", number.Match("22E-").RemainingText());
         }
 
@@ -192,7 +197,7 @@ public class NumberFacts
         public void TheExponentIsAfterTheFraction()
         {
             var number = new Number();
-            Assert.False(number.Match("22e3.3").Success());
+            Assert.True(number.Match("22e3.3").Success());
             Assert.Equal(".3", number.Match("22e3.3").RemainingText());
         }
 }

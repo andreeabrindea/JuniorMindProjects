@@ -1,5 +1,3 @@
-using System;
-
 namespace Json;
 public class Number : IPattern
 {
@@ -16,12 +14,11 @@ public class Number : IPattern
         var fraction = new Sequence(new Character('.'), digits);
         var exponent = new Sequence(new Any("eE"), sign, digits);
 
-        this.pattern = new Sequence(integer, new Optional(fraction), new Optional(exponent));
+        pattern = new Sequence(integer, new Optional(fraction), new Optional(exponent));
     }
 
     public IMatch Match(string text)
     {
-        var match = pattern.Match(text);
-        return pattern.Match(text).RemainingText() != string.Empty ? new FailedMatch(match.RemainingText()) : match;
+        return pattern.Match(text);
     }
 }
