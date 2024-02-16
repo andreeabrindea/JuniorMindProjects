@@ -47,7 +47,6 @@ public class ChoiceFacts
             new Character('0'),
             new Range('5', '9')
         );
-        
         Assert.False(digit.Match("12").Success());
         Assert.Equal("12", digit.Match("12").RemainingText());
     }
@@ -203,5 +202,56 @@ public class ChoiceFacts
 
         Assert.False(hex.Match(null).Success());
         Assert.Null(hex.Match(null).RemainingText());
+    }
+
+    [Fact]
+    public void InputMatchesAfterAddingNewPattern()
+    {
+        var pattern = new Choice(new Range('0', '2'), new Character('a'));
+        Assert.False(pattern.Match("5").Success());
+        Assert.Equal("5", pattern.Match("5").RemainingText());
+        
+        pattern.Add(new Range('3', '9'));
+        Assert.True(pattern.Match("5").Success());
+        Assert.Equal("", pattern.Match("5").RemainingText());
+    }
+    
+    [Fact]
+    public void InputDoesNotMatchAfterAddingNewPattern()
+    {
+        var pattern = new Choice(new Range('0', '2'), new Character('a'));
+        Assert.False(pattern.Match("z").Success());
+        Assert.Equal("z", pattern.Match("z").RemainingText());
+        
+        pattern.Add(new Range('3', '9'));
+        Assert.False(pattern.Match("z").Success());
+        Assert.Equal("z", pattern.Match("z").RemainingText());
+    }
+
+    [Fact]
+    public void PatternDoesNotMatchNullAfterAddingPattern()
+    {
+        var pattern = new Choice(new Character('a'), new Character('b'));
+        pattern.Add(new Character('c'));
+        Assert.False(pattern.Match(null).Success());
+        Assert.Null(pattern.Match(null).RemainingText());
+    }
+    
+    [Fact]
+    public void PatternDoesNotMatchEmptyStringAfterAddingPattern()
+    {
+        var pattern = new Choice(new Character('a'), new Character('b'));
+        pattern.Add(new Character('c'));
+        Assert.False(pattern.Match(string.Empty).Success());
+        Assert.Equal("",pattern.Match(string.Empty).RemainingText());
+    }
+
+    [Fact]
+    public void AddingNullPattern()
+    {
+        var pattern = new Choice(new Character('a'));
+        pattern.Add(null);
+        Assert.True(pattern.Match("abc").Success());
+        Assert.Equal("bc", pattern.Match("abc").RemainingText());
     }
 }
