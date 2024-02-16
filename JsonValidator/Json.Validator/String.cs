@@ -6,20 +6,22 @@ public class String : IPattern
 
     public String()
     {
-        var charactersAfterQuotesUntilBackslashCharacter = new Range((char)35, (char)91);
-        var charactersAfterBackslash = new Range((char)93, char.MaxValue);
+        var completeUnicodeCharacter = new Sequence(
+            new Character('u'),
+            new Choice(new Range('0', '9'), new Range('a', 'f'), new Range('A', 'F')),
+            new Choice(new Range('0', '9'), new Range('a', 'f'), new Range('A', 'F')),
+            new Choice(new Range('0', '9'), new Range('a', 'f'), new Range('A', 'F')),
+            new Choice(new Range('0', '9'), new Range('a', 'f'), new Range('A', 'F')));
 
-        var controlCharacters = new Any("\"\\/bfrtn");
-        var digit = new Range('0', '9');
-        var hex = new Choice(digit, new Range('a', 'f'), new Range('A', 'F'));
-        var completeUnicodeCharacter = new Sequence(new Character('u'), hex, hex, hex, hex);
-        var completeControlCharacters = new Choice(controlCharacters, completeUnicodeCharacter);
-        var backslashFollowedControlCharacter = new Sequence(new Character('\\'), completeControlCharacters);
+        var character = new Choice(
+            new Any(" !"),
+            new Range('#', '['),
+            new Range(']', char.MaxValue),
+            new Sequence(
+                new Character('\\'),
+                new Choice(new Any("\"\\/bfrtn"), completeUnicodeCharacter)));
 
-        var character = new Choice(new Any(" "), charactersAfterQuotesUntilBackslashCharacter, charactersAfterBackslash, backslashFollowedControlCharacter);
-        var characters = new Many(character);
-
-        pattern = new Sequence(new Character('\"'), characters, new Character('\"'));
+        pattern = new Sequence(new Character('\"'), new Many(character), new Character('\"'));
     }
 
     public IMatch Match(string text)
