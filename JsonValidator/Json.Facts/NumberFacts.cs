@@ -88,11 +88,13 @@ public class NumberFacts
         public void TheFractionCanHaveLeadingZeros()
         {
             var number = new Number();
-            Assert.True(number.Match("0.00000001").Success());
-            Assert.Equal("", number.Match("0.00000001").RemainingText());
+            var list = new List(number, new Character('.'));
             
-            Assert.True(number.Match("10.00000001").Success());
-            Assert.Equal("", number.Match("10.00000001").RemainingText());
+            Assert.True(list.Match("0.00000001").Success());
+            Assert.Equal("", list.Match("0.00000001").RemainingText());
+            
+            Assert.True(list.Match("10.00000001").Success());
+            Assert.Equal("", list.Match("10.00000001").RemainingText());
         }
         
         [Fact]
