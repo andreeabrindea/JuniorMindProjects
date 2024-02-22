@@ -18,9 +18,10 @@
 
             string content;
             content = File.ReadAllText(args[0]);
-            Value jsonValidator = new Value();
             
-            if (jsonValidator.Match(content).Success() && jsonValidator.Match(content).RemainingText() == string.Empty)
+            Value jsonValidator = new Value();
+            var match = jsonValidator.Match(content);
+            if (match.Success() && match.RemainingText() == string.Empty)
             {
                 Console.WriteLine("The file respects the JSON format.");
             }
