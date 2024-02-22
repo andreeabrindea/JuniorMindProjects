@@ -1,4 +1,5 @@
 namespace Json;
+
 public class Number : IPattern
 {
     private readonly IPattern pattern;

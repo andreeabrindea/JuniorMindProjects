@@ -1,5 +1,6 @@
 #pragma warning disable CA1716, CA1720
 namespace Json;
+
 public class String : IPattern
 {
     private readonly IPattern pattern;

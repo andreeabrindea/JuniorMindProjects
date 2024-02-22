@@ -4,14 +4,13 @@
     {
         public static void Main(string[] args)
         {
-            string lines;
+            string content;
             try
             {
-                lines = File.ReadAllText(args[0]);
-                Console.WriteLine(lines);
+                content = File.ReadAllText(args[0]);
+
                 Value jsonValidator = new Value();
-                
-                Console.WriteLine(jsonValidator.Match(lines).Success()
+                Console.WriteLine(jsonValidator.Match(content).Success()
                     ? "The file respects the JSON format."
                     : "The file does not respect the JSON format.");
             }
