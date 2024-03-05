@@ -2,51 +2,38 @@ using Xunit;
 
 namespace Json.Facts;
 
-public class RemainingTextFacts 
+public class StringViewFacts 
 {
     [Fact]
-    public void InputIsEmpty()
+    public void PeekCharAtIndexZero()
     {
-        string input = string.Empty;
-        var remainingText = new StringView(input);
-        remainingText.IncrementIndex();
-        Assert.Equal(string.Empty, remainingText.RemoveSubstringFromIndex());
+        StringView input = new("hello");
+        Assert.Equal('h', input.Peek());
     }
 
     [Fact]
-    public void InputIsNull()
+    public void PeekCharAtLastIndex()
     {
-        var remainingText = new StringView(null);
-        Assert.Null(remainingText.RemoveSubstringFromIndex());
-    }
-
-    [Fact]
-    public void RemoveSubstringFromIndexZero()
-    {
-        string input = "hello";
-        var remainingText = new StringView(input);
-        Assert.Equal("hello", remainingText.RemoveSubstringFromIndex());
-        
+        StringView input = new("hello");
+        input.Advance();
+        input.Advance();
+        input.Advance();
+        input.Advance();
+        Assert.Equal('o', input.Peek());
     }
     
+    
     [Fact]
-    public void RemoveSubstringFromIndexOne()
+    public void PeekCharAtNonExistingIndex()
     {
-        string input = "hello";
-        var remainingText = new StringView(input);
-        remainingText.IncrementIndex();
-        Assert.Equal("ello", remainingText.RemoveSubstringFromIndex());
+        StringView input = new("hello");
+        input.Advance();
+        input.Advance();
+        input.Advance();
+        input.Advance();
+        input.Advance();
+        Assert.Equal('\0', input.Peek());
     }
 
-    [Fact]
-    public void RemoveSubstringFromIndexThree()
-    {
-        string input = "hello there";
-        var remainingText = new StringView(input);
-        remainingText.IncrementIndex();
-        remainingText.IncrementIndex();
-        remainingText.IncrementIndex();
-        
-        Assert.Equal("lo there", remainingText.RemoveSubstringFromIndex());
-    }
+  
 }
