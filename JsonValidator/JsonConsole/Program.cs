@@ -1,4 +1,6 @@
-﻿namespace Json.JsonConsole
+﻿using static Json.JsonNumber;
+
+namespace Json.JsonConsole
 {
     class Program
     {
@@ -18,16 +20,15 @@
 
             string content;
             content = File.ReadAllText(args[0]);
-            
-            Value jsonValidator = new Value();
-            var match = jsonValidator.Match(content);
-            if (match.Success() && match.RemainingText() == string.Empty)
+
+            var jsonValidator = IsJsonNumber(content);
+            if (jsonValidator)
             {
                 Console.WriteLine("The file respects the JSON format.");
             }
             else
             {
-                Console.WriteLine("The file does not respect the JSON format. Ensure that the content of the file is correct \n " + jsonValidator.Match(content).RemainingText());
+                Console.WriteLine("The file does not respect the JSON format. Ensure that the content of the file is correct \n ");
             }
         }
     }
