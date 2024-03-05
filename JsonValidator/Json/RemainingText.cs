@@ -1,11 +1,11 @@
 namespace Json;
 
-public class AuxClass
+public class RemainingText
 {
-    private readonly string remainingText;
+    private string remainingText;
     private int index;
 
-    public AuxClass(string remainingText)
+    public RemainingText(string remainingText)
     {
         this.index = 0;
         this.remainingText = remainingText;
@@ -18,6 +18,16 @@ public class AuxClass
 
     public string RemoveSubstringFromIndex()
     {
-        return remainingText.Substring(index);
+        return !string.IsNullOrEmpty(remainingText) ? remainingText.Substring(index) : remainingText;
+    }
+
+    public string GetRemainingText()
+    {
+        return remainingText;
+    }
+
+    public void SetRemainingText(string newText)
+    {
+        remainingText = newText;
     }
 }
