@@ -8,7 +8,7 @@ public class RemainingTextFacts
     public void InputIsEmpty()
     {
         string input = string.Empty;
-        var remainingText = new RemainingText(input);
+        var remainingText = new StringView(input);
         remainingText.IncrementIndex();
         Assert.Equal(string.Empty, remainingText.RemoveSubstringFromIndex());
     }
@@ -16,7 +16,7 @@ public class RemainingTextFacts
     [Fact]
     public void InputIsNull()
     {
-        var remainingText = new RemainingText(null);
+        var remainingText = new StringView(null);
         Assert.Null(remainingText.RemoveSubstringFromIndex());
     }
 
@@ -24,7 +24,7 @@ public class RemainingTextFacts
     public void RemoveSubstringFromIndexZero()
     {
         string input = "hello";
-        var remainingText = new RemainingText(input);
+        var remainingText = new StringView(input);
         Assert.Equal("hello", remainingText.RemoveSubstringFromIndex());
         
     }
@@ -33,7 +33,7 @@ public class RemainingTextFacts
     public void RemoveSubstringFromIndexOne()
     {
         string input = "hello";
-        var remainingText = new RemainingText(input);
+        var remainingText = new StringView(input);
         remainingText.IncrementIndex();
         Assert.Equal("ello", remainingText.RemoveSubstringFromIndex());
     }
@@ -42,7 +42,7 @@ public class RemainingTextFacts
     public void RemoveSubstringFromIndexThree()
     {
         string input = "hello there";
-        var remainingText = new RemainingText(input);
+        var remainingText = new StringView(input);
         remainingText.IncrementIndex();
         remainingText.IncrementIndex();
         remainingText.IncrementIndex();
