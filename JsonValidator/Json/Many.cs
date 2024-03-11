@@ -9,7 +9,7 @@ public class Many : IPattern
         this.pattern = pattern;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         IMatch match = new SuccessMatch(text);
 

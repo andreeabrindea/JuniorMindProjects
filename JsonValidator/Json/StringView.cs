@@ -1,14 +1,18 @@
 namespace Json;
 
-public class StringView
+public class StringView : ICloneable
 {
-    private readonly string remainingText;
+    private string remainingText;
     private int index;
 
     public StringView(string remainingText)
     {
         this.index = 0;
-        this.remainingText = remainingText;
+        this.remainingText = remainingText ?? string.Empty;
+    }
+
+    private StringView()
+    {
     }
 
     public char Peek()
@@ -26,7 +30,7 @@ public class StringView
     public StringView Advance(int step = 1)
     {
         index += step;
-        return new StringView(remainingText.Substring(index));
+        return new StringView(remainingText[index..]);
     }
 
     public bool StartsWith(string prefix)
@@ -34,8 +38,21 @@ public class StringView
         return remainingText.StartsWith(prefix);
     }
 
-    bool IsEmpty()
+    public bool IsEmpty()
     {
-        return index == remainingText.Length - 1;
+        return index > 0 && remainingText.Length < 1;
+    }
+
+    public StringView Remove(string input)
+    {
+        return new StringView(remainingText.Replace(input, ""));
+    }
+
+    public object Clone()
+    {
+        return new StringView()
+        {
+            remainingText = remainingText
+        };
     }
 }

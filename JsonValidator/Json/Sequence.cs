@@ -9,17 +9,22 @@ public class Sequence : IPattern
         this.patterns = patterns;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         IMatch match = new SuccessMatch(text);
-
+        StringView initialText = (StringView)text.Clone();
         foreach (var pattern in patterns)
         {
             match = pattern.Match(match.RemainingText());
 
+            if (text.IsEmpty())
+            {
+                return new SuccessMatch(text);
+            }
+
             if (!match.Success())
             {
-                return new FailedMatch(text);
+                return new FailedMatch(initialText);
             }
         }
 

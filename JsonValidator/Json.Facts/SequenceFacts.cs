@@ -7,136 +7,150 @@ public class SequenceFacts
     [Fact]
     public void IsNull()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
-
-        Assert.False(ab.Match(null).Success());
-        Assert.Null(ab.Match(null).RemainingText());
+        
+        StringView input = new(null);
+        Assert.False(ab.Match(input).Success());
+        Assert.Equal('\0', ab.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void IsEmpty()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
-        
-        Assert.False(ab.Match("").Success());
-        Assert.Equal("", ab.Match("").RemainingText());
+
+        StringView input = new("");
+        Assert.False(ab.Match(input).Success());
+        Assert.Equal('\0', ab.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void StringMatchesSequenceOfTwoCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
-        
-        Assert.True(ab.Match("abcd").Success());
-        Assert.Equal("cd", ab.Match("abcd").RemainingText());
+
+        StringView input = new("abcd");
+        var match = ab.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('c', match.RemainingText().Peek());
     }
     
     [Fact]
     public void StringDoesNotMatchSequenceOfCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
-        
-        Assert.False(ab.Match("ax").Success());
-        Assert.Equal("ax", ab.Match("ax").RemainingText());
 
-        Assert.False(ab.Match("def").Success());
-        Assert.Equal("def",ab.Match("def").RemainingText());
+        StringView input = new("ax");
+        var match = ab.Match(input);
+        Assert.False(match.Success());
+        Assert.Equal('a', match.RemainingText().Peek());
+
+        StringView input1 = new("def");
+        var match1 = ab.Match(input1);
+        Assert.False(match1.Success());
+        Assert.Equal('d',match1.RemainingText().Peek());
     }
 
 
     [Fact]
     public void StringMatchesSequenceOfSequenceOfCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
         
-        var abc = new Sequence(
+        Sequence abc = new(
             ab,
             new Character('c')
         );
 
-        Assert.True(abc.Match("abcd").Success());
-        Assert.Equal("d", abc.Match("d").RemainingText());
+        StringView input = new("abcd");
+        var match = abc.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('d', match.RemainingText().Peek());
     }
 
     [Fact]
     public void StringDoesNotMatchSequenceOfSequenceOfCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
         
-        var abc = new Sequence(
+        Sequence abc = new(
             ab,
             new Character('c')
         );
-        
-        Assert.False(abc.Match("def").Success());
-        Assert.Equal("def", abc.Match("def").RemainingText());
 
-        Assert.False(abc.Match("abx").Success());
-        Assert.Equal("abx", abc.Match("abx").RemainingText());
+        StringView input = new("def");
+        Assert.False(abc.Match(input).Success());
+        Assert.Equal('d', abc.Match(input).RemainingText().Peek());
+
+        StringView input1 = new("abx");
+        Assert.False(abc.Match(input1).Success());
+        Assert.Equal('a', abc.Match(input1).RemainingText().Peek());
     }
 
     [Fact]
     public void EmptyStringDoesNotMatchSequenceOfSequenceOfCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
         
-        var abc = new Sequence(
+        Sequence abc = new(
             ab,
             new Character('c')
         );
-        
-        Assert.False(abc.Match("").Success());
-        Assert.Equal("", abc.Match("").RemainingText());
+
+        StringView input = new("");
+        Assert.False(abc.Match(input).Success());
+        Assert.Equal('\0', abc.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void NullStringDoesNotMatchSequenceOfSequenceOfCharacters()
     {
-        var ab = new Sequence(
+        Sequence ab = new(
             new Character('a'),
             new Character('b')
         );
         
-        var abc = new Sequence(
+        Sequence abc = new(
             ab,
             new Character('c')
         );
-        
-        Assert.False(abc.Match(null).Success());
-        Assert.Null(abc.Match(null).RemainingText());
+
+        StringView input = new(null);
+        Assert.False(abc.Match(input).Success());
+        Assert.Equal('\0', abc.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void ValidInputsMatchesHexadecimalSequence()
     {
-    var hex = new Choice(
+        Choice hex = new(
             new Range('0', '9'),
         new Range('a', 'f'),
         new Range('A', 'F')
             );
 
-        var hexSeq = new Sequence(
+        Sequence hexSeq = new(
             new Character('u'),
             new Sequence(
                 hex,
@@ -145,30 +159,39 @@ public class SequenceFacts
                 hex
             )
         );
+        
+        StringView input = new("u1234");
+        var match = hexSeq.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('\0', match.RemainingText().Peek());
 
-        Assert.True(hexSeq.Match("u1234").Success());
-        Assert.Equal("", hexSeq.Match("u1234").RemainingText());
-        
-        Assert.True(hexSeq.Match("uabcdef").Success());
-        Assert.Equal("ef", hexSeq.Match("uabcdef").RemainingText());
-        
-        Assert.True(hexSeq.Match("uB005 ab").Success());
-        Assert.Equal(" ab", hexSeq.Match("uB005 ab").RemainingText());
-        
-        Assert.False(hexSeq.Match("abc").Success());
-        Assert.Equal("abc", hexSeq.Match("abc").RemainingText());
+        StringView input1 = new("uabcdef");
+        var match1 = hexSeq.Match(input1);
+        Assert.True(match1.Success());
+        Assert.Equal('e', match1.RemainingText().Peek());
+
+        StringView input2 = new("uB005 ab");
+        var match2 = hexSeq.Match(input2);
+
+        Assert.True(match2.Success());
+        Assert.Equal(' ', match2.RemainingText().Peek());
+
+        StringView input3 = new("abc");
+        var match3 = hexSeq.Match(input3);
+        Assert.False(match3.Success());
+        Assert.Equal('a', match3.RemainingText().Peek());
     }
 
     [Fact]
     public void NullInputDoesNotMatchHexadecimalSequence()
     {
-        var hex = new Choice(
+        Choice hex = new(
             new Range('0', '9'),
             new Range('a', 'f'),
             new Range('A', 'F')
         );
 
-        var hexSeq = new Sequence(
+        Sequence hexSeq = new(
             new Character('u'),
             new Sequence(
                 hex,
@@ -177,8 +200,9 @@ public class SequenceFacts
                 hex
             )
         );
-        
-        Assert.False(hexSeq.Match(null).Success());
-        Assert.Null(hexSeq.Match(null).RemainingText());
+
+        StringView input = new(null);
+        Assert.False(hexSeq.Match(input).Success());
+        Assert.Equal('\0', hexSeq.Match(input).RemainingText().Peek());
     }
 }

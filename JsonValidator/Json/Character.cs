@@ -9,16 +9,21 @@ public class Character : IPattern
         this.pattern = pattern;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
-        if (string.IsNullOrEmpty(text))
+        if (text == null)
         {
             return new FailedMatch(text);
         }
 
-        if (text[0] == pattern)
+        if (text.IsEmpty())
         {
-            return new SuccessMatch(text[1..]);
+            return new SuccessMatch(text);
+        }
+
+        if (text.Peek() == pattern)
+        {
+            return new SuccessMatch(text.Advance());
         }
 
         return new FailedMatch(text);

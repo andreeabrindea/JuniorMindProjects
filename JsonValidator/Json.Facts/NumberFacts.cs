@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 namespace Json.Facts;
 
@@ -6,200 +7,246 @@ public class NumberFacts
         [Fact]
         public void CanBeZero()
         {
-            var number = new Number();
-            Assert.True(number.Match("0").Success());
-            Assert.Equal("", number.Match("0").RemainingText());
+            Number number = new();
+            StringView input = new("0");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void DoesNotContainLetters()
         {
-            var number = new Number();
-            Assert.False(number.Match("a").Success());
-            Assert.Equal("a", number.Match("a").RemainingText());
+            Number number = new();
+            StringView input = new("a");
+            Assert.False(number.Match(input).Success());
+            Assert.Equal('a', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void CanHaveASingleDigit()
         {
-            var number = new Number();
-            Assert.True(number.Match("7").Success());
-            Assert.Equal("", number.Match("7").RemainingText());
+            Number number = new();
+            StringView input = new("9");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void CanHaveMultipleDigits()
         {
-            var number = new Number();
-            Assert.True(number.Match("70").Success());
-            Assert.Equal("", number.Match("70").RemainingText());
+            Number number = new();
+            StringView input = new("70");
+            Assert.True(number.Match(input).Success());
+            Assert.Equal('\0', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void IsNotNull()
         {
-            var number = new Number();
-            Assert.False(number.Match(null).Success());
-            Assert.Null(number.Match(null).RemainingText());
+            Number number = new();
+            StringView input = new(null);
+            Assert.False(number.Match(input).Success());
+            Assert.Equal('\0', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void IsNotAnEmptyString()
         {   
-            var number = new Number();
-            Assert.False(number.Match(string.Empty).Success());
-            Assert.Equal(string.Empty, number.Match(string.Empty).RemainingText());
+            Number number = new();
+            StringView input = new(string.Empty);
+            Assert.False(number.Match(input).Success());
+            Assert.Equal('\0', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void DoesNotStartWithZero()
         {
-            var number = new Number();
-            Assert.True(number.Match("07").Success());
-            Assert.Equal("7", number.Match("07").RemainingText());
+            Number number = new();
+            StringView input = new("07");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('7', match.RemainingText().Peek());
         }
 
         [Fact]
         public void CanBeNegative()
         {
-            var number = new Number();
-            Assert.True(number.Match("-26").Success());
-            Assert.Equal("", number.Match("-26").RemainingText());
+            Number number = new();
+            StringView input = new("-26");
+            Assert.True(number.Match(input).Success());
+            Assert.Equal('\0', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void CanBeMinusZero()
         {
-            var number = new Number();
-            Assert.True(number.Match("-0").Success());
-            Assert.Equal("", number.Match("-0").RemainingText());
+            Number number = new();
+            StringView input = new("-0");
+            Assert.True(number.Match(input).Success());
+            Assert.Equal('\0', number.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void CanBeFractional()
         {
-            var number = new Number();
-            var list = new List(number, new Character('.'));
-            Assert.True(list.Match("12.34").Success());
-            Assert.Equal("", list.Match("12.34").RemainingText());
+            Number number = new();
+            List list = new(number, new Character('.'));
+            StringView input = new("12.34");
+            var match = list.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheFractionCanHaveLeadingZeros()
         {
-            var number = new Number();
-            var list = new List(number, new Character('.'));
-            
-            Assert.True(list.Match("0.00000001").Success());
-            Assert.Equal("", list.Match("0.00000001").RemainingText());
-            
-            Assert.True(list.Match("10.00000001").Success());
-            Assert.Equal("", list.Match("10.00000001").RemainingText());
+            Number number = new();
+            List list = new(number, new Character('.'));
+
+            StringView input = new("0.00000001");
+            var match = list.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
+
+            StringView input1 = new("10.00000001");
+            var match1 = list.Match(input1);
+            Assert.True(match1.Success());
+            Assert.Equal('\0', match1.RemainingText().Peek());
         }
         
         [Fact]
         public void DoesNotEndWithADot()
         {
-            var number = new Number();
-            var list = new List(number, new Character('.'));
-            
-            Assert.True(list.Match("12.").Success());
-            Assert.Equal(".", list.Match("12.").RemainingText());
+            Number number = new();
+            List list = new(number, new Character('.'));
+
+            StringView input = new("12.");
+            var match = list.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('.', match.RemainingText().Peek());
         }
 
         [Fact]
         public void DoesNotHaveTwoFractionParts()
         {
-            var number = new Number();
-            Assert.True(number.Match("12.34.56").Success());
-            Assert.Equal(".56", number.Match("12.34.56").RemainingText());
+            Number number = new();
+            StringView input = new("12.34.56");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('.', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheDecimalPartDoesNotAllowLetters()
         {
-            var number = new Number(); 
-            Assert.True(number.Match("12.3x").Success());
-            Assert.Equal("x", number.Match("12.3x").RemainingText());
+            Number number = new();
+            StringView input = new("12.3x");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('x', match.RemainingText().Peek());
         }
 
         [Fact]
         public void CanHaveAnExponent()
         {
-            var number = new Number();
-            Assert.True(number.Match("12e3").Success());
-            Assert.Equal("", number.Match("12e3").RemainingText());
+            Number number = new();
+            StringView input = new("12e3");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentCanStartWithCapitalE()
         {
-            var number = new Number();
-            Assert.True(number.Match("12E3").Success());
-            Assert.Equal("", number.Match("12E3").RemainingText());
+            Number number = new();
+            StringView input = new("12E3");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentCanHavePositive()
         {
-            var number = new Number();
-            Assert.True(number.Match("12e+3").Success());
-            Assert.Equal("", number.Match("12e+3").RemainingText());
+            Number number = new();
+            StringView input = new("12e+3");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0',  match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentCanBeNegative()
         {
-            var number = new Number();
-            Assert.True(number.Match("61e-9").Success());
-            Assert.Equal("", number.Match("61e-9").RemainingText());
+            Number number = new();
+            StringView input = new("61e-9");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void CanHaveFractionAndExponent()
         {
-            var number = new Number();
-            var list = new List(number, new Character('.'));
-            
-            Assert.True(list.Match("12.34E3").Success());
-            Assert.Equal("", list.Match("12.34E3").RemainingText());
+            Number number = new();
+            List list = new(number, new Character('.'));
+            StringView input = new("12.34E3");
+            var match = list.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('\0', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentDoesNotAllowLetters()
         {
-            var number = new Number();
-            Assert.True(number.Match("22e3x3").Success());
-            Assert.Equal("x3", number.Match("22e3x3").RemainingText());
+            Number number = new();
+            StringView input = new("33e3x3");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('x', match.RemainingText().Peek());
         }
 
         [Fact]
         public void DoesNotHaveTwoExponents()
         {
-            var number = new Number();
-            Assert.True(number.Match("22e323e33").Success());
-            Assert.Equal("e33", number.Match("22e323e33").RemainingText());
+            Number number = new();
+            StringView input = new("22e323e33");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('e', match.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentIsAlwaysComplete()
         {
-            var number = new Number();
-            Assert.True(number.Match("22e").Success());
-            Assert.Equal("e", number.Match("22e").RemainingText());
+            Number number = new();
             
-            Assert.True(number.Match("22e+").Success());
-            Assert.Equal("e+", number.Match("22e+").RemainingText());
-            
-            Assert.True(number.Match("23E-").Success());
-            Assert.Equal("E-", number.Match("22E-").RemainingText());
+            StringView input = new("22e");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('e', match.RemainingText().Peek());
+
+            StringView input1 = new("22e+");
+            var match1 = number.Match(input1);
+            Assert.True(match1.Success());
+            Assert.Equal('e', match1.RemainingText().Peek());
+
+            StringView input2 = new("23E-");
+            var match2 = number.Match(input2);
+            Assert.True(match2.Success());
+            Assert.Equal('E', match2.RemainingText().Peek());
         }
 
         [Fact]
         public void TheExponentIsAfterTheFraction()
         {
-            var number = new Number();
-            Assert.True(number.Match("22e3.3").Success());
-            Assert.Equal(".3", number.Match("22e3.3").RemainingText());
+            Number number = new();
+            StringView input = new("22e3.3");
+            var match = number.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('.', match.RemainingText().Peek());
         }
 }

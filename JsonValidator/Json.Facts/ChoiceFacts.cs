@@ -7,83 +7,91 @@ public class ChoiceFacts
     [Fact]
     public void DoesNotMatchNull()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('0'),
             new Range('1', '9')
         );
         
-        Assert.False(digit.Match(null).Success());
-        Assert.Null(digit.Match(null).RemainingText());
+        StringView input = new(null);
+        Assert.False(digit.Match(input).Success());
+        Assert.Equal('\0', digit.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void DoesNotMatchEmptyString()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('0'),
             new Range('1', '9')
         );
         
-        Assert.False(digit.Match("").Success());
-        Assert.Equal("", digit.Match("").RemainingText());
+        StringView input = new("");
+        Assert.False(digit.Match(input).Success());
+        Assert.Equal('\0', digit.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void IsIntegerInRange()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('0'),
             new Range('1', '9')
         );
         
-        Assert.True(digit.Match("27").Success());
-        Assert.Equal("7", digit.Match("27").RemainingText());
+        StringView input = new("27");
+        var match = digit.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('7', match.RemainingText().Peek());
     }
     
     [Fact]
     public void IsIntegerNotInRange()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('0'),
             new Range('5', '9')
         );
-        Assert.False(digit.Match("12").Success());
-        Assert.Equal("12", digit.Match("12").RemainingText());
+
+        StringView input = new("12");
+        Assert.False(digit.Match(input).Success());
+        Assert.Equal('1', digit.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void IsStringAndHasPattern()
     {
-        var pattern = new Choice(
+        Choice pattern = new(
             new Character('a'),
             new Range('5', '9')
         );
-        
-        Assert.True(pattern.Match("abc").Success());
-        Assert.Equal("bc", pattern.Match("abc").RemainingText());
+
+        StringView input = new("abc");
+        Assert.True(pattern.Match(input).Success());
+        Assert.Equal('b', pattern.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void IsStringAndDoesNotHavePattern()
     {
-        var pattern = new Choice(
+        Choice pattern = new(
             new Character('a'),
             new Range('5', '9')
         );
-        
-        Assert.False(pattern.Match("bcd").Success());
-        Assert.Equal("bcd", pattern.Match("bcd").RemainingText());
+
+        StringView input = new("bcd");
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('b', pattern.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void HexMatchesDigitsInRange()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('0', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
@@ -91,19 +99,21 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("012").Success());
-        Assert.Equal("12", hex.Match("012").RemainingText());
+        StringView input = new("012");
+        var match = hex.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('1', match.RemainingText().Peek());
     }
 
     [Fact]
     public void HexMatchesLowercaseLettersInRange()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('5', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
@@ -111,22 +121,26 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("a9").Success());
-        Assert.Equal("9", hex.Match("a9").RemainingText());
-        
-        Assert.True(hex.Match("f8").Success());
-        Assert.Equal("8", hex.Match("f8").RemainingText());
+        StringView input = new("a9");
+        var match = hex.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('9', match.RemainingText().Peek());
+
+        StringView input1 = new("f8");
+        var match1 = hex.Match(input1);
+        Assert.True(match1.Success());
+        Assert.Equal('8', match1.RemainingText().Peek());
     }
 
     [Fact]
     public void HexMatchesUppercaseLettersInRange()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('5', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
@@ -134,22 +148,26 @@ public class ChoiceFacts
             )
         );
 
-        Assert.True(hex.Match("A9").Success());
-        Assert.Equal("9", hex.Match("A9").RemainingText());
-        
-        Assert.True(hex.Match("F8").Success());
-        Assert.Equal("8", hex.Match("F8").RemainingText());
+        StringView input = new("A9");
+        var match = hex.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('9', match.RemainingText().Peek());
+
+        StringView input1 = new("F8");
+        var match1 = hex.Match(input1);
+        Assert.True(match1.Success());
+        Assert.Equal('8', match1.RemainingText().Peek());
     }
 
     [Fact]
     public void HexDoesNotMatchOutOfRangeLetters()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('5', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
@@ -157,22 +175,24 @@ public class ChoiceFacts
             )
         );
 
-        Assert.False(hex.Match("g8").Success());
-        Assert.Equal("g8", hex.Match("g8").RemainingText());
-        
-        Assert.False(hex.Match("G8").Success());
-        Assert.Equal("G8", hex.Match("G8").RemainingText());
+        StringView input = new("g8");
+        Assert.False(hex.Match(input).Success());
+        Assert.Equal('g', hex.Match(input).RemainingText().Peek());
+
+        StringView input1 = new("G8");
+        Assert.False(hex.Match(input1).Success());
+        Assert.Equal('G', hex.Match(input1).RemainingText().Peek());
     }
 
     [Fact]
     public void HexDoesNotMatchEmptyString()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('5', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
@@ -180,78 +200,87 @@ public class ChoiceFacts
             )
         );
 
-        Assert.False(hex.Match("").Success());
-        Assert.Equal("", hex.Match("").RemainingText());
+        StringView input = new("");
+        Assert.False(hex.Match(input).Success());
+        Assert.Equal('\0', hex.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void HexDoesNotMatchNull()
     {
-        var digit = new Choice(
+        Choice digit = new(
             new Character('a'),
             new Range('5', '9')
         );
 
-        var hex = new Choice(
+        Choice hex = new(
             digit, 
             new Choice(
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
         );
-
-        Assert.False(hex.Match(null).Success());
-        Assert.Null(hex.Match(null).RemainingText());
+        StringView input = new(null);
+        Assert.False(hex.Match(input).Success());
+        Assert.Equal('\0',hex.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputMatchesAfterAddingNewPattern()
     {
-        var pattern = new Choice(new Range('0', '2'), new Character('a'));
-        Assert.False(pattern.Match("5").Success());
-        Assert.Equal("5", pattern.Match("5").RemainingText());
+        Choice pattern = new(new Range('0', '2'), new Character('a'));
+
+        StringView input = new("5");
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('5', pattern.Match(input).RemainingText().Peek());
         
         pattern.Add(new Range('3', '9'));
-        Assert.True(pattern.Match("5").Success());
-        Assert.Equal("", pattern.Match("5").RemainingText());
+        Assert.True(pattern.Match(input).Success());
+        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void InputDoesNotMatchAfterAddingNewPattern()
     {
-        var pattern = new Choice(new Range('0', '2'), new Character('a'));
-        Assert.False(pattern.Match("z").Success());
-        Assert.Equal("z", pattern.Match("z").RemainingText());
+        Choice pattern = new(new Range('0', '2'), new Character('a'));
+        StringView input = new("z");
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('z', pattern.Match(input).RemainingText().Peek());
         
         pattern.Add(new Range('3', '9'));
-        Assert.False(pattern.Match("z").Success());
-        Assert.Equal("z", pattern.Match("z").RemainingText());
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('z', pattern.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void PatternDoesNotMatchNullAfterAddingPattern()
     {
-        var pattern = new Choice(new Character('a'), new Character('b'));
+        Choice pattern = new(new Character('a'), new Character('b'));
         pattern.Add(new Character('c'));
-        Assert.False(pattern.Match(null).Success());
-        Assert.Null(pattern.Match(null).RemainingText());
+
+        StringView input = new(null);
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void PatternDoesNotMatchEmptyStringAfterAddingPattern()
     {
-        var pattern = new Choice(new Character('a'), new Character('b'));
+        Choice pattern = new(new Character('a'), new Character('b'));
         pattern.Add(new Character('c'));
-        Assert.False(pattern.Match(string.Empty).Success());
-        Assert.Equal("",pattern.Match(string.Empty).RemainingText());
+        
+        StringView input = new(string.Empty);
+        Assert.False(pattern.Match(input).Success());
+        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void AddingNullPattern()
     {
-        var pattern = new Choice(new Character('a'));
+        Choice pattern = new (new Character('a'));
         pattern.Add(null);
-        Assert.True(pattern.Match("abc").Success());
-        Assert.Equal("bc", pattern.Match("abc").RemainingText());
+        StringView input = new("abc");
+        Assert.True(pattern.Match(input).Success());
+        Assert.Equal('b', pattern.Match(input).RemainingText().Peek());
     }
 }

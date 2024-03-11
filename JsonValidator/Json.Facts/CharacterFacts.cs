@@ -7,33 +7,37 @@ namespace Json.Facts
         [Fact]
         public void IsNotNull()
         {
-            Character character = new Character('a');
-            Assert.False(character.Match(null).Success());
-            Assert.Null(character.Match(null).RemainingText());
+            Character character = new('a');
+            StringView input = new(null);
+            Assert.False(character.Match(input).Success());
+            Assert.Equal('\0', character.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void IsNotEmpty()
         {
-            Character character = new Character('a');
-            Assert.False(character.Match("").Success());
-            Assert.Equal("", character.Match("").RemainingText());
+            Character character = new('a');
+            StringView input = new("");
+            Assert.False(character.Match(input).Success());
+            Assert.Equal('\0', character.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void HasPattern()
         {
-            Character character = new Character('a');
-            Assert.True(character.Match("abcd").Success());
-            Assert.Equal("bcd", character.Match("abcd").RemainingText());
+            Character character = new('a');
+            StringView input = new("abcd");
+            Assert.True(character.Match(input).Success());
+            Assert.Equal('b', character.Match(input).RemainingText().Peek());
         }
         
         [Fact]
         public void DoesNotHavePattern()
         {
-            Character character = new Character('x');
-            Assert.False(character.Match("abcd").Success());
-            Assert.Equal("abcd", character.Match("abcd").RemainingText());
+            Character character = new('x');
+            StringView input = new("abcd");
+            Assert.False(character.Match(input).Success());
+            Assert.Equal('a', character.Match(input).RemainingText().Peek());
         }
     }
 }

@@ -9,16 +9,16 @@ public class Any : IPattern
         this.accepted = accepted;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
-        if (string.IsNullOrEmpty(text))
+        if (text == null)
         {
             return new FailedMatch(text);
         }
 
-        if (accepted.Contains(text[0]))
+        if (accepted.Contains(text.Peek()))
         {
-            return new SuccessMatch(text[1..]);
+            return new SuccessMatch(text.Advance());
         }
 
         return new FailedMatch(text);

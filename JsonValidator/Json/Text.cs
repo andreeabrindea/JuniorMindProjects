@@ -10,7 +10,7 @@ public class Text : IPattern
         this.prefix = prefix;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         if (text == null)
         {
@@ -24,7 +24,7 @@ public class Text : IPattern
 
         if (!string.IsNullOrEmpty(prefix))
         {
-            text = text.Replace(prefix, "");
+            text = text.Remove(prefix);
         }
 
         return new SuccessMatch(text);

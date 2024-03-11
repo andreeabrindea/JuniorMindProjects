@@ -11,7 +11,7 @@ public class Optional : IPattern
         this.pattern = pattern;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         return new SuccessMatch(pattern.Match(text).RemainingText());
     }

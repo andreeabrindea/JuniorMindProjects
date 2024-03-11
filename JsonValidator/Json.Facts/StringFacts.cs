@@ -8,162 +8,187 @@ namespace Json.Facts
         public void IsWrappedInDoubleQuotes()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted("abc")).Success());
+            StringView input = new(Quoted("abc"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void AlwaysStartsWithQuotes()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match("abc\"").Success());
+            StringView input = new("abc\"");
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void AlwaysEndsWithQuotes()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match("\"abc").Success());
+            StringView input = new("\"abc");
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void IsNotNull()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(null).Success());
+            StringView input = new(null);
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void IsNotAnEmptyString()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(string.Empty).Success());
+            StringView input = new(string.Empty);
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void IsAnEmptyDoubleQuotedString()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(string.Empty)).Success());
+            StringView input = new(Quoted(string.Empty));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void DoesNotContainControlCharacters()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(Quoted("a\nb\rc")).Success());
+            StringView input = new(Quoted("a\nb\rc"));
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainLargeUnicodeCharacters()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted("⛅⚾")).Success());
+            StringView input = new(Quoted("⛅⚾"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedQuotationMark()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"\""a\"" b")).Success());
+            StringView input = new(Quoted(@"\""a\"" b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedReverseSolidus()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \\ b")).Success());
+            StringView input = new(Quoted(@"a \\ b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedSolidus()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \/ b")).Success());
+            StringView input = new(Quoted(@"a \/ b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedBackspace()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \b b")).Success());
+            StringView input = new(Quoted(@"a \b b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedFormFeed()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \f b")).Success());
+            StringView input = new(Quoted(@"a \f b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedLineFeed()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \n b")).Success());
+            StringView input = new(Quoted(@"a \n b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedCarrigeReturn()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \r b")).Success());
+            StringView input = new(Quoted(@"a \r b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedHorizontalTab()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \t b")).Success());
+            StringView input = new(Quoted(@"a \t b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainEscapedUnicodeCharacters()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a \u26Be b")).Success());
+            StringView input = new(Quoted(@"a \u26Be b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void CanContainAnyMultipleEscapeSequences()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"\\\u1212\n\t\r\\\b")).Success());
+            StringView input = new(Quoted(@"\\\u1212\n\t\r\\\b"));
+            Assert.True(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void DoesNotContainUnrecognizedExcapceCharacters()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(Quoted(@"a\x")).Success());
+            StringView input = new(Quoted(@"a\x"));
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void DoesNotEndWithReverseSolidus()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(Quoted(@"a\")).Success());
+            StringView input = new(Quoted(@"a\"));
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         [Fact]
         public void DoesNotEndWithAnUnfinishedHexNumber()
         {
             var stringPattern = new String();
-            Assert.False(stringPattern.Match(Quoted(@"a\u")).Success());
-            Assert.False(stringPattern.Match(Quoted(@"a\u123")).Success());
+            StringView input = new(Quoted(@"a\u"));
+            Assert.False(stringPattern.Match(input).Success());
+            
+            StringView input1 = new(Quoted(@"a\u123"));
+            Assert.False(stringPattern.Match(input1).Success());
         }
 
         [Fact]
         public void DoesEndWithTwoReverseSolidus()
         {
             var stringPattern = new String();
-            Assert.True(stringPattern.Match(Quoted(@"a\\")).Success());
+            StringView input = new(Quoted(@"a\\"));
+            Assert.True(stringPattern.Match(input).Success());
         }
         
         [Fact]
         public void DoesNotEndWithThreeReverseSolidus()
         {
-            var stringPattern = new String();
-            Assert.False(stringPattern.Match(Quoted(@"a\\\")).Success());
+            String stringPattern = new();
+            StringView input = new(Quoted(@"a\\\"));
+            Assert.False(stringPattern.Match(input).Success());
         }
 
         public static string Quoted(string text)

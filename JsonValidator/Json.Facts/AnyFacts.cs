@@ -7,78 +7,86 @@ public class AnyFacts
     [Fact]
     public void InputIsNull()
     {
-        var e = new Any("eE");
+        Any e = new("eE");
 
-        Assert.False(e.Match(null).Success());
-        Assert.Null(e.Match(null).RemainingText());
+        StringView input = new(null);
+        Assert.False(e.Match(input).Success());
+        Assert.Equal('\0', e.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputIsEmpty()
     {
-        var e = new Any("eE");
+        Any e = new("eE");
 
-        Assert.False(e.Match("").Success());
-        Assert.Equal("", e.Match("").RemainingText());
+        StringView input = new("");
+        Assert.False(e.Match(input).Success());
+        Assert.Equal('\0', e.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void ValidInputMatchesPattern()
     {
-        var e = new Any("eE");
+        Any e = new("eE");
 
-        Assert.True(e.Match("ea").Success());
-        Assert.Equal("a", e.Match("ea").RemainingText());
+        StringView input = new("ea");
+        Assert.True(e.Match(input).Success());
+        Assert.Equal('a', e.Match(input).RemainingText().Peek());
 
-        Assert.True(e.Match("Ea").Success());
-        Assert.Equal("a", e.Match("Ea").RemainingText());
+        StringView input1 = new("Ea");
+        Assert.True(e.Match(input1).Success());
+        Assert.Equal('a', e.Match(input1).RemainingText().Peek());
     }
 
     [Fact]
     public void ValidInputDoesNotMatchPattern()
     {
-        var e = new Any("eE");
-
-        Assert.False(e.Match("a").Success());
-        Assert.Equal("a", e.Match("a").RemainingText());
+        Any e = new("eE");
+        StringView input = new("a");
+        Assert.False(e.Match(input).Success());
+        Assert.Equal('a', e.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void SignedIntegerMatchesSignsPattern()
     {
-        var sign = new Any("-+");
+        Any sign = new("-+");
 
-        Assert.True(sign.Match("+3").Success());
-        Assert.Equal("3", sign.Match("+3").RemainingText());
+        StringView input = new("+3");
+        Assert.True(sign.Match(input).Success());
+        Assert.Equal('3', sign.Match(input).RemainingText().Peek());
 
-        Assert.True(sign.Match("-2").Success());
-        Assert.Equal("2", sign.Match("-2").RemainingText());
+        StringView input1 = new("-2");
+        Assert.True(sign.Match(input1).Success());
+        Assert.Equal('2', sign.Match(input1).RemainingText().Peek());
     }
     
     [Fact]
     public void UnSignedIntegerDoesNotMatchSignsPattern()
     {
-        var sign = new Any("-+");
+        Any sign = new("-+");
 
-        Assert.False(sign.Match("2").Success());
-        Assert.Equal("2", sign.Match("2").RemainingText());
+        StringView input = new("2");
+        Assert.False(sign.Match(input).Success());
+        Assert.Equal('2', sign.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void NullInputDoesNotMatchSignPattern()
     {
-        var sign = new Any("-+");
-        
-        Assert.False(sign.Match(null).Success());
-        Assert.Null(sign.Match(null).RemainingText());
+        Any sign = new("-+");
+
+        StringView input = new(null);
+        Assert.False(sign.Match(input).Success());
+        Assert.Equal('\0',sign.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void EmptyInputDoesNotMatchSignPattern()
     {
-        var sign = new Any("-+");
-        
-        Assert.False(sign.Match("").Success());
-        Assert.Equal("", sign.Match("").RemainingText());
+        Any sign = new("-+");
+        StringView input = new("");
+        Assert.False(sign.Match(input).Success());
+        Assert.Equal('\0', sign.Match(input).RemainingText().Peek());
     }
 }

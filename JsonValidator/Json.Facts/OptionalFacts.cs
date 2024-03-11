@@ -7,36 +7,38 @@ public class OptionalFacts
     [Fact]
     public void InputStringCanBeNull()
     {
-        var a = new Optional(new Character('a'));
-
-        Assert.True(a.Match(null).Success());
-        Assert.Null(a.Match(null).RemainingText());
+        Optional a = new(new Character('a'));
+        StringView input = new(null);
+        Assert.True(a.Match(input).Success());
+        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void InputStringCanBeEmpty()
     {
-        var a = new Optional(new Character('a'));
-        
-        Assert.True(a.Match("").Success());
-        Assert.Equal("", a.Match("").RemainingText());
+        Optional a = new(new Character('a'));
+        StringView input = new("");
+        Assert.True(a.Match(input).Success());
+        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputStringContainsPattern()
     {
-        var a = new Optional(new Character('a'));
+        Optional a = new(new Character('a'));
+        StringView input = new("abc");
+        Assert.True(a.Match(input).Success());
+        Assert.Equal('b', a.Match(input).RemainingText().Peek());
 
-        Assert.True(a.Match("abc").Success());
-        Assert.Equal("bc", a.Match("abc").RemainingText());
-
-        Assert.True(a.Match("aabc").Success());
-        Assert.Equal("abc", a.Match("aabc").RemainingText());
+        StringView input1 = new("aabc");
+        var match = a.Match(input1);
+        Assert.True(match.Success());
+        Assert.Equal('a', match.RemainingText().Peek());
         
-        var sign = new Optional(new Character('-'));
-
-        Assert.True(sign.Match("-123").Success());
-        Assert.Equal("123", sign.Match("-123").RemainingText());
+        Optional sign = new(new Character('-'));
+        StringView input2 = new("-123");
+        Assert.True(sign.Match(input2).Success());
+        Assert.Equal('1', sign.Match(input2).RemainingText().Peek());
     }
 
     [Fact]
@@ -44,13 +46,14 @@ public class OptionalFacts
     {
         var a = new Optional(new Character('a'));
 
-        Assert.True(a.Match("bc").Success());
-        Assert.Equal("bc", a.Match("bc").RemainingText());
+        StringView input = new("bc");
+        Assert.True(a.Match(input).Success());
+        Assert.Equal('b', a.Match(input).RemainingText().Peek());
         
         var sign = new Optional(new Character('-'));
-
-        Assert.True(sign.Match("123").Success());
-        Assert.Equal("123", sign.Match("123").RemainingText());
+        StringView input1 = new("123");
+        Assert.True(sign.Match(input1).Success());
+        Assert.Equal('1', sign.Match(input1).RemainingText().Peek());
         
     }
 }

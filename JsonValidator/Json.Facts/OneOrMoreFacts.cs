@@ -6,46 +6,47 @@ public class OneOrMoreFacts
     [Fact]
     public void InputStringIsNull()
     {
-        var a = new OneOrMore(new Range('0', '9'));
-
-        Assert.False(a.Match(null).Success());
-        Assert.Null(a.Match(null).RemainingText());
+        OneOrMore a = new(new Range('0', '9'));
+        StringView input = new(null);
+        Assert.False(a.Match(input).Success());
+        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputStringIsEmpty()
     {
-        var a = new OneOrMore(new Range('0', '9'));
-        
-        Assert.False(a.Match("").Success());
-        Assert.Equal("", a.Match("").RemainingText());
+        OneOrMore a = new(new Range('0', '9'));
+        StringView input = new("");
+        Assert.False(a.Match(input).Success());
+        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputStringDoesNotMatchPatternOnce()
     {
-        var a = new OneOrMore(new Range('0', '9'));
-
-        Assert.False(a.Match("bc").Success());
-        Assert.Equal("bc", a.Match("bc").RemainingText());
+        OneOrMore a = new(new Range('0', '9'));
+        StringView input = new("bc");
+        Assert.False(a.Match(input).Success());
+        Assert.Equal('b', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void InputStringMatchesOnce()
     {
-        var a = new OneOrMore(new Range('0', '9'));
-        
-        Assert.True(a.Match("1a").Success());
-        Assert.Equal("a", a.Match("1a").RemainingText());
+        OneOrMore a = new(new Range('0', '9'));
+        StringView input = new("1a");
+        var match = a.Match(input);
+        Assert.True(match.Success());
+        Assert.Equal('a', match.RemainingText().Peek());
     }
     
     [Fact]
     public void InputStringMatchesForAllCharacters()
     {
-        var a = new OneOrMore(new Range('0', '9'));
-
-        Assert.True(a.Match("123").Success());
-        Assert.Equal("", a.Match("123").RemainingText());
+        OneOrMore a = new(new Range('0', '9'));
+        StringView input = new("123");
+        Assert.True(a.Match(input).Success());
+        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
         
     }
 

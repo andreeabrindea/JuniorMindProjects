@@ -11,16 +11,21 @@ public class Range : IPattern
         endCharacter = end;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
-        if (string.IsNullOrEmpty(text))
+        if (text == null)
         {
             return new FailedMatch(text);
         }
 
-        if (text[0] >= startCharacter && text[0] <= endCharacter)
+        if (text.IsEmpty())
         {
-            return new SuccessMatch(text[1..]);
+            return new SuccessMatch(text);
+        }
+
+        if (text.Peek() >= startCharacter && text.Peek() <= endCharacter)
+        {
+            return new SuccessMatch(text.Advance());
         }
 
         return new FailedMatch(text);

@@ -44,7 +44,7 @@ public class Value : IPattern
         pattern = element;
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         return pattern.Match(text);
     }

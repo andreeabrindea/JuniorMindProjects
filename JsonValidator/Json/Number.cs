@@ -18,7 +18,7 @@ public class Number : IPattern
         pattern = new Sequence(integer, new Optional(fraction), new Optional(exponent));
     }
 
-    public IMatch Match(string text)
+    public IMatch Match(StringView text)
     {
         return pattern.Match(text);
     }

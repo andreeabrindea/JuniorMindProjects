@@ -9,106 +9,112 @@ public class TextFacts
     [Fact]
     public void StringIsEqualToPattern()
     {
-        var falseString = new Text("false");
+        Text falseString = new("false");
 
-        Assert.True(falseString.Match("false").Success());
-        Assert.Equal("", falseString.Match("false").RemainingText());
+        StringView input = new("false");
+        Assert.True(falseString.Match(input).Success());
+        Assert.Equal('\0', falseString.Match(input).RemainingText().Peek());
         
-        var trueString = new Text("true");
+        Text trueString = new("true");
+        StringView input1 = new("true");
 
-        Assert.True(trueString.Match("true").Success());
-        Assert.Equal("", trueString.Match("true").RemainingText());
+        Assert.True(trueString.Match(input1).Success());
+        Assert.Equal('\0', trueString.Match(input1).RemainingText().Peek());
     }
 
     [Fact]
     public void StringContainsPattern()
     {
-        var falseString = new Text("false");
+        Text falseString = new("false");
+        StringView input = new("falseX");
 
-        Assert.True(falseString.Match("falseX").Success());
-        Assert.Equal("X", falseString.Match("falseX").RemainingText());
+        Assert.True(falseString.Match(input).Success());
+        Assert.Equal('X', falseString.Match(input).RemainingText().Peek());
         
-        var trueString = new Text("true");
-
-        Assert.True(trueString.Match("trueX").Success());
-        Assert.Equal("X", trueString.Match("trueX").RemainingText());
+        Text trueString = new("true");
+        StringView input1 = new("trueX");
+        Assert.True(trueString.Match(input1).Success());
+        Assert.Equal('X', trueString.Match(input1).RemainingText().Peek());
     }
 
     [Fact]
     public void StringDoesNotContainPattern()
     {
-        var falseString = new Text("false");
-
-        Assert.False(falseString.Match("true").Success());
-        Assert.Equal("true", falseString.Match("true").RemainingText());
+        Text falseString = new("false");
+        StringView input = new("true");
         
-        var trueString = new Text("true");
+        Assert.False(falseString.Match(input).Success());
+        Assert.Equal('t', falseString.Match(input).RemainingText().Peek());
         
-        Assert.False(trueString.Match("false").Success());
-        Assert.Equal("false", trueString.Match("false").RemainingText());
+        Text trueString = new("true");
+        StringView input2 = new("false");
+        Assert.False(trueString.Match(input2).Success());
+        Assert.Equal('f', trueString.Match(input2).RemainingText().Peek());
     }
 
     [Fact]
     public void EmptyStringDoesNotMatchNonemptyPattern()
     {
-        var trueString = new Text("true");
-
-        Assert.False(trueString.Match("").Success());
-        Assert.Equal("false", trueString.Match("false").RemainingText());
+        Text trueString = new("true");
+        StringView input = new("");
+        
+        var match = trueString.Match(input);
+        Assert.False(match.Success());
     }
     
 
     [Fact]
     public void NullDoesNotMatchNonemptyPattern()
     {
-        var trueString = new Text("true");
-
-        Assert.False(trueString.Match(null).Success());
-        Assert.Null(trueString.Match(null).RemainingText());
+        Text trueString = new("true");
+        StringView input = new(null);
+        var match = trueString.Match(input);
+        Assert.False(match.Success());
     }
 
     [Fact]
     public void EmptyStringMatchesPattern()
     {
-        var falseString = new Text("false");
-
-        Assert.False(falseString.Match("").Success());
-        Assert.Equal("", falseString.Match("").RemainingText());
+        Text falseString = new("false");
+        StringView input = new("");
+        var match = falseString.Match(input);
+        Assert.False(match.Success());
+        Assert.Equal('\0', match.RemainingText().Peek());
     }
 
     [Fact]
     public void NullDoesNotMatchPattern()
     {
-        var falseString = new Text("false");
-
-        Assert.False(falseString.Match(null).Success());
-        Assert.Null(falseString.Match(null).RemainingText());
+        Text falseString = new("false");
+        StringView input = new(null);
+        Assert.False(falseString.Match(input).Success());
+        Assert.Equal('\0', falseString.Match(input).RemainingText().Peek());
     }
     
     [Fact]
     public void StringMatchesEmptyPattern()
     { 
-        var empty = new Text("");
-        
-        Assert.True(empty.Match("true").Success());
-        Assert.Equal("true", empty.Match("true").RemainingText());
+        Text empty = new("");
+        StringView input = new("true");
+        Assert.True(empty.Match(input).Success());
+        Assert.Equal('t', empty.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void EmptyStringMatchesEmptyPattern()
     {
-        var empty = new Text("");
-
-        Assert.True(empty.Match("").Success());
-        Assert.Equal("", empty.Match("").RemainingText());
+        Text empty = new("");
+        StringView input = new("");
+        Assert.True(empty.Match(input).Success());
+        Assert.Equal('\0', empty.Match(input).RemainingText().Peek());
     }
 
     [Fact]
     public void NullDoesNotMatchesEmptyPattern()
     {
         var empty = new Text("");
-        
+        StringView input = new(null);
         Assert.False(empty.Match(null).Success());
-        Assert.Null(empty.Match(null).RemainingText());
+        Assert.Equal('\0', empty.Match(input).RemainingText().Peek());
     }
 }

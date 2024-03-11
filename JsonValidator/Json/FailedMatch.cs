@@ -2,9 +2,9 @@ namespace Json;
 
 public class FailedMatch : IMatch
 {
-    private readonly string text;
+    private readonly StringView text;
 
-    public FailedMatch(string text)
+    public FailedMatch(StringView text)
     {
         this.text = text;
     }
@@ -14,7 +14,7 @@ public class FailedMatch : IMatch
         return false;
     }
 
-    public string RemainingText()
+    public StringView RemainingText()
     {
         return text;
     }

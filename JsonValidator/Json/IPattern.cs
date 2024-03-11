@@ -4,10 +4,10 @@ public interface IMatch
 {
     bool Success();
 
-    string RemainingText();
+    StringView RemainingText();
 }
 
 public interface IPattern
 {
-    IMatch Match(string text);
+    IMatch Match(StringView text);
 }

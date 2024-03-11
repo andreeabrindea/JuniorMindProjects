@@ -8,49 +8,56 @@ namespace Json.Facts
         [Fact]
         public void IsEmpty()
         {
-            Range range = new Range('a', 'z');
-            Assert.False(range.Match("").Success());
-            Assert.Equal("", range.Match("").RemainingText());
+            Range range = new('a', 'z');
+            StringView input = new("");
+            Assert.False(range.Match(input).Success());
+            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void IsNull()
         {
-            Range range = new Range('a', 'z');
-            Assert.False(range.Match(null).Success());
-            Assert.Null(range.Match(null).RemainingText());
+            Range range = new('a', 'z');
+            StringView input = new(null);
+            Assert.False(range.Match(input).Success());
+            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
         
         [Fact]
         public void LengthIsOne()
         {
-            Range range = new Range('a', 'z');
-            Assert.True(range.Match("a").Success());
-            Assert.Equal("",range.Match("a").RemainingText());
+            Range range = new('a', 'z');
+            StringView input = new("a");
+            Assert.True(range.Match(input).Success());
+            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void StartCharacterIsBiggerThanEndCharacter()
         {
-            Range range = new Range('z', 'a');
-            Assert.False(range.Match("a").Success());
-            Assert.Equal("a", range.Match("a").RemainingText());
+            Range range = new('z', 'a');
+            StringView input = new("a");
+            Assert.False(range.Match(input).Success());
+            Assert.Equal('a', range.Match(input).RemainingText().Peek());
         }
 
         [Fact]
         public void IsInRange()
         {
-            Range range = new Range('a', 'f');
-            Assert.True(range.Match("fab").Success());
-            Assert.Equal("ab", range.Match("fab").RemainingText());
+            Range range = new('a', 'f');
+            StringView input = new("fab");
+            var match = range.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('a', match.RemainingText().Peek());
         }
 
         [Fact]
         public void IsNotInRange()
         {
-            Range range = new Range('a', 'f');
-            Assert.False(range.Match("1abc").Success());
-            Assert.Equal("1abc", range.Match("1abc").RemainingText());
+            Range range = new('a', 'f');
+            StringView input = new("1abc");
+            Assert.False(range.Match(input).Success());
+            Assert.Equal('1', range.Match(input).RemainingText().Peek());
         }
     }
 }
