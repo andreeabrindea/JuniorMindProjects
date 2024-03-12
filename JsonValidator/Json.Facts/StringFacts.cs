@@ -25,7 +25,8 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new("\"abc");
-            Assert.False(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.False(match.Success());
         }
 
         [Fact]
@@ -171,8 +172,8 @@ namespace Json.Facts
             StringView input = new(Quoted(@"a\u"));
             Assert.False(stringPattern.Match(input).Success());
             
-            StringView input1 = new(Quoted(@"a\u123"));
-            Assert.False(stringPattern.Match(input1).Success());
+            StringView secondInput = new(Quoted(@"a\u123"));
+            Assert.False(stringPattern.Match(secondInput).Success());
         }
 
         [Fact]
@@ -188,7 +189,8 @@ namespace Json.Facts
         {
             String stringPattern = new();
             StringView input = new(Quoted(@"a\\\"));
-            Assert.False(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.False(match.Success());
         }
 
         public static string Quoted(string text)

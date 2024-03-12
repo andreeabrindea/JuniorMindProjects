@@ -16,10 +16,10 @@ public class TextFacts
         Assert.Equal('\0', falseString.Match(input).RemainingText().Peek());
         
         Text trueString = new("true");
-        StringView input1 = new("true");
+        StringView secondInput = new("true");
 
-        Assert.True(trueString.Match(input1).Success());
-        Assert.Equal('\0', trueString.Match(input1).RemainingText().Peek());
+        Assert.True(trueString.Match(secondInput).Success());
+        Assert.Equal('\0', trueString.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]
@@ -32,9 +32,9 @@ public class TextFacts
         Assert.Equal('X', falseString.Match(input).RemainingText().Peek());
         
         Text trueString = new("true");
-        StringView input1 = new("trueX");
-        Assert.True(trueString.Match(input1).Success());
-        Assert.Equal('X', trueString.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("trueX");
+        Assert.True(trueString.Match(secondInput).Success());
+        Assert.Equal('X', trueString.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]
@@ -47,9 +47,9 @@ public class TextFacts
         Assert.Equal('t', falseString.Match(input).RemainingText().Peek());
         
         Text trueString = new("true");
-        StringView input2 = new("false");
-        Assert.False(trueString.Match(input2).Success());
-        Assert.Equal('f', trueString.Match(input2).RemainingText().Peek());
+        StringView secondInput = new("false");
+        Assert.False(trueString.Match(secondInput).Success());
+        Assert.Equal('f', trueString.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]

@@ -76,9 +76,9 @@ public class ListFacts
         Assert.True(match.Success());
         Assert.Equal('\0', match.RemainingText().Peek());
 
-        StringView input1 = new("1 \n;");
-        var match1 = list.Match(input1);
-        Assert.True(match1.Success());
-        Assert.Equal('\n',  match1.RemainingText().Peek());
+        StringView secondInput = new("1 \n;");
+        var secondMatch = list.Match(secondInput);
+        Assert.True(secondMatch.Success());
+        Assert.Equal(' ',  secondMatch.RemainingText().Peek());
     }
 }

@@ -32,7 +32,7 @@ public class StringViewFacts
         input.Advance();
         input.Advance();
         input.Advance();
-        Assert.Equal('\0', input.Peek());
+        Assert.Equal('h', input.Peek());
     }
 
   

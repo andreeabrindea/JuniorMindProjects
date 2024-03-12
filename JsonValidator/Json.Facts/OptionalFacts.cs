@@ -30,8 +30,8 @@ public class OptionalFacts
         Assert.True(a.Match(input).Success());
         Assert.Equal('b', a.Match(input).RemainingText().Peek());
 
-        StringView input1 = new("aabc");
-        var match = a.Match(input1);
+        StringView secondInput = new("aabc");
+        var match = a.Match(secondInput);
         Assert.True(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
         
@@ -51,8 +51,8 @@ public class OptionalFacts
         Assert.Equal('b', a.Match(input).RemainingText().Peek());
         
         var sign = new Optional(new Character('-'));
-        StringView input1 = new("123");
-        Assert.True(sign.Match(input1).Success());
-        Assert.Equal('1', sign.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("123");
+        Assert.True(sign.Match(secondInput).Success());
+        Assert.Equal('1', sign.Match(secondInput).RemainingText().Peek());
     }
 }

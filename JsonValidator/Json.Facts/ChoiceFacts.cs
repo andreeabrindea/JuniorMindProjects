@@ -126,10 +126,10 @@ public class ChoiceFacts
         Assert.True(match.Success());
         Assert.Equal('9', match.RemainingText().Peek());
 
-        StringView input1 = new("f8");
-        var match1 = hex.Match(input1);
-        Assert.True(match1.Success());
-        Assert.Equal('8', match1.RemainingText().Peek());
+        StringView secondInput = new("f8");
+        var secondMatch = hex.Match(secondInput);
+        Assert.True(secondMatch.Success());
+        Assert.Equal('8', secondMatch.RemainingText().Peek());
     }
 
     [Fact]
@@ -153,10 +153,10 @@ public class ChoiceFacts
         Assert.True(match.Success());
         Assert.Equal('9', match.RemainingText().Peek());
 
-        StringView input1 = new("F8");
-        var match1 = hex.Match(input1);
-        Assert.True(match1.Success());
-        Assert.Equal('8', match1.RemainingText().Peek());
+        StringView secondInput = new("F8");
+        var secondMatch = hex.Match(secondInput);
+        Assert.True(secondMatch.Success());
+        Assert.Equal('8', secondMatch.RemainingText().Peek());
     }
 
     [Fact]
@@ -179,9 +179,9 @@ public class ChoiceFacts
         Assert.False(hex.Match(input).Success());
         Assert.Equal('g', hex.Match(input).RemainingText().Peek());
 
-        StringView input1 = new("G8");
-        Assert.False(hex.Match(input1).Success());
-        Assert.Equal('G', hex.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("G8");
+        Assert.False(hex.Match(secondInput).Success());
+        Assert.Equal('G', hex.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]

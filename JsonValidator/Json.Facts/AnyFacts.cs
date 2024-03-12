@@ -33,9 +33,9 @@ public class AnyFacts
         Assert.True(e.Match(input).Success());
         Assert.Equal('a', e.Match(input).RemainingText().Peek());
 
-        StringView input1 = new("Ea");
-        Assert.True(e.Match(input1).Success());
-        Assert.Equal('a', e.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("Ea");
+        Assert.True(e.Match(secondInput).Success());
+        Assert.Equal('a', e.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]
@@ -56,9 +56,9 @@ public class AnyFacts
         Assert.True(sign.Match(input).Success());
         Assert.Equal('3', sign.Match(input).RemainingText().Peek());
 
-        StringView input1 = new("-2");
-        Assert.True(sign.Match(input1).Success());
-        Assert.Equal('2', sign.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("-2");
+        Assert.True(sign.Match(secondInput).Success());
+        Assert.Equal('2', sign.Match(secondInput).RemainingText().Peek());
     }
     
     [Fact]

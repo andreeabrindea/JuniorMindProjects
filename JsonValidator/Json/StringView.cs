@@ -1,41 +1,21 @@
 namespace Json;
 
-public class StringView : ICloneable
+public class StringView
 {
-    private string remainingText;
+    private readonly string remainingText;
     private int index;
 
     public StringView(string remainingText)
     {
-        this.index = 0;
+        index = 0;
         this.remainingText = remainingText ?? string.Empty;
-    }
-
-    public StringView(int i, string remainingText)
-    {
-        this.index = i;
-        this.remainingText = remainingText ?? string.Empty;
-    }
-
-    private StringView()
-    {
-    }
-
-    public void SetIndex(int i)
-    {
-        this.index = i;
     }
 
     public char Peek()
     {
         try
         {
-            if (string.IsNullOrEmpty(remainingText))
-            {
-                return '\0';
-            }
-
-            return remainingText[index];
+            return string.IsNullOrEmpty(remainingText) ? '\0' : remainingText[index];
         }
         catch (IndexOutOfRangeException e)
         {
@@ -45,9 +25,10 @@ public class StringView : ICloneable
 
     public StringView Advance(int step = 1)
     {
-        var newView = new StringView(remainingText);
-        newView.SetIndex(index + step);
-        return newView;
+        return new StringView(remainingText)
+        {
+            index = index + step
+        };
     }
 
     public bool StartsWith(string prefix)
@@ -57,19 +38,11 @@ public class StringView : ICloneable
 
     public bool IsEmpty()
     {
-        return index != 0 && index == remainingText.Length;
+        return index == remainingText.Length;
     }
 
     public StringView Remove(string input)
     {
         return new StringView(remainingText.Replace(input, ""));
-    }
-
-    public object Clone()
-    {
-        return new StringView()
-        {
-            remainingText = remainingText
-        };
     }
 }

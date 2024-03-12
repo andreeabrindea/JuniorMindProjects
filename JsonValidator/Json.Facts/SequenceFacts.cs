@@ -57,10 +57,10 @@ public class SequenceFacts
         Assert.False(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
 
-        StringView input1 = new("def");
-        var match1 = ab.Match(input1);
-        Assert.False(match1.Success());
-        Assert.Equal('d',match1.RemainingText().Peek());
+        StringView secondInput = new("def");
+        var secondMatch = ab.Match(secondInput);
+        Assert.False(secondMatch.Success());
+        Assert.Equal('d',secondMatch.RemainingText().Peek());
     }
 
 
@@ -100,9 +100,9 @@ public class SequenceFacts
         Assert.False(abc.Match(input).Success());
         Assert.Equal('d', abc.Match(input).RemainingText().Peek());
 
-        StringView input1 = new("abx");
-        Assert.False(abc.Match(input1).Success());
-        Assert.Equal('a', abc.Match(input1).RemainingText().Peek());
+        StringView secondInput = new("abx");
+        Assert.False(abc.Match(secondInput).Success());
+        Assert.Equal('a', abc.Match(secondInput).RemainingText().Peek());
     }
 
     [Fact]
@@ -165,21 +165,21 @@ public class SequenceFacts
         Assert.True(match.Success());
         Assert.Equal('\0', match.RemainingText().Peek());
 
-        StringView input1 = new("uabcdef");
-        var match1 = hexSeq.Match(input1);
-        Assert.True(match1.Success());
-        Assert.Equal('e', match1.RemainingText().Peek());
+        StringView secondInput = new("uabcdef");
+        var secondMatch = hexSeq.Match(secondInput);
+        Assert.True(secondMatch.Success());
+        Assert.Equal('e', secondMatch.RemainingText().Peek());
 
-        StringView input2 = new("uB005 ab");
-        var match2 = hexSeq.Match(input2);
+        StringView thirdInput = new("uB005 ab");
+        var thirdMatch = hexSeq.Match(thirdInput);
 
-        Assert.True(match2.Success());
-        Assert.Equal(' ', match2.RemainingText().Peek());
+        Assert.True(thirdMatch.Success());
+        Assert.Equal(' ', thirdMatch.RemainingText().Peek());
 
-        StringView input3 = new("abc");
-        var match3 = hexSeq.Match(input3);
-        Assert.False(match3.Success());
-        Assert.Equal('a', match3.RemainingText().Peek());
+        StringView fourthInput = new("abc");
+        var fourthMatch = hexSeq.Match(fourthInput);
+        Assert.False(fourthMatch.Success());
+        Assert.Equal('a', fourthMatch.RemainingText().Peek());
     }
 
     [Fact]

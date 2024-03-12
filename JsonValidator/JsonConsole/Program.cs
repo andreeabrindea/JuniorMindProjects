@@ -1,6 +1,4 @@
-﻿using static Json.JsonNumber;
-
-namespace Json.JsonConsole
+﻿namespace Json.JsonConsole
 {
     class Program
     {
@@ -18,18 +16,14 @@ namespace Json.JsonConsole
                 return;
             }
 
-            string content;
-            content = File.ReadAllText(args[0]);
-
-            var jsonValidator = IsJsonNumber(content);
-            if (jsonValidator)
-            {
-                Console.WriteLine("The file respects the JSON format.");
-            }
-            else
-            {
-                Console.WriteLine("The file does not respect the JSON format. Ensure that the content of the file is correct \n ");
-            }
+            string content = File.ReadAllText(args[0]);
+            Value jsonValidator = new();
+            StringView input = new(content);
+            var match = jsonValidator.Match(input);
+            
+            Console.WriteLine(match.Success()
+                ? "The file respects the JSON format."
+                : "The file does not respect the JSON format. Ensure that the content of the file is correct \n ");
         }
     }
 }
