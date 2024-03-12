@@ -17,11 +17,6 @@ public class Sequence : IPattern
         {
             match = pattern.Match(match.RemainingText());
 
-            if (text.IsEmpty())
-            {
-                return new SuccessMatch(text);
-            }
-
             if (!match.Success())
             {
                 return new FailedMatch(initialText);

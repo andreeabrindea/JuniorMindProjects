@@ -13,19 +13,15 @@ public class Range : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text == null)
+        if (text.Peek() == '\0')
         {
             return new FailedMatch(text);
         }
 
-        if (text.IsEmpty())
-        {
-            return new SuccessMatch(text);
-        }
-
         if (text.Peek() >= startCharacter && text.Peek() <= endCharacter)
         {
-            return new SuccessMatch(text.Advance());
+            var newText = text.Advance();
+            return new SuccessMatch(newText);
         }
 
         return new FailedMatch(text);

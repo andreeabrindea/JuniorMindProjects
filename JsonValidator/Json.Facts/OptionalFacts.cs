@@ -54,6 +54,5 @@ public class OptionalFacts
         StringView input1 = new("123");
         Assert.True(sign.Match(input1).Success());
         Assert.Equal('1', sign.Match(input1).RemainingText().Peek());
-        
     }
 }

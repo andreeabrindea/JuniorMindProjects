@@ -11,7 +11,7 @@ public class Any : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text == null)
+        if (text.Peek() == '\0')
         {
             return new FailedMatch(text);
         }

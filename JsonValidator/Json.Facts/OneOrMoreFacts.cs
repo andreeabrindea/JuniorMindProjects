@@ -47,7 +47,6 @@ public class OneOrMoreFacts
         StringView input = new("123");
         Assert.True(a.Match(input).Success());
         Assert.Equal('\0', a.Match(input).RemainingText().Peek());
-        
     }
 
 }

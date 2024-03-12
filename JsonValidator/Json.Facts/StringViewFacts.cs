@@ -15,11 +15,11 @@ public class StringViewFacts
     public void PeekCharAtLastIndex()
     {
         StringView input = new("hello");
-        input.Advance();
-        input.Advance();
-        input.Advance();
-        input.Advance();
-        Assert.Equal('o', input.Peek());
+        var second = input.Advance();
+        var third = second.Advance();
+        var fourth = third.Advance();
+        var fifth = fourth.Advance();
+        Assert.Equal('o', fifth.Peek());
     }
     
     

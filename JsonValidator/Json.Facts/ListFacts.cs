@@ -66,10 +66,10 @@ public class ListFacts
     [Fact]
     public void InputStringHasDigitsWithWhitespaceAndMultipleSeparators()
     {
-        OneOrMore digits = new(new Range('0', '9'));
-        Many whitespace = new(new Any(" \r\n\t"));
-        Sequence separator = new(whitespace, new Character(';'), whitespace);
-        List list = new(digits, separator);
+        var digits = new OneOrMore(new Range('0', '9'));
+        var whitespace = new Many(new Any(" \r\n\t"));
+        var separator = new Sequence(whitespace, new Character(';'), whitespace);
+        var list = new List(digits, separator);
 
         StringView input = new("1; 22  ;\n 333 \t; 22");
         var match = list.Match(input);
@@ -79,6 +79,6 @@ public class ListFacts
         StringView input1 = new("1 \n;");
         var match1 = list.Match(input1);
         Assert.True(match1.Success());
-        //Assert.Equal('\n',  match1.RemainingText().Peek());
+        Assert.Equal('\n',  match1.RemainingText().Peek());
     }
 }

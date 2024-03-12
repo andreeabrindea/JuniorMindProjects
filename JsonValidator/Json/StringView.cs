@@ -11,14 +11,30 @@ public class StringView : ICloneable
         this.remainingText = remainingText ?? string.Empty;
     }
 
+    public StringView(int i, string remainingText)
+    {
+        this.index = i;
+        this.remainingText = remainingText ?? string.Empty;
+    }
+
     private StringView()
     {
+    }
+
+    public void SetIndex(int i)
+    {
+        this.index = i;
     }
 
     public char Peek()
     {
         try
         {
+            if (string.IsNullOrEmpty(remainingText))
+            {
+                return '\0';
+            }
+
             return remainingText[index];
         }
         catch (IndexOutOfRangeException e)
@@ -29,8 +45,9 @@ public class StringView : ICloneable
 
     public StringView Advance(int step = 1)
     {
-        index += step;
-        return new StringView(remainingText[index..]);
+        var newView = new StringView(remainingText);
+        newView.SetIndex(index + step);
+        return newView;
     }
 
     public bool StartsWith(string prefix)
@@ -40,7 +57,7 @@ public class StringView : ICloneable
 
     public bool IsEmpty()
     {
-        return index > 0 && remainingText.Length < 1;
+        return index != 0 && index == remainingText.Length;
     }
 
     public StringView Remove(string input)
