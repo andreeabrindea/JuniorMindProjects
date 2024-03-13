@@ -3,32 +3,22 @@ namespace Json;
 public class StringView
 {
     private readonly string remainingText;
-    private int index;
+    private readonly int index;
 
-    public StringView(string remainingText)
+    public StringView(string remainingText, int i = 0)
     {
-        index = 0;
+        index = i;
         this.remainingText = remainingText ?? string.Empty;
     }
 
     public char Peek()
     {
-        try
-        {
-            return string.IsNullOrEmpty(remainingText) ? '\0' : remainingText[index];
-        }
-        catch (IndexOutOfRangeException e)
-        {
-            return '\0';
-        }
+        return remainingText[index];
     }
 
     public StringView Advance(int step = 1)
     {
-        return new StringView(remainingText)
-        {
-            index = index + step
-        };
+        return new StringView(remainingText, index + step);
     }
 
     public bool StartsWith(string prefix)
@@ -38,11 +28,6 @@ public class StringView
 
     public bool IsEmpty()
     {
-        return index == remainingText.Length;
-    }
-
-    public StringView Remove(string input)
-    {
-        return new StringView(remainingText.Replace(input, ""));
+        return index >= remainingText.Length || string.IsNullOrEmpty(remainingText);
     }
 }
