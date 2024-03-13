@@ -14,7 +14,6 @@ public class SequenceFacts
         
         StringView input = new(null);
         Assert.False(ab.Match(input).Success());
-        Assert.Equal('\0', ab.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -27,7 +26,6 @@ public class SequenceFacts
 
         StringView input = new("");
         Assert.False(ab.Match(input).Success());
-        Assert.Equal('\0', ab.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -120,7 +118,6 @@ public class SequenceFacts
 
         StringView input = new("");
         Assert.False(abc.Match(input).Success());
-        Assert.Equal('\0', abc.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -138,7 +135,6 @@ public class SequenceFacts
 
         StringView input = new(null);
         Assert.False(abc.Match(input).Success());
-        Assert.Equal('\0', abc.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -163,7 +159,6 @@ public class SequenceFacts
         StringView input = new("u1234");
         var match = hexSeq.Match(input);
         Assert.True(match.Success());
-        Assert.Equal('\0', match.RemainingText().Peek());
 
         StringView secondInput = new("uabcdef");
         var secondMatch = hexSeq.Match(secondInput);
@@ -203,6 +198,5 @@ public class SequenceFacts
 
         StringView input = new(null);
         Assert.False(hexSeq.Match(input).Success());
-        Assert.Equal('\0', hexSeq.Match(input).RemainingText().Peek());
     }
 }

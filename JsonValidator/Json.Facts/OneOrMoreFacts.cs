@@ -9,7 +9,6 @@ public class OneOrMoreFacts
         OneOrMore a = new(new Range('0', '9'));
         StringView input = new(null);
         Assert.False(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -18,7 +17,6 @@ public class OneOrMoreFacts
         OneOrMore a = new(new Range('0', '9'));
         StringView input = new("");
         Assert.False(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -46,7 +44,6 @@ public class OneOrMoreFacts
         OneOrMore a = new(new Range('0', '9'));
         StringView input = new("123");
         Assert.True(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
 }

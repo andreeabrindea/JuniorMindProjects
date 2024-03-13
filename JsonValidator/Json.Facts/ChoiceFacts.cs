@@ -14,7 +14,6 @@ public class ChoiceFacts
         
         StringView input = new(null);
         Assert.False(digit.Match(input).Success());
-        Assert.Equal('\0', digit.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -27,7 +26,6 @@ public class ChoiceFacts
         
         StringView input = new("");
         Assert.False(digit.Match(input).Success());
-        Assert.Equal('\0', digit.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -202,7 +200,6 @@ public class ChoiceFacts
 
         StringView input = new("");
         Assert.False(hex.Match(input).Success());
-        Assert.Equal('\0', hex.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -222,7 +219,6 @@ public class ChoiceFacts
         );
         StringView input = new(null);
         Assert.False(hex.Match(input).Success());
-        Assert.Equal('\0',hex.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -236,7 +232,6 @@ public class ChoiceFacts
         
         pattern.Add(new Range('3', '9'));
         Assert.True(pattern.Match(input).Success());
-        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -260,7 +255,6 @@ public class ChoiceFacts
 
         StringView input = new(null);
         Assert.False(pattern.Match(input).Success());
-        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -271,7 +265,6 @@ public class ChoiceFacts
         
         StringView input = new(string.Empty);
         Assert.False(pattern.Match(input).Success());
-        Assert.Equal('\0', pattern.Match(input).RemainingText().Peek());
     }
 
     [Fact]

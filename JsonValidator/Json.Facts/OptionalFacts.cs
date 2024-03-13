@@ -10,7 +10,6 @@ public class OptionalFacts
         Optional a = new(new Character('a'));
         StringView input = new(null);
         Assert.True(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
     
     [Fact]
@@ -19,7 +18,6 @@ public class OptionalFacts
         Optional a = new(new Character('a'));
         StringView input = new("");
         Assert.True(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]

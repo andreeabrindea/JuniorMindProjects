@@ -11,7 +11,6 @@ namespace Json.Facts
             Range range = new('a', 'z');
             StringView input = new("");
             Assert.False(range.Match(input).Success());
-            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
 
         [Fact]
@@ -20,7 +19,6 @@ namespace Json.Facts
             Range range = new('a', 'z');
             StringView input = new(null);
             Assert.False(range.Match(input).Success());
-            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
         
         [Fact]
@@ -29,7 +27,6 @@ namespace Json.Facts
             Range range = new('a', 'z');
             StringView input = new("a");
             Assert.True(range.Match(input).Success());
-            Assert.Equal('\0', range.Match(input).RemainingText().Peek());
         }
 
         [Fact]

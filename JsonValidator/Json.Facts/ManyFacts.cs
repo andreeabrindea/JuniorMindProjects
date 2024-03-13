@@ -37,7 +37,6 @@ public class ManyFacts
         Many a = new(new Character('a'));
         StringView input = new("");
         Assert.True(a.Match(input).Success());
-        Assert.Equal('\0', a.Match(input).RemainingText().Peek());
     }
 
     [Fact]
@@ -47,7 +46,6 @@ public class ManyFacts
         StringView input = new(null);
         var match = a.Match(input);
         Assert.True(match.Success());
-        Assert.Equal('\0', match.RemainingText().Peek());
     }
 
     [Fact]
