@@ -14,7 +14,7 @@ public class Text : IPattern
     {
         if (text == null)
         {
-            return new FailedMatch(null);
+            return new FailedMatch(text);
         }
 
         if (!text.StartsWith(prefix))
@@ -22,9 +22,14 @@ public class Text : IPattern
             return new FailedMatch(text);
         }
 
-        if (!string.IsNullOrEmpty(prefix))
+        if (string.IsNullOrEmpty(prefix))
         {
-            text = text.Remove(prefix);
+            return new SuccessMatch(text);
+        }
+
+        for (int i = 0; i < prefix.Length; i++)
+        {
+            text = text.Advance();
         }
 
         return new SuccessMatch(text);

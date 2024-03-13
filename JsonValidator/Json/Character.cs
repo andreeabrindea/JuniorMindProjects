@@ -11,7 +11,7 @@ public class Character : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text.Peek() == '\0')
+        if (text.IsEmpty())
         {
             return new FailedMatch(text);
         }
