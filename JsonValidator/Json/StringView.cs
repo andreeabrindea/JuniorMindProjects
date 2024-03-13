@@ -2,32 +2,32 @@ namespace Json;
 
 public class StringView
 {
-    private readonly string remainingText;
-    private readonly int index;
+    private readonly string text;
+    private readonly int startIndex;
 
     public StringView(string remainingText, int i = 0)
     {
-        index = i;
-        this.remainingText = remainingText ?? string.Empty;
+        startIndex = i;
+        this.text = remainingText ?? string.Empty;
     }
 
     public char Peek()
     {
-        return remainingText[index];
+        return text[startIndex];
     }
 
     public StringView Advance(int step = 1)
     {
-        return new StringView(remainingText, index + step);
+        return new StringView(text, startIndex + step);
     }
 
     public bool StartsWith(string prefix)
     {
-        return remainingText.StartsWith(prefix);
+        return text.StartsWith(prefix);
     }
 
     public bool IsEmpty()
     {
-        return index >= remainingText.Length || string.IsNullOrEmpty(remainingText);
+        return startIndex >= text.Length;
     }
 }
