@@ -11,17 +11,8 @@ public class Character : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text.IsEmpty())
-        {
-            return new FailedMatch(text);
-        }
-
-        if (text.Peek() == pattern)
-        {
-            var newText = text.Advance();
-            return new SuccessMatch(newText);
-        }
-
-        return new FailedMatch(text);
+        return !text.IsEmpty() && text.Peek() == pattern
+            ? new SuccessMatch(text.Advance())
+            : new FailedMatch(text);
     }
 }

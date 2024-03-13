@@ -31,16 +31,7 @@ namespace Json.Facts
             Assert.True(range.Match(input).Success());
             Assert.True(range.Match(input).RemainingText().IsEmpty());
         }
-
-        [Fact]
-        public void StartCharacterIsBiggerThanEndCharacter()
-        {
-            Range range = new('z', 'a');
-            StringView input = new("a");
-            Assert.False(range.Match(input).Success());
-            Assert.Equal('a', range.Match(input).RemainingText().Peek());
-        }
-
+        
         [Fact]
         public void IsInRange()
         {

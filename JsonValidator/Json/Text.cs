@@ -12,27 +12,12 @@ public class Text : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text == null)
+        if (text?.StartsWith(prefix) != true)
         {
             return new FailedMatch(text);
         }
 
-        if (!text.StartsWith(prefix))
-        {
-            return new FailedMatch(text);
-        }
-
-        if (string.IsNullOrEmpty(prefix))
-        {
-            return new SuccessMatch(text);
-        }
-
-        for (int i = 0; i < prefix.Length; i++)
-        {
-            text = text.Advance();
-        }
-
-        return new SuccessMatch(text);
+        return string.IsNullOrEmpty(prefix) ? new SuccessMatch(text) : new SuccessMatch(text.Advance(prefix.Length));
     }
 }
 #pragma warning restore CA1724

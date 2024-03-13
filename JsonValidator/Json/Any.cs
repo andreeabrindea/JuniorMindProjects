@@ -11,16 +11,6 @@ public class Any : IPattern
 
     public IMatch Match(StringView text)
     {
-        if (text.IsEmpty())
-        {
-            return new FailedMatch(text);
-        }
-
-        if (accepted.Contains(text.Peek()))
-        {
-            return new SuccessMatch(text.Advance());
-        }
-
-        return new FailedMatch(text);
+        return text.IsEmpty() || !accepted.Contains(text.Peek()) ? new FailedMatch(text) : new SuccessMatch(text.Advance());
     }
 }
