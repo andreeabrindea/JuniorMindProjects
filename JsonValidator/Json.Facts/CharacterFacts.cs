@@ -10,6 +10,7 @@ namespace Json.Facts
             Character character = new('a');
             StringView input = new(null);
             Assert.False(character.Match(input).Success());
+            Assert.True(character.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -18,6 +19,7 @@ namespace Json.Facts
             Character character = new('a');
             StringView input = new("");
             Assert.False(character.Match(input).Success());
+            Assert.True(character.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]

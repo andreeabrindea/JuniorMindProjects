@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Xunit;
 namespace Json.Facts;
 
@@ -9,6 +10,7 @@ public class NumberFacts{
             StringView input = new("0");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -27,6 +29,7 @@ public class NumberFacts{
             StringView input = new("9");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -35,6 +38,7 @@ public class NumberFacts{
             Number number = new();
             StringView input = new("70");
             Assert.True(number.Match(input).Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -43,6 +47,7 @@ public class NumberFacts{
             Number number = new();
             StringView input = new(null);
             Assert.False(number.Match(input).Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -51,6 +56,7 @@ public class NumberFacts{
             Number number = new();
             StringView input = new(string.Empty);
             Assert.False(number.Match(input).Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -69,6 +75,7 @@ public class NumberFacts{
             Number number = new();
             StringView input = new("-26");
             Assert.True(number.Match(input).Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -77,6 +84,7 @@ public class NumberFacts{
             Number number = new();
             StringView input = new("-0");
             Assert.True(number.Match(input).Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -87,6 +95,7 @@ public class NumberFacts{
             StringView input = new("12.34");
             var match = list.Match(input);
             Assert.True(match.Success());
+            Assert.True(match.RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -98,10 +107,12 @@ public class NumberFacts{
             StringView input = new("0.00000001");
             var match = list.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
 
             StringView secondInput = new("10.00000001");
             var secondMatch = list.Match(secondInput);
             Assert.True(secondMatch.Success());
+            Assert.True(secondMatch.RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -143,6 +154,7 @@ public class NumberFacts{
             StringView input = new("12e3");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -152,6 +164,7 @@ public class NumberFacts{
             StringView input = new("12E3");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -161,6 +174,7 @@ public class NumberFacts{
             StringView input = new("12e+3");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -170,6 +184,7 @@ public class NumberFacts{
             StringView input = new("61e-9");
             var match = number.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -180,6 +195,7 @@ public class NumberFacts{
             StringView input = new("12.34E3");
             var match = list.Match(input);
             Assert.True(match.Success());
+            Assert.True(number.Match(input).RemainingText().IsEmpty());
         }
 
         [Fact]

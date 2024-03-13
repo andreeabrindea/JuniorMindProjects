@@ -13,11 +13,14 @@ public class TextFacts
 
         StringView input = new("false");
         Assert.True(falseString.Match(input).Success());
-        
+        Assert.True(falseString.Match(input).RemainingText().IsEmpty());
+
         Text trueString = new("true");
         StringView secondInput = new("true");
 
         Assert.True(trueString.Match(secondInput).Success());
+        Assert.True(trueString.Match(secondInput).RemainingText().IsEmpty());
+
     }
 
     [Fact]
@@ -58,6 +61,7 @@ public class TextFacts
         
         var match = trueString.Match(input);
         Assert.False(match.Success());
+        Assert.True(match.RemainingText().IsEmpty());
     }
     
 
@@ -68,6 +72,7 @@ public class TextFacts
         StringView input = new(null);
         var match = trueString.Match(input);
         Assert.False(match.Success());
+        Assert.True(match.RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -77,6 +82,7 @@ public class TextFacts
         StringView input = new("");
         var match = falseString.Match(input);
         Assert.False(match.Success());
+        Assert.True(match.RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -85,6 +91,7 @@ public class TextFacts
         Text falseString = new("false");
         StringView input = new(null);
         Assert.False(falseString.Match(input).Success());
+        Assert.True(falseString.Match(input).RemainingText().IsEmpty());
     }
     
     [Fact]
@@ -102,6 +109,7 @@ public class TextFacts
         Text empty = new("");
         StringView input = new("");
         Assert.True(empty.Match(input).Success());
+        Assert.True(empty.Match(input).RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -110,5 +118,6 @@ public class TextFacts
         var empty = new Text("");
         StringView input = new(null);
         Assert.False(empty.Match(null).Success());
+        Assert.True(empty.Match(input).RemainingText().IsEmpty());
     }
 }

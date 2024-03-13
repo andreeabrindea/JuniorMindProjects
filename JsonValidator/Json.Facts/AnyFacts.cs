@@ -11,6 +11,7 @@ public class AnyFacts
 
         StringView input = new(null);
         Assert.False(e.Match(input).Success());
+        Assert.True(e.Match(input).RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -20,6 +21,7 @@ public class AnyFacts
 
         StringView input = new("");
         Assert.False(e.Match(input).Success());
+        Assert.True(e.Match(input).RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -76,6 +78,7 @@ public class AnyFacts
 
         StringView input = new(null);
         Assert.False(sign.Match(input).Success());
+        Assert.True(sign.Match(input).RemainingText().IsEmpty());
     }
 
     [Fact]
@@ -84,5 +87,6 @@ public class AnyFacts
         Any sign = new("-+");
         StringView input = new("");
         Assert.False(sign.Match(input).Success());
+        Assert.True(sign.Match(input).RemainingText().IsEmpty());
     }
 }
