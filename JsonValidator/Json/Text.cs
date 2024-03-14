@@ -12,7 +12,14 @@ public class Text : IPattern
 
     public IMatch Match(StringView text)
     {
-        return text?.StartsWith(prefix) != true ? new FailedMatch(text) : new SuccessMatch(text.Advance(prefix.Length));
+        if (text == null)
+        {
+            return new FailedMatch(text);
+        }
+
+        return (text.IsEmpty() && prefix != string.Empty) || !text.StartsWith(prefix)
+            ? new FailedMatch(text)
+            : new SuccessMatch(text.Advance(prefix.Length));
     }
 }
 #pragma warning restore CA1724
