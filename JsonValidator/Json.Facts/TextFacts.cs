@@ -117,7 +117,7 @@ public class TextFacts
     {
         var empty = new Text("");
         StringView input = new(null);
-        Assert.False(empty.Match(null).Success());
+        Assert.False(empty.Match(input).Success());
         Assert.True(empty.Match(input).RemainingText().IsEmpty());
     }
 }
