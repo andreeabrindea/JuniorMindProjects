@@ -5,6 +5,8 @@ public interface IMatch
     bool Success();
 
     StringView RemainingText();
+
+    int Position();
 }
 
 public interface IPattern

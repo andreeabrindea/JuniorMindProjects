@@ -18,4 +18,9 @@ public class SuccessMatch : IMatch
     {
         return text;
     }
+
+    public int Position()
+    {
+        return text.StartIndex();
+    }
 }

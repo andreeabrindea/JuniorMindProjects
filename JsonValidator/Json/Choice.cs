@@ -21,7 +21,7 @@ namespace Json
                 }
             }
 
-            return new FailedMatch(text);
+            return new FailedMatch(text, text.StartIndex());
         }
 
         public void Add(IPattern pattern)

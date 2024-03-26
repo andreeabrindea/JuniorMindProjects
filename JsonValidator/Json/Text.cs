@@ -14,7 +14,7 @@ public class Text : IPattern
     {
         return !text.IsEmpty() && text.StartsWith(prefix)
             ? new SuccessMatch(text.Advance(prefix.Length))
-            : new FailedMatch(text);
+            : new FailedMatch(text, text.StartIndex());
     }
 }
 #pragma warning restore CA1724

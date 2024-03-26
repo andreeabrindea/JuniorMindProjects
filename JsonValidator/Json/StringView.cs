@@ -11,6 +11,8 @@ public class StringView
         this.text = remainingText ?? string.Empty;
     }
 
+    public int StartIndex() => startIndex;
+
     public char Peek()
     {
         return text[startIndex];

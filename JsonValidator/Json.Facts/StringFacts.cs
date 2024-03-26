@@ -118,7 +118,7 @@ namespace Json.Facts
         }
 
         [Fact]
-        public void CanContainEscapedCarrigeReturn()
+        public void CanContainEscapedCarriageReturn()
         {
             var stringPattern = new String();
             StringView input = new(Quoted(@"a \r b"));
@@ -150,7 +150,7 @@ namespace Json.Facts
         }
 
         [Fact]
-        public void DoesNotContainUnrecognizedExcapceCharacters()
+        public void DoesNotContainUnrecognizedEscapeCharacters()
         {
             var stringPattern = new String();
             StringView input = new(Quoted(@"a\x"));
@@ -197,7 +197,7 @@ namespace Json.Facts
             Assert.Equal('\"', match.RemainingText().Peek());
         }
 
-        public static string Quoted(string text)
+        private static string Quoted(string text)
             => $"\"{text}\"";
     }
 }

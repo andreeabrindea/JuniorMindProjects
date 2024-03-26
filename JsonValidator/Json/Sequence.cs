@@ -18,7 +18,7 @@ public class Sequence : IPattern
 
             if (!match.Success())
             {
-                return new FailedMatch(text);
+                return new FailedMatch(text, match.Position());
             }
         }
 

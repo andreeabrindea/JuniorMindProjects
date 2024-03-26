@@ -13,6 +13,6 @@ public class Character : IPattern
     {
         return !text.IsEmpty() && text.Peek() == pattern
             ? new SuccessMatch(text.Advance())
-            : new FailedMatch(text);
+            : new FailedMatch(text, text.StartIndex());
     }
 }
