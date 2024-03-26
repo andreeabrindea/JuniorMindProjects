@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Json.Facts;
@@ -176,8 +177,10 @@ public class ChoiceFacts
         );
 
         StringView input = new("g8");
-        Assert.False(hex.Match(input).Success());
-        Assert.Equal('g', hex.Match(input).RemainingText().Peek());
+        var match = hex.Match(input);
+        Assert.False(match.Success());
+        Assert.Equal('g', match.RemainingText().Peek());
+        Assert.Equal(2, match.Position());
 
         StringView secondInput = new("G8");
         Assert.False(hex.Match(secondInput).Success());

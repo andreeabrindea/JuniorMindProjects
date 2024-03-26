@@ -96,6 +96,7 @@ public class NumberFacts{
             var match = list.Match(input);
             Assert.True(match.Success());
             Assert.True(match.RemainingText().IsEmpty());
+            Assert.Equal(5, match.Position());
         }
 
         [Fact]
@@ -108,11 +109,13 @@ public class NumberFacts{
             var match = list.Match(input);
             Assert.True(match.Success());
             Assert.True(number.Match(input).RemainingText().IsEmpty());
+            Assert.Equal(10, match.Position());
 
             StringView secondInput = new("10.00000001");
             var secondMatch = list.Match(secondInput);
             Assert.True(secondMatch.Success());
             Assert.True(secondMatch.RemainingText().IsEmpty());
+            Assert.Equal(11, secondMatch.Position());
         }
 
         [Fact]
@@ -125,6 +128,7 @@ public class NumberFacts{
             var match = list.Match(input);
             Assert.True(match.Success());
             Assert.Equal('.', match.RemainingText().Peek());
+            Assert.Equal(2, match.Position());
         }
 
         [Fact]
@@ -135,6 +139,7 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.Equal('.', match.RemainingText().Peek());
+            Assert.Equal(5, match.Position());
         }
 
         [Fact]
@@ -145,6 +150,7 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.Equal('x', match.RemainingText().Peek());
+            Assert.Equal(4, match.Position());
         }
 
         [Fact]
@@ -155,6 +161,7 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.True(number.Match(input).RemainingText().IsEmpty());
+            Assert.Equal(4, match.Position());
         }
 
         [Fact]
@@ -216,6 +223,7 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.Equal('e', match.RemainingText().Peek());
+            Assert.Equal(6, match.Position());
         }
 
         [Fact]
@@ -227,16 +235,19 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.Equal('e', match.RemainingText().Peek());
+            Assert.Equal(2, match.Position());
 
             StringView secondInput = new("22e+");
             var secondMatch = number.Match(secondInput);
             Assert.True(secondMatch.Success());
             Assert.Equal('e', secondMatch.RemainingText().Peek());
+            Assert.Equal(2, match.Position());
 
             StringView thirdInput = new("23E-");
             var thirdMatch = number.Match(thirdInput);
             Assert.True(thirdMatch.Success());
             Assert.Equal('E', thirdMatch.RemainingText().Peek());
+            Assert.Equal(2, match.Position());
         }
 
         [Fact]
@@ -247,5 +258,6 @@ public class NumberFacts{
             var match = number.Match(input);
             Assert.True(match.Success());
             Assert.Equal('.', match.RemainingText().Peek());
+            Assert.Equal(4, match.Position());
         }
 }

@@ -26,8 +26,10 @@ public class OneOrMoreFacts
     {
         OneOrMore a = new(new Range('0', '9'));
         StringView input = new("bc");
-        Assert.False(a.Match(input).Success());
-        Assert.Equal('b', a.Match(input).RemainingText().Peek());
+        var match = a.Match(input);
+        Assert.False(match.Success());
+        Assert.Equal('b', match.RemainingText().Peek());
+        Assert.Equal(0, match.Position());
     }
 
     [Fact]
@@ -38,6 +40,7 @@ public class OneOrMoreFacts
         var match = a.Match(input);
         Assert.True(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
+        Assert.Equal(1, match.Position());
     }
     
     [Fact]

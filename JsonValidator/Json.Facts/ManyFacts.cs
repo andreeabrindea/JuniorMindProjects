@@ -64,7 +64,10 @@ public class ManyFacts
     {
         Many digits = new(new Range('0', '9'));
         StringView input = new("12345ab123");
+
+        var match = digits.Match(input);
         Assert.True(digits.Match(input).Success());
         Assert.Equal('a', digits.Match(input).RemainingText().Peek());
+        Assert.Equal(5, match.Position());
     }
 }

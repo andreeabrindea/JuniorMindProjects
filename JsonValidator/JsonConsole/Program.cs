@@ -20,10 +20,17 @@
             Value jsonValidator = new();
             StringView input = new(content);
             var match = jsonValidator.Match(input);
-
+            
             Console.WriteLine(match.Success() && match.RemainingText().IsEmpty()
                 ? "The file respects the JSON format." + match.Position()
                 : "The file does not respect the JSON format at " + match.Position());
+
+            // Value value = new();
+            // String s = new();
+            // StringView input = new("\"abc");
+            // var match = s.Match(input);
+            //
+            // Console.WriteLine(match.Success() + " " + match.Position());
         }
     }
 }

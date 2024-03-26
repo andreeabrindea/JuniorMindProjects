@@ -11,9 +11,10 @@ namespace Json
 
         public IMatch Match(StringView text)
         {
+            IMatch match = new SuccessMatch(text);
             foreach (var pattern in patterns)
             {
-                IMatch match = pattern.Match(text);
+                match = pattern.Match(text);
 
                 if (match.Success())
                 {
@@ -21,7 +22,7 @@ namespace Json
                 }
             }
 
-            return new FailedMatch(text, text.StartIndex());
+            return new FailedMatch(text, match.Position());
         }
 
         public void Add(IPattern pattern)

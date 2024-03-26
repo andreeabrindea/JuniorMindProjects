@@ -27,8 +27,11 @@ namespace Json.Facts
         {
             Character character = new('a');
             StringView input = new("abcd");
-            Assert.True(character.Match(input).Success());
-            Assert.Equal('b', character.Match(input).RemainingText().Peek());
+
+            var match = character.Match(input);
+            Assert.True(match.Success());
+            Assert.Equal('b', match.RemainingText().Peek());
+            Assert.Equal(1, match.Position());
         }
         
         [Fact]
