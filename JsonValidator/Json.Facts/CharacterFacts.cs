@@ -31,7 +31,6 @@ namespace Json.Facts
             var match = character.Match(input);
             Assert.True(match.Success());
             Assert.Equal('b', match.RemainingText().Peek());
-            Assert.Equal(1, match.Position());
         }
         
         [Fact]

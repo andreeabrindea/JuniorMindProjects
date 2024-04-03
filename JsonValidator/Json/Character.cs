@@ -11,8 +11,9 @@ public class Character : IPattern
 
     public IMatch Match(StringView text)
     {
+        Console.WriteLine("Character " + text.StartIndex() + " " + text.Peek());
         return !text.IsEmpty() && text.Peek() == pattern
             ? new SuccessMatch(text.Advance())
-            : new FailedMatch(text, text.StartIndex());
+            : new FailedMatch(text, text);
     }
 }

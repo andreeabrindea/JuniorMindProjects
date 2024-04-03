@@ -23,7 +23,7 @@
             
             Console.WriteLine(match.Success() && match.RemainingText().IsEmpty()
                 ? "The file respects the JSON format." + match.Position()
-                : "The file does not respect the JSON format at " + match.Position());
+                : "The file does not respect the JSON format at " + match.Position().StartIndex());
 
             // Value value = new();
             // String s = new();

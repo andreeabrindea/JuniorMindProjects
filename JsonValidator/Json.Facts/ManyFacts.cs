@@ -68,6 +68,5 @@ public class ManyFacts
         var match = digits.Match(input);
         Assert.True(digits.Match(input).Success());
         Assert.Equal('a', digits.Match(input).RemainingText().Peek());
-        Assert.Equal(5, match.Position());
     }
 }

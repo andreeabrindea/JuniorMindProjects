@@ -11,16 +11,19 @@ namespace Json
 
         public IMatch Match(StringView text)
         {
+            Console.WriteLine("Choice start " + text.StartIndex() + " " + text.Peek());
             IMatch match = new SuccessMatch(text);
             foreach (var pattern in patterns)
             {
                 match = pattern.Match(text);
-
+                Console.WriteLine("Choice foreach " + match.Position().StartIndex() + " " + match.Position().Peek() + match.Success());
                 if (match.Success())
                 {
                     return match;
                 }
             }
+
+            Console.WriteLine("Choice Final " + text.StartIndex() + " " + text.Peek());
 
             return new FailedMatch(text, match.Position());
         }

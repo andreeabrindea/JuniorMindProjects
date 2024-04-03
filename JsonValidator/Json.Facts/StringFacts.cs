@@ -9,7 +9,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new(Quoted("abc"));
-            Assert.True(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.True(match.Success());
+            Assert.True(match.RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -17,7 +19,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new("abc\"");
-            Assert.False(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.False(match.Success());
+            Assert.Equal('a', match.RemainingText().Peek());
         }
 
         [Fact]
@@ -50,7 +54,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new(Quoted(string.Empty));
-            Assert.True(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.True(match.Success());
+            Assert.True(match.RemainingText().IsEmpty());
         }
 
         [Fact]

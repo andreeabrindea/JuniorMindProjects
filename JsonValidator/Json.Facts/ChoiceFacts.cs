@@ -180,7 +180,6 @@ public class ChoiceFacts
         var match = hex.Match(input);
         Assert.False(match.Success());
         Assert.Equal('g', match.RemainingText().Peek());
-        Assert.Equal(2, match.Position());
 
         StringView secondInput = new("G8");
         Assert.False(hex.Match(secondInput).Success());

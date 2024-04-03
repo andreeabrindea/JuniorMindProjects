@@ -6,7 +6,7 @@ public interface IMatch
 
     StringView RemainingText();
 
-    int Position();
+    StringView Position();
 }
 
 public interface IPattern

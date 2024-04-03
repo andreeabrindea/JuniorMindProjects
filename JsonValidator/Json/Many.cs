@@ -11,12 +11,15 @@ public class Many : IPattern
 
     public IMatch Match(StringView text)
     {
-        IMatch match = new SuccessMatch(text);
+        Console.WriteLine("Many start " + text.StartIndex() + " " + text.Peek());
 
+        IMatch match = new SuccessMatch(text);
         while (match.Success())
         {
             match = pattern.Match(match.RemainingText());
         }
+
+        Console.WriteLine("Many final " + text.StartIndex() + " " + text.Peek());
 
         return new SuccessMatch(match.RemainingText());
     }

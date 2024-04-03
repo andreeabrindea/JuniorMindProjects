@@ -24,6 +24,7 @@ public class String : IPattern
 
     public IMatch Match(StringView text)
     {
+        Console.WriteLine("String " + text.StartIndex() + " " + text.Peek());
         return pattern.Match(text);
     }
 }

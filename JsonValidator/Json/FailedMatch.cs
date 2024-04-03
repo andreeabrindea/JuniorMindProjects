@@ -3,9 +3,9 @@ namespace Json;
 public class FailedMatch : IMatch
 {
     private readonly StringView text;
-    private readonly int position;
+    private readonly StringView position;
 
-    public FailedMatch(StringView text, int position)
+    public FailedMatch(StringView text, StringView position)
     {
         this.text = text;
         this.position = position;
@@ -21,7 +21,7 @@ public class FailedMatch : IMatch
         return text;
     }
 
-    public int Position()
+    public StringView Position()
     {
         return position;
     }

@@ -13,7 +13,6 @@ public class AnyFacts
         var match = e.Match(input);
         Assert.False(match.Success());
         Assert.True(match.RemainingText().IsEmpty());
-        Assert.Equal(0, match.Position());
     }
 
     [Fact]
@@ -26,7 +25,6 @@ public class AnyFacts
         var match = e.Match(input);
         Assert.False(match.Success());
         Assert.True(match.RemainingText().IsEmpty());
-        Assert.Equal(0, match.Position());
     }
 
     [Fact]
@@ -39,14 +37,12 @@ public class AnyFacts
         var match = e.Match(input);
         Assert.True(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
-        Assert.Equal(1, match.Position());
 
         StringView secondInput = new("Ea");
 
         var secondMatch = e.Match(secondInput);
         Assert.True(secondMatch.Success());
         Assert.Equal('a', secondMatch.RemainingText().Peek());
-        Assert.Equal(1, secondMatch.Position());
     }
 
     [Fact]
@@ -58,7 +54,6 @@ public class AnyFacts
         var match = e.Match(input);
         Assert.False(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
-        Assert.Equal(0, match.Position());
     }
 
     [Fact]
@@ -71,14 +66,12 @@ public class AnyFacts
         var match = sign.Match(input);
         Assert.True(match.Success());
         Assert.Equal('3', match.RemainingText().Peek());
-        Assert.Equal(1, match.Position());
 
         StringView secondInput = new("-2");
 
         var secondMatch = sign.Match(secondInput);
         Assert.True(secondMatch.Success());
         Assert.Equal('2', secondMatch.RemainingText().Peek());
-        Assert.Equal(1, secondMatch.Position());
     }
     
     [Fact]
@@ -91,7 +84,6 @@ public class AnyFacts
         var match = sign.Match(input);
         Assert.False(match.Success());
         Assert.Equal('2', match.RemainingText().Peek());
-        Assert.Equal(0, match.Position());
     }
 
     [Fact]

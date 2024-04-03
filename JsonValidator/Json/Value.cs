@@ -46,6 +46,7 @@ public class Value : IPattern
 
     public IMatch Match(StringView text)
     {
+        Console.WriteLine("Value " + text.StartIndex() + " " + text.Peek());
         return pattern.Match(text);
     }
 }

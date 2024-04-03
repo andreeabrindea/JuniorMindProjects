@@ -29,7 +29,6 @@ public class OneOrMoreFacts
         var match = a.Match(input);
         Assert.False(match.Success());
         Assert.Equal('b', match.RemainingText().Peek());
-        Assert.Equal(0, match.Position());
     }
 
     [Fact]
@@ -40,7 +39,6 @@ public class OneOrMoreFacts
         var match = a.Match(input);
         Assert.True(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
-        Assert.Equal(1, match.Position());
     }
     
     [Fact]

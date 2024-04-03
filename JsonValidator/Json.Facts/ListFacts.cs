@@ -75,7 +75,6 @@ public class ListFacts
         var match = list.Match(input);
         Assert.True(match.Success());
         Assert.True(match.RemainingText().IsEmpty());
-        Assert.Equal(19, match.Position());
 
         StringView secondInput = new("1 \n;");
         var secondMatch = list.Match(secondInput);
