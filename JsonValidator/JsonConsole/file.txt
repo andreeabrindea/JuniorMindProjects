@@ -1,8 +1,9 @@
 {"glossary": {
         "title": "example glossary",
+        }
 		"GlossDiv": {
             "title": "S",
-			"GlossList": {
+			"GlossList": 
                 "GlossEntry": {
                     ,
 					"SortAs": "SGML",

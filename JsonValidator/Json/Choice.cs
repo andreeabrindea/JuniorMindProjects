@@ -12,20 +12,29 @@ namespace Json
         public IMatch Match(StringView text)
         {
             Console.WriteLine("Choice start " + text.StartIndex() + " " + text.Peek());
-            IMatch match = new SuccessMatch(text);
+
+            int maxMatchIndex = text.StartIndex();
+            IMatch maxMatch = new SuccessMatch(text);
+
             foreach (var pattern in patterns)
             {
-                match = pattern.Match(text);
-                Console.WriteLine("Choice foreach " + match.Position().StartIndex() + " " + match.Position().Peek() + match.Success());
+                IMatch match = pattern.Match(text);
+
                 if (match.Success())
                 {
                     return match;
                 }
+
+                if (match.Position().StartIndex() > maxMatchIndex)
+                {
+                    maxMatch = match;
+                    maxMatchIndex = match.Position().StartIndex();
+                }
             }
 
-            Console.WriteLine("Choice Final " + text.StartIndex() + " " + text.Peek());
+            Console.WriteLine("Choice final max " + maxMatch.Position().StartIndex());
 
-            return new FailedMatch(text, match.Position());
+            return new FailedMatch(text, maxMatch.Position());
         }
 
         public void Add(IPattern pattern)
