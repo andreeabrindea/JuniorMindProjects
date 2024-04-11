@@ -108,7 +108,7 @@ public class TextFacts
     {
         Text empty = new("");
         StringView input = new("");
-        Assert.True(empty.Match(input).Success());
+        Assert.False(empty.Match(input).Success());
         Assert.True(empty.Match(input).RemainingText().IsEmpty());
     }
 
@@ -119,5 +119,17 @@ public class TextFacts
         StringView input = new(null);
         Assert.False(empty.Match(input).Success());
         Assert.True(empty.Match(input).RemainingText().IsEmpty());
+    }
+    
+    [Fact]
+    public void testManyOnText()
+    {
+        Text textPattern = new("aaaaa");
+        StringView input = new("aaaab");
+
+        var match = textPattern.Match(input);
+        Assert.False(match.Success());
+        Assert.Equal(0, match.RemainingText().StartIndex());
+        Assert.Equal(5, match.Position().StartIndex());
     }
 }

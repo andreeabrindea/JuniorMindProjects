@@ -8,10 +8,10 @@ public class Number : IPattern
     {
         var sign = new Optional(new Any("-+"));
         var oneNine = new Range('1', '9');
-        var digit = new Choice(new Character('0'), oneNine);
+        var digit = new Choice("Choice digit", new Character('0'), oneNine);
         var digits = new OneOrMore(digit);
 
-        var integer = new Sequence(sign, new Choice(new Sequence(oneNine, digits), digit));
+        var integer = new Sequence(sign, new Choice("Choice integer", new Sequence(oneNine, digits), digit));
         var fraction = new Sequence(new Character('.'), digits);
         var exponent = new Sequence(new Any("eE"), sign, digits);
 

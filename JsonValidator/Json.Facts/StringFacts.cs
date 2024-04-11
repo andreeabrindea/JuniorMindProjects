@@ -9,7 +9,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new(Quoted("abc"));
-            Assert.True(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.True(match.Success());
+            Assert.True(match.RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -17,7 +19,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new("abc\"");
-            Assert.False(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.False(match.Success());
+            Assert.Equal('a', match.RemainingText().Peek());
         }
 
         [Fact]
@@ -50,7 +54,9 @@ namespace Json.Facts
         {
             var stringPattern = new String();
             StringView input = new(Quoted(string.Empty));
-            Assert.True(stringPattern.Match(input).Success());
+            var match = stringPattern.Match(input);
+            Assert.True(match.Success());
+            Assert.True(match.RemainingText().IsEmpty());
         }
 
         [Fact]
@@ -118,7 +124,7 @@ namespace Json.Facts
         }
 
         [Fact]
-        public void CanContainEscapedCarrigeReturn()
+        public void CanContainEscapedCarriageReturn()
         {
             var stringPattern = new String();
             StringView input = new(Quoted(@"a \r b"));
@@ -150,7 +156,7 @@ namespace Json.Facts
         }
 
         [Fact]
-        public void DoesNotContainUnrecognizedExcapceCharacters()
+        public void DoesNotContainUnrecognizedEscapeCharacters()
         {
             var stringPattern = new String();
             StringView input = new(Quoted(@"a\x"));
@@ -197,7 +203,7 @@ namespace Json.Facts
             Assert.Equal('\"', match.RemainingText().Peek());
         }
 
-        public static string Quoted(string text)
+        private static string Quoted(string text)
             => $"\"{text}\"";
     }
 }

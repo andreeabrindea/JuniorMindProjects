@@ -6,7 +6,11 @@ public class List : IPattern
 
     public List(IPattern element, IPattern separator)
     {
-        pattern = new Optional(new Sequence(element, new Many(new Sequence(separator, element))));
+        pattern = new Optional(
+            new Sequence(
+                element,
+                new Many(
+                    new Sequence(separator, element), "many list")));
     }
 
     public IMatch Match(StringView text)

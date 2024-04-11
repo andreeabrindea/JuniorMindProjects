@@ -11,6 +11,8 @@ public class StringView
         this.text = remainingText ?? string.Empty;
     }
 
+    public int StartIndex() => startIndex;
+
     public char Peek()
     {
         return text[startIndex];
@@ -21,9 +23,9 @@ public class StringView
         return new StringView(text, startIndex + step);
     }
 
-    public bool StartsWith(string prefix)
+    public int StartsWith(string prefix)
     {
-        return text.StartsWith(prefix);
+        return string.Compare(text, startIndex, prefix, 0, prefix.Length);
     }
 
     public bool IsEmpty()

@@ -12,9 +12,9 @@ public class Text : IPattern
 
     public IMatch Match(StringView text)
     {
-        return !text.IsEmpty() && text.StartsWith(prefix)
+        return !text.IsEmpty() && text.StartsWith(prefix) == 0
             ? new SuccessMatch(text.Advance(prefix.Length))
-            : new FailedMatch(text);
+            : new FailedMatch(text, text.Advance(prefix.Length));
     }
 }
 #pragma warning restore CA1724

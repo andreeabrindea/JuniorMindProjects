@@ -143,7 +143,7 @@ public class SequenceFacts
     [Fact]
     public void ValidInputsMatchesHexadecimalSequence()
     {
-        Choice hex = new(
+        Choice hex = new("choice",
             new Range('0', '9'),
         new Range('a', 'f'),
         new Range('A', 'F')
@@ -185,6 +185,7 @@ public class SequenceFacts
     public void NullInputDoesNotMatchHexadecimalSequence()
     {
         Choice hex = new(
+            "choice",
             new Range('0', '9'),
             new Range('a', 'f'),
             new Range('A', 'F')
@@ -203,5 +204,15 @@ public class SequenceFacts
         StringView input = new(null);
         Assert.False(hexSeq.Match(input).Success());
         Assert.True(hexSeq.Match(input).RemainingText().IsEmpty());
+    }
+
+    [Fact]
+    public void testSequence()
+    {
+        Sequence sequence = new(new OneOrMore(new Character('a')), new Many(new Number()));
+        StringView input = new("aa2");
+        var match = sequence.Match(input);
+        Assert.Equal(4, match.Position().StartIndex());
+
     }
 }

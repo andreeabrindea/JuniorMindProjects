@@ -6,7 +6,7 @@ public class OneOrMore : IPattern
 
     public OneOrMore(IPattern pattern)
     {
-        this.pattern = new Sequence(pattern, new Many(pattern));
+        this.pattern = new Sequence(pattern, new Many(pattern, "many oneOrMore"));
     }
 
     public IMatch Match(StringView text)
