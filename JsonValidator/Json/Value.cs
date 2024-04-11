@@ -8,7 +8,6 @@ public class Value : IPattern
     {
         var ws = new Many(new Any(" \n\r\t"));
         var value = new Choice(
-            "value",
             new String(),
             new Number(),
             new Text("true"),

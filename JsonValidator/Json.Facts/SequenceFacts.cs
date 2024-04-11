@@ -143,7 +143,7 @@ public class SequenceFacts
     [Fact]
     public void ValidInputsMatchesHexadecimalSequence()
     {
-        Choice hex = new("choice",
+        Choice hex = new(
             new Range('0', '9'),
         new Range('a', 'f'),
         new Range('A', 'F')
@@ -185,7 +185,6 @@ public class SequenceFacts
     public void NullInputDoesNotMatchHexadecimalSequence()
     {
         Choice hex = new(
-            "choice",
             new Range('0', '9'),
             new Range('a', 'f'),
             new Range('A', 'F')

@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Json.Facts;
@@ -8,7 +7,7 @@ public class ChoiceFacts
     [Fact]
     public void DoesNotMatchNull()
     {
-        Choice digit = new("choice",
+        Choice digit = new(
             new Character('0'),
             new Range('1', '9')
         );
@@ -22,7 +21,6 @@ public class ChoiceFacts
     public void DoesNotMatchEmptyString()
     {
         Choice digit = new(
-            "choice",
             new Character('0'),
             new Range('1', '9')
         );
@@ -36,7 +34,6 @@ public class ChoiceFacts
     public void IsIntegerInRange()
     {
         Choice digit = new(
-            "choice",
             new Character('0'),
             new Range('1', '9')
         );
@@ -51,7 +48,6 @@ public class ChoiceFacts
     public void IsIntegerNotInRange()
     {
         Choice digit = new(
-            "choice",
             new Character('0'),
             new Range('5', '9')
         );
@@ -65,7 +61,6 @@ public class ChoiceFacts
     public void IsStringAndHasPattern()
     {
         Choice pattern = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
@@ -79,7 +74,6 @@ public class ChoiceFacts
     public void IsStringAndDoesNotHavePattern()
     {
         Choice pattern = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
@@ -93,16 +87,13 @@ public class ChoiceFacts
     public void HexMatchesDigitsInRange()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('0', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -118,16 +109,13 @@ public class ChoiceFacts
     public void HexMatchesLowercaseLettersInRange()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -148,16 +136,13 @@ public class ChoiceFacts
     public void HexMatchesUppercaseLettersInRange()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -178,16 +163,13 @@ public class ChoiceFacts
     public void HexDoesNotMatchOutOfRangeLetters()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -207,16 +189,13 @@ public class ChoiceFacts
     public void HexDoesNotMatchEmptyString()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -230,16 +209,13 @@ public class ChoiceFacts
     public void HexDoesNotMatchNull()
     {
         Choice digit = new(
-            "choice",
             new Character('a'),
             new Range('5', '9')
         );
 
         Choice hex = new(
-            "choice",
             digit, 
             new Choice(
-                "choice",
                 new Range('a', 'f'),
                 new Range('A', 'F')
             )
@@ -252,7 +228,7 @@ public class ChoiceFacts
     [Fact]
     public void InputMatchesAfterAddingNewPattern()
     {
-        Choice pattern = new("choice",new Range('0', '2'), new Character('a'));
+        Choice pattern = new(new Range('0', '2'), new Character('a'));
 
         StringView input = new("5");
         Assert.False(pattern.Match(input).Success());
@@ -266,7 +242,7 @@ public class ChoiceFacts
     [Fact]
     public void InputDoesNotMatchAfterAddingNewPattern()
     {
-        Choice pattern = new("choice",new Range('0', '2'), new Character('a'));
+        Choice pattern = new(new Range('0', '2'), new Character('a'));
         StringView input = new("z");
         Assert.False(pattern.Match(input).Success());
         Assert.Equal('z', pattern.Match(input).RemainingText().Peek());
@@ -279,7 +255,7 @@ public class ChoiceFacts
     [Fact]
     public void PatternDoesNotMatchNullAfterAddingPattern()
     {
-        Choice pattern = new("choice",new Character('a'), new Character('b'));
+        Choice pattern = new(new Character('a'), new Character('b'));
         pattern.Add(new Character('c'));
 
         StringView input = new(null);
@@ -290,7 +266,7 @@ public class ChoiceFacts
     [Fact]
     public void PatternDoesNotMatchEmptyStringAfterAddingPattern()
     {
-        Choice pattern = new("choice",new Character('a'), new Character('b'));
+        Choice pattern = new(new Character('a'), new Character('b'));
         pattern.Add(new Character('c'));
         
         StringView input = new(string.Empty);
@@ -301,7 +277,7 @@ public class ChoiceFacts
     [Fact]
     public void AddingNullPattern()
     {
-        Choice pattern = new ("choice",new Character('a'));
+        Choice pattern = new (new Character('a'));
         pattern.Add(null);
         StringView input = new("abc");
         Assert.True(pattern.Match(input).Success());

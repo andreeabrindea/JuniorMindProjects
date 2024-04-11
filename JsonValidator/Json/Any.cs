@@ -3,12 +3,10 @@ namespace Json;
 public class Any : IPattern
 {
     private readonly string accepted;
-    private readonly string name;
 
-    public Any(string accepted, string name = "")
+    public Any(string accepted)
     {
         this.accepted = accepted;
-        this.name = name;
     }
 
     public IMatch Match(StringView text)

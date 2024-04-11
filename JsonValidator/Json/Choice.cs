@@ -2,13 +2,11 @@ namespace Json
 {
     public class Choice : IPattern
     {
-        private readonly string name;
         private IPattern[] patterns;
 
-        public Choice(string name = "", params IPattern[] patterns)
+        public Choice(params IPattern[] patterns)
         {
             this.patterns = patterns;
-            this.name = name;
         }
 
         public IMatch Match(StringView text)

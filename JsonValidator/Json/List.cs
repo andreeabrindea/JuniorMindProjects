@@ -10,7 +10,7 @@ public class List : IPattern
             new Sequence(
                 element,
                 new Many(
-                    new Sequence(separator, element), "many list")));
+                    new Sequence(separator, element))));
     }
 
     public IMatch Match(StringView text)

@@ -15,6 +15,6 @@ public class Range : IPattern
     {
         return !text.IsEmpty() && char.IsBetween(text.Peek(), startCharacter, endCharacter)
             ? new SuccessMatch(text.Advance())
-            : new FailedMatch(text);
+            : new FailedMatch(text, text);
     }
 }

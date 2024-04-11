@@ -1,6 +1,5 @@
 {
 "title": "example glossary",
       "cf": "bn",
-     
 }
-      }
+   
