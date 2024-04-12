@@ -22,6 +22,7 @@ public class ListFacts
         var match = a.Match(input);
         Assert.True(match.Success());
         Assert.Equal(',', match.RemainingText().Peek());
+        Assert.Equal(5, match.Position().StartIndex());
     }
 
     [Fact]

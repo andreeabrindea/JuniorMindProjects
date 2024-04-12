@@ -56,6 +56,7 @@ public class SequenceFacts
         var match = ab.Match(input);
         Assert.False(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
+        Assert.Equal(1, match.Position().StartIndex());
 
         StringView secondInput = new("def");
         var secondMatch = ab.Match(secondInput);
@@ -206,12 +207,29 @@ public class SequenceFacts
     }
 
     [Fact]
-    public void testSequence()
+    public void SequenceOfOneOrMoreAndMany()
     {
         Sequence sequence = new(new OneOrMore(new Character('a')), new Many(new Number()));
-        StringView input = new("aa2");
+        StringView input = new("aa2o");
         var match = sequence.Match(input);
-        Assert.Equal(4, match.Position().StartIndex());
+        Assert.Equal(3, match.Position().StartIndex());
+    }
 
+    [Fact]
+    public void SequenceOfCharacterAndRangeNonEmptyInput()
+    {
+        Sequence seq = new Sequence(new Character('a'), new Range('1', '9'));
+        StringView input = new("a0");
+        var match = seq.Match(input);
+        Assert.Equal(1, match.Position().StartIndex());
+    }
+
+    [Fact]
+    public void TestSequenceOfManyCharacterAndRangeNonEmptyInput()
+    {
+        Sequence seq = new(new Many(new Character('a')), new Many(new Range('1', '4')));
+        StringView input = new("aa1234");
+        var match = seq.Match(input);
+        Assert.Equal(6, match.Position().StartIndex());
     }
 }

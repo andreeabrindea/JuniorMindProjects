@@ -29,6 +29,7 @@ public class OptionalFacts
         StringView input = new("abc");
         Assert.True(a.Match(input).Success());
         Assert.Equal('b', a.Match(input).RemainingText().Peek());
+        Assert.Equal(1, a.Match(input).Position().StartIndex());
 
         StringView secondInput = new("aabc");
         var match = a.Match(secondInput);
@@ -54,5 +55,14 @@ public class OptionalFacts
         StringView secondInput = new("123");
         Assert.True(sign.Match(secondInput).Success());
         Assert.Equal('1', sign.Match(secondInput).RemainingText().Peek());
+    }
+    
+    [Fact]
+    public void OptionalOfSequence()
+    {
+        Optional opt = new(new Sequence(new Many(new Character('a')), new Many(new Range('1', '4'))));
+        StringView input = new("aa1234");
+        var match = opt.Match(input);
+        Assert.Equal(6, match.Position().StartIndex());
     }
 }

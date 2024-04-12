@@ -12,7 +12,6 @@ public class Sequence : IPattern
     public IMatch Match(StringView text)
     {
         IMatch match = new SuccessMatch(text);
-
         foreach (var pattern in patterns)
         {
             match = pattern.Match(match.RemainingText());
