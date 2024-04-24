@@ -14,7 +14,7 @@ public class Text : IPattern
     {
         IMatch match = !text.IsEmpty() && text.StartsWith(prefix) == 0
             ? new SuccessMatch(text.Advance(prefix.Length))
-            : new FailedMatch(text, text.Advance(prefix.Length - 1));
+            : new FailedMatch(text);
 
         Console.WriteLine("Text " + match.Success() + " " + text.StartIndex() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
         return match;

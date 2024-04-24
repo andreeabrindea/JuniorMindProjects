@@ -1,3 +1,7 @@
-{"title": "example glossary",
-"h": "e","l":"l", "o"
+{
+"title": "example glossary",
+      "cf": "bn",
+      "hello": {
+      "there"
+      :   }
 }
