@@ -18,6 +18,11 @@ public class Many : IPattern
             match = pattern.Match(text);
         }
 
-        return new SuccessMatch(match.Position());
+        if (!text.IsEmpty())
+        {
+            return new SuccessMatch(text, match.Position());
+        }
+
+        return new SuccessMatch(match.RemainingText(), match.Position());
     }
 }

@@ -22,7 +22,7 @@
             var match = jsonValidator.Match(input);
 
             Console.WriteLine(match.Success() && match.RemainingText().IsEmpty()
-                ? "The file respects the JSON format." + match.Position()
+                ? "The file respects the JSON format " + match.Position().StartIndex()
                 : "The file does not respect the JSON format at " + match.Position().StartIndex());
         }
     }

@@ -13,7 +13,13 @@ public class Optional : IPattern
 
     public IMatch Match(StringView text)
     {
-        return new SuccessMatch(pattern.Match(text).RemainingText(), pattern.Match(text).Position());
+        var match = pattern.Match(text);
+        if (!match.Success())
+        {
+            return new SuccessMatch(text, match.Position());
+        }
+
+        return new SuccessMatch(match.RemainingText());
     }
 }
 #pragma warning restore CA1716

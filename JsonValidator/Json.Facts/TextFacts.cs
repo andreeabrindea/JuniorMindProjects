@@ -130,6 +130,6 @@ public class TextFacts
         var match = textPattern.Match(input);
         Assert.False(match.Success());
         Assert.Equal(0, match.RemainingText().StartIndex());
-        Assert.Equal(5, match.Position().StartIndex());
+        Assert.Equal(4, match.Position().StartIndex());
     }
 }

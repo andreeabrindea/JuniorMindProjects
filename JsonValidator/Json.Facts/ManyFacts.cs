@@ -80,6 +80,6 @@ public class ManyFacts
         var match = many.Match(input);
         Assert.True(match.Success());
         Assert.Equal(0, match.RemainingText().StartIndex());
-        Assert.Equal(5, match.Position().StartIndex());
+        Assert.Equal(4, match.Position().StartIndex());
     }
 }
