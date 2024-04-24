@@ -11,6 +11,13 @@ public class OneOrMore : IPattern
 
     public IMatch Match(StringView text)
     {
-        return pattern.Match(text);
+        var match = pattern.Match(text);
+
+        if (!match.Success())
+        {
+            return new FailedMatch(text, match.Position().Advance());
+        }
+
+        return match;
     }
 }

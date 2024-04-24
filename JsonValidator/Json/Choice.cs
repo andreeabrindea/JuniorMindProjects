@@ -12,7 +12,7 @@ namespace Json
         public IMatch Match(StringView text)
         {
             int maxMatchIndex = text.StartIndex();
-            IMatch maxMatch = new SuccessMatch(text);
+            IMatch maxMatch = patterns[0].Match(text);
 
             foreach (var pattern in patterns)
             {
@@ -27,6 +27,8 @@ namespace Json
                     maxMatch = match;
                     maxMatchIndex = match.Position().StartIndex();
                 }
+
+                Console.WriteLine("Choice for " + match.Success() + " " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
             }
 
             return new FailedMatch(text, maxMatch.Position());

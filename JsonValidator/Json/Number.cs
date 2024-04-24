@@ -20,6 +20,14 @@ public class Number : IPattern
 
     public IMatch Match(StringView text)
     {
-        return pattern.Match(text);
+        var match = pattern.Match(text);
+        Console.WriteLine("Number " + match.Success() + " " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
+
+        if (!match.Success())
+        {
+            return new FailedMatch(text, match.Position());
+        }
+
+        return match;
     }
 }

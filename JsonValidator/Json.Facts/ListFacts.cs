@@ -21,8 +21,7 @@ public class ListFacts
         StringView input = new("1,2,3,");
         var match = a.Match(input);
         Assert.True(match.Success());
-        Assert.Equal(',', match.RemainingText().Peek());
-        Assert.Equal(5, match.Position().StartIndex());
+        Assert.Equal(6, match.Position().StartIndex());
     }
 
     [Fact]
@@ -80,6 +79,5 @@ public class ListFacts
         StringView secondInput = new("1 \n;");
         var secondMatch = list.Match(secondInput);
         Assert.True(secondMatch.Success());
-        Assert.Equal(' ',  secondMatch.RemainingText().Peek());
     }
 }

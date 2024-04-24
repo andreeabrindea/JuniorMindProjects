@@ -16,12 +16,14 @@ public class List : IPattern
     public IMatch Match(StringView text)
     {
         var match = pattern.Match(text);
-        Console.WriteLine("List " + match.RemainingText().StartIndex() + "  vs  " + match.Position().StartIndex());
+        Console.WriteLine("List " + match.Success() + " " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
+
         if (!match.Success())
         {
-            return new SuccessMatch(text, match.Position());
+            Console.WriteLine("List failed " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
+            return new FailedMatch(text, match.Position());
         }
 
-        return match;
+        return new SuccessMatch(match.RemainingText(), match.Position());
     }
 }

@@ -11,10 +11,11 @@ public class Any : IPattern
 
     public IMatch Match(StringView text)
     {
-        Console.WriteLine("Any " + text.StartIndex());
-
-        return text.IsEmpty() || !accepted.Contains(text.Peek()) ?
+        IMatch match = text.IsEmpty() || !accepted.Contains(text.Peek()) ?
             new FailedMatch(text) :
             new SuccessMatch(text.Advance());
+
+        Console.WriteLine("Any " + match.Success() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
+        return match;
     }
 }

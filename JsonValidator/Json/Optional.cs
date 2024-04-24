@@ -14,12 +14,13 @@ public class Optional : IPattern
     public IMatch Match(StringView text)
     {
         var match = pattern.Match(text);
+        Console.WriteLine("Optional " + match.Success() + " " + text.StartIndex() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
         if (!match.Success())
         {
             return new SuccessMatch(text, match.Position());
         }
 
-        return new SuccessMatch(match.RemainingText());
+        return new SuccessMatch(match.RemainingText(), match.Position());
     }
 }
 #pragma warning restore CA1716

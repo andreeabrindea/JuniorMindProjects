@@ -13,10 +13,12 @@ public class Range : IPattern
 
     public IMatch Match(StringView text)
     {
-        Console.WriteLine("Range " + text.StartIndex());
-
-        return !text.IsEmpty() && char.IsBetween(text.Peek(), startCharacter, endCharacter)
+        IMatch match = !text.IsEmpty() && char.IsBetween(text.Peek(), startCharacter, endCharacter)
             ? new SuccessMatch(text.Advance())
             : new FailedMatch(text);
+
+        Console.WriteLine("Range " + match.Success() + " " + text.StartIndex() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
+
+        return match;
     }
 }

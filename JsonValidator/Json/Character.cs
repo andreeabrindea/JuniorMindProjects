@@ -11,10 +11,11 @@ public class Character : IPattern
 
     public IMatch Match(StringView text)
     {
-        Console.WriteLine("Character " + text.StartIndex());
-
-        return !text.IsEmpty() && text.Peek() == pattern
+        IMatch match = !text.IsEmpty() && text.Peek() == pattern
             ? new SuccessMatch(text.Advance())
             : new FailedMatch(text);
+
+        Console.WriteLine("Character " + match.Success() + " " + text.StartIndex() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
+        return match;
     }
 }

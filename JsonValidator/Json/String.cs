@@ -26,7 +26,15 @@ public class String : IPattern
 
     public IMatch Match(StringView text)
     {
-        return pattern.Match(text);
+        var match = pattern.Match(text);
+        Console.WriteLine("String " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
+        if (!match.Success())
+        {
+            Console.WriteLine("String failed " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
+            return new FailedMatch(text, match.Position());
+        }
+
+        return match;
     }
 }
 #pragma warning restore CA1716, CA1720
