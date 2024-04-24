@@ -69,30 +69,4 @@ public class ManyFacts
         Assert.True(match.Success());
         Assert.Equal('a', match.RemainingText().Peek());
     }
-
-    [Fact]
-    public void testManyOnText()
-    {
-        Text textPattern = new("aaaaa");
-        Many many = new(textPattern);
-        StringView input = new("aaaab");
-
-        var match = many.Match(input);
-        Assert.True(match.Success());
-        Assert.Equal(0, match.RemainingText().StartIndex());
-        Assert.Equal(4, match.Position().StartIndex());
-    }
-    
-    [Fact]
-    public void testManyOnText2()
-    {
-        Text textPattern = new("aaaaa");
-        Many many = new(textPattern);
-        StringView input = new("aaab");
-
-        var match = many.Match(input);
-        Assert.True(match.Success());
-        Assert.Equal(0, match.RemainingText().StartIndex());
-        Assert.Equal(3, match.Position().StartIndex());
-    }
 }

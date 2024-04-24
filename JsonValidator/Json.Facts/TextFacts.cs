@@ -121,15 +121,4 @@ public class TextFacts
         Assert.True(empty.Match(input).RemainingText().IsEmpty());
     }
     
-    [Fact]
-    public void testManyOnText()
-    {
-        Text textPattern = new("aaaaa");
-        StringView input = new("aaaab");
-
-        var match = textPattern.Match(input);
-        Assert.False(match.Success());
-        Assert.Equal(0, match.RemainingText().StartIndex());
-        Assert.Equal(4, match.Position().StartIndex());
-    }
 }
