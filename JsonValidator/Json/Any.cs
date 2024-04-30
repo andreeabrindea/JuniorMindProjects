@@ -11,11 +11,8 @@ public class Any : IPattern
 
     public IMatch Match(StringView text)
     {
-        IMatch match = text.IsEmpty() || !accepted.Contains(text.Peek()) ?
+        return text.IsEmpty() || !accepted.Contains(text.Peek()) ?
             new FailedMatch(text) :
             new SuccessMatch(text.Advance());
-
-        Console.WriteLine("Any " + match.Success() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
-        return match;
     }
 }

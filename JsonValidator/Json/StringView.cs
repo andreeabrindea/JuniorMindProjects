@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Json;
 
 public class StringView
@@ -31,5 +33,23 @@ public class StringView
     public bool IsEmpty()
     {
         return startIndex >= text.Length;
+    }
+
+    public int[] ToColumnRow()
+    {
+        int line = 0;
+        int column = 0;
+        int[] location = new int[2];
+
+        for (int i = 0; i < startIndex; i++)
+        {
+            line = text[i] == '\n' ? line + 1 : line;
+            column = text[i] != '\n' ? column + 1 : 0;
+        }
+
+        location[0] = line;
+        location[1] = column;
+
+        return location;
     }
 }

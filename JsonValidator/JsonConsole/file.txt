@@ -1,7 +1,4 @@
 {
 "title": "example glossary",
-      "cf": "bn",
-      "hello": {
-      "there"
-      :   }
+"a": 
 }

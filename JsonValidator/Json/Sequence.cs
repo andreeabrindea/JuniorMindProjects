@@ -16,7 +16,6 @@ public class Sequence : IPattern
         foreach (var pattern in patterns)
         {
             match = pattern.Match(match.RemainingText());
-            Console.WriteLine("INAINTE Sequence " + match.Success() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
 
             if (maxMatchPosition.StartIndex() < match.Position().StartIndex())
             {
@@ -25,15 +24,10 @@ public class Sequence : IPattern
 
             if (!match.Success())
             {
-                Console.WriteLine("aici unsuccess " + match.Position().StartIndex());
                 return new FailedMatch(text, maxMatchPosition);
             }
-
-            Console.WriteLine("dupa check " + match.Position().StartIndex());
         }
 
-        Console.WriteLine("aici " + match.Position().StartIndex());
-        Console.WriteLine(" sequence maxMatch " + maxMatchPosition.StartIndex());
         return new SuccessMatch(match.RemainingText(), match.Position());
     }
 }

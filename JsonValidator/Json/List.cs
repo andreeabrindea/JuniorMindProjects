@@ -15,15 +15,6 @@ public class List : IPattern
 
     public IMatch Match(StringView text)
     {
-        var match = pattern.Match(text);
-        Console.WriteLine("List " + match.Success() + " " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
-
-        if (!match.Success())
-        {
-            Console.WriteLine("List failed " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
-            return new FailedMatch(text, match.Position());
-        }
-
-        return new SuccessMatch(match.RemainingText(), match.Position());
+        return pattern.Match(text);
     }
 }

@@ -12,12 +12,9 @@ public class Text : IPattern
 
     public IMatch Match(StringView text)
     {
-        IMatch match = !text.IsEmpty() && text.StartsWith(prefix) == 0
+        return !text.IsEmpty() && text.StartsWith(prefix) == 0
             ? new SuccessMatch(text.Advance(prefix.Length))
             : new FailedMatch(text);
-
-        Console.WriteLine("Text " + match.Success() + " " + text.StartIndex() + " " + match.RemainingText().StartIndex() + " " + match.Position().StartIndex());
-        return match;
     }
 }
 #pragma warning restore CA1724

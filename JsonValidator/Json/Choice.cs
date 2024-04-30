@@ -27,8 +27,6 @@ namespace Json
                     maxMatch = match;
                     maxMatchIndex = match.Position().StartIndex();
                 }
-
-                Console.WriteLine("Choice for " + match.Success() + " " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
             }
 
             return new FailedMatch(text, maxMatch.Position());

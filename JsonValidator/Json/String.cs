@@ -27,10 +27,8 @@ public class String : IPattern
     public IMatch Match(StringView text)
     {
         var match = pattern.Match(text);
-        Console.WriteLine("String " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
         if (!match.Success())
         {
-            Console.WriteLine("String failed " + text.StartIndex() + " vs " + match.RemainingText().StartIndex() + " vs " + match.Position().StartIndex());
             return new FailedMatch(text, match.Position());
         }
 
