@@ -2,22 +2,18 @@
 
 public class IntArray
 {
-    private int capacity = 3;
     private int[] arrayOfIntegers;
     private int count;
 
-    public IntArray()
+    public IntArray(int initialCapacity = 3)
     {
-        arrayOfIntegers = new int[capacity];
+        Array.Resize(ref arrayOfIntegers, initialCapacity);
         count = 0;
     }
 
     public void Add(int element)
     {
-        if (capacity == arrayOfIntegers.Length)
-        {
-           ResizeArray();
-        }
+        VerifyCapacity();
 
         arrayOfIntegers[count] = element;
         count++;
@@ -30,6 +26,11 @@ public class IntArray
 
     public int Element(int index)
     {
+        if (index < 0)
+        {
+            return -1;
+        }
+
         return arrayOfIntegers[index];
     }
 
@@ -66,10 +67,12 @@ public class IntArray
 
     public void Insert(int index, int element)
     {
-        if (capacity == arrayOfIntegers.Length)
+        if (index < 0)
         {
-            ResizeArray();
+            return;
         }
+
+        VerifyCapacity();
 
         for (int i = arrayOfIntegers.Length - 1; i > index; i--)
         {
@@ -110,6 +113,11 @@ public class IntArray
 
     public void RemoveAt(int index)
     {
+        if (index < 0)
+        {
+            return;
+        }
+
         for (int i = index + 1; i < count; i++)
         {
             arrayOfIntegers[i - 1] = arrayOfIntegers[i];
@@ -118,10 +126,14 @@ public class IntArray
         count--;
     }
 
-    private void ResizeArray()
+    private void VerifyCapacity()
     {
-        int resizingValue = capacity * 2;
+        if (count < arrayOfIntegers.Length)
+        {
+            return;
+        }
+
+        int resizingValue = arrayOfIntegers.Length * 2;
         Array.Resize(ref arrayOfIntegers, resizingValue);
-        capacity = resizingValue;
     }
 }
