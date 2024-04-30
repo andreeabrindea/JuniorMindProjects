@@ -12,11 +12,6 @@ public class IntArray
         count = 0;
     }
 
-    public int[] GetArray()
-    {
-        return arrayOfIntegers;
-    }
-
     public void Add(int element)
     {
         if (capacity == arrayOfIntegers.Length)
