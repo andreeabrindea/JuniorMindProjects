@@ -37,14 +37,14 @@ public class StringView
 
     public int[] ToColumnRow()
     {
-        int line = 0;
-        int column = 0;
+        int line = 1;
+        int column = 1;
         int[] location = new int[2];
 
         for (int i = 0; i < startIndex; i++)
         {
             line = text[i] == '\n' ? line + 1 : line;
-            column = text[i] != '\n' ? column + 1 : 0;
+            column = text[i] != '\n' ? column + 1 : 1;
         }
 
         location[0] = line;
