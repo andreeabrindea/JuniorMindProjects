@@ -7,7 +7,7 @@ public class IntArray
 
     public IntArray(int initialCapacity = 3)
     {
-        arrayOfIntegers = new int[initialCapacity];
+        Array.Resize(ref arrayOfIntegers, initialCapacity);
         count = 0;
     }
 
@@ -72,7 +72,7 @@ public class IntArray
 
     public void Insert(int index, int element)
     {
-        if (index < 0)
+        if (index < 0 || index > count)
         {
             return;
         }
@@ -96,8 +96,7 @@ public class IntArray
 
     public void Remove(int element)
     {
-        int index = IndexOf(element);
-        RemoveAt(index);
+        RemoveAt(IndexOf(element));
     }
 
     public void RemoveAt(int index)
