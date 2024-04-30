@@ -60,4 +60,17 @@ public class IntArrayFacts
         Assert.Equal(2, array.Count());
     }
     
+    [Fact]
+    public void Test_ClearArray()
+    {
+        IntArray array = new();
+        array.Add(0);
+        array.Add(1);
+        array.Add(2);
+        array.Add(3);
+        array.Add(4);
+        
+        array.Clear();
+        Assert.Equal(0, array.Count());
+    }
 }

@@ -86,6 +86,7 @@ public class IntArray
     public void Clear()
     {
         Array.Clear(arrayOfIntegers, 0, arrayOfIntegers.Length);
+        count = 0;
     }
 
     public void Remove(int element)
