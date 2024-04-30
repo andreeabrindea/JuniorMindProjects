@@ -2,27 +2,35 @@
 
 public class IntArray
 {
-    private readonly int capacity = 3;
+    private int capacity = 3;
     private int[] arrayOfIntegers;
+    private int count;
 
     public IntArray()
     {
         arrayOfIntegers = new int[capacity];
+        count = 0;
+    }
+
+    public int[] GetArray()
+    {
+        return arrayOfIntegers;
     }
 
     public void Add(int element)
-{
-    if (capacity == arrayOfIntegers.Length)
     {
-       ResizeArray();
-    }
+        if (capacity == arrayOfIntegers.Length)
+        {
+           ResizeArray();
+        }
 
-    arrayOfIntegers[^1] = element;
-}
+        arrayOfIntegers[count] = element;
+        count++;
+    }
 
     public int Count()
     {
-        return arrayOfIntegers.Length;
+        return count;
     }
 
     public int Element(int index)
@@ -74,6 +82,7 @@ public class IntArray
         }
 
         arrayOfIntegers[index] = element;
+        count++;
     }
 
     public void Clear()
@@ -83,26 +92,41 @@ public class IntArray
 
     public void Remove(int element)
     {
-        for (int i = 0; i < arrayOfIntegers.Length; i++)
+        int found = 0;
+        for (int i = 0; i < count; i++)
         {
             if (arrayOfIntegers[i] == element)
             {
-                for (int j = i + 1; j < arrayOfIntegers.Length; j++)
+                found = 1;
+                for (int j = i + 1; j < count; j++)
                 {
-                    arrayOfIntegers[j] = arrayOfIntegers[j - 1];
+                    arrayOfIntegers[j - 1] = arrayOfIntegers[j];
                 }
             }
         }
+
+        if (found != 1)
+        {
+            return;
+        }
+
+        count--;
     }
 
     public void RemoveAt(int index)
     {
-        arrayOfIntegers[index] = 0;
+        for (int i = index + 1; i < count; i++)
+        {
+            arrayOfIntegers[i - 1] = arrayOfIntegers[i];
+        }
+
+        count--;
     }
 
     private void ResizeArray()
     {
         int resizingValue = capacity * 2;
         Array.Resize(ref arrayOfIntegers, resizingValue);
+        capacity = resizingValue;
     }
 }
