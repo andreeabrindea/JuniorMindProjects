@@ -7,7 +7,7 @@ public class IntArray
 
     public IntArray(int initialCapacity = 3)
     {
-        Array.Resize(ref arrayOfIntegers, initialCapacity);
+        arrayOfIntegers = new int[initialCapacity];
         count = 0;
     }
 
@@ -36,6 +36,11 @@ public class IntArray
 
     public void SetElement(int index, int element)
     {
+        if (index < 0 || index > count)
+        {
+            return;
+        }
+
         arrayOfIntegers[index] = element;
     }
 
@@ -91,30 +96,13 @@ public class IntArray
 
     public void Remove(int element)
     {
-        int found = 0;
-        for (int i = 0; i < count; i++)
-        {
-            if (arrayOfIntegers[i] == element)
-            {
-                found = 1;
-                for (int j = i + 1; j < count; j++)
-                {
-                    arrayOfIntegers[j - 1] = arrayOfIntegers[j];
-                }
-            }
-        }
-
-        if (found != 1)
-        {
-            return;
-        }
-
-        count--;
+        int index = IndexOf(element);
+        RemoveAt(index);
     }
 
     public void RemoveAt(int index)
     {
-        if (index < 0)
+        if (index < 0 || index > count)
         {
             return;
         }
