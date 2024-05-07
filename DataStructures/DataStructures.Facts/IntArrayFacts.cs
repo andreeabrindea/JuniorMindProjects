@@ -5,7 +5,7 @@ namespace DataStructures.Facts;
 public class IntArrayFacts
 {
     [Fact]
-    public void Test_AddingNewElementAtFirstPosition()
+    public void AddingNewElementAtFirstPosition()
     {
         IntArray array = new();
         array.Add(3);
@@ -16,7 +16,7 @@ public class IntArrayFacts
     }
 
     [Fact]
-    public void Test_InsertANewElementToPosition()
+    public void InsertANewElementToPosition()
     {
         IntArray array = new();
         array.Add(1);
@@ -30,7 +30,7 @@ public class IntArrayFacts
     }
 
     [Fact]
-    public void Test_RemoveFromExistingPosition()
+    public void RemoveFromExistingPosition()
     {
         IntArray array = new();
         array.Add(0);
@@ -46,7 +46,7 @@ public class IntArrayFacts
     }
 
     [Fact]
-    public void TestRemoveElement()
+    public void RemoveByValueElementFromMiddleOfArray()
     {
         IntArray array = new();
         array.Add(0);
@@ -61,7 +61,7 @@ public class IntArrayFacts
     }
     
     [Fact]
-    public void Test_ClearArray()
+    public void ClearArray()
     {
         IntArray array = new();
         array.Add(0);

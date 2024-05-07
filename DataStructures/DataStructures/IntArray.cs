@@ -7,7 +7,7 @@ public class IntArray
 
     public IntArray(int initialCapacity = 3)
     {
-        Array.Resize(ref arrayOfIntegers, initialCapacity);
+        arrayOfIntegers = new int[initialCapacity];
         count = 0;
     }
 
@@ -26,7 +26,7 @@ public class IntArray
 
     public int Element(int index)
     {
-        if (index < 0)
+        if (index < 0 || index > count)
         {
             return -1;
         }
