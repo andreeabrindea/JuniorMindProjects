@@ -70,7 +70,7 @@ public class IntArray
         }
 
         EnsureCapacity();
-        ShiftElements(index);
+        ShiftElementsToRight(index);
         arrayOfIntegers[index] = element;
         count++;
     }
@@ -93,7 +93,7 @@ public class IntArray
             return;
         }
 
-        ShiftElements(index);
+        ShiftElementsToLeft(index);
         count--;
     }
 
@@ -108,11 +108,19 @@ public class IntArray
         Array.Resize(ref arrayOfIntegers, resizingValue);
     }
 
-    private void ShiftElements(int index)
+    private void ShiftElementsToLeft(int index)
     {
         for (int i = index + 1; i < count; i++)
         {
             arrayOfIntegers[i - 1] = arrayOfIntegers[i];
+        }
+    }
+
+    private void ShiftElementsToRight(int index)
+    {
+        for (int i = count; i > index; i--)
+        {
+            arrayOfIntegers[i] = arrayOfIntegers[i - 1];
         }
     }
 }
