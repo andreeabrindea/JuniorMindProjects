@@ -13,7 +13,7 @@ public class IntArray
 
     public void Add(int element)
     {
-        VerifyCapacity();
+        EnsureCapacity();
 
         arrayOfIntegers[count] = element;
         count++;
@@ -46,15 +46,7 @@ public class IntArray
 
     public bool Contains(int element)
     {
-        foreach (var integer in arrayOfIntegers)
-        {
-            if (integer == element)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return IndexOf(element) > -1;
     }
 
     public int IndexOf(int element)
@@ -77,13 +69,8 @@ public class IntArray
             return;
         }
 
-        VerifyCapacity();
-
-        for (int i = arrayOfIntegers.Length - 1; i > index; i--)
-        {
-            arrayOfIntegers[i] = arrayOfIntegers[i - 1];
-        }
-
+        EnsureCapacity();
+        ShiftElements(index);
         arrayOfIntegers[index] = element;
         count++;
     }
@@ -106,15 +93,11 @@ public class IntArray
             return;
         }
 
-        for (int i = index + 1; i < count; i++)
-        {
-            arrayOfIntegers[i - 1] = arrayOfIntegers[i];
-        }
-
+        ShiftElements(index);
         count--;
     }
 
-    private void VerifyCapacity()
+    private void EnsureCapacity()
     {
         if (count < arrayOfIntegers.Length)
         {
@@ -123,5 +106,13 @@ public class IntArray
 
         int resizingValue = arrayOfIntegers.Length * 2;
         Array.Resize(ref arrayOfIntegers, resizingValue);
+    }
+
+    private void ShiftElements(int index)
+    {
+        for (int i = index + 1; i < count; i++)
+        {
+            arrayOfIntegers[i - 1] = arrayOfIntegers[i];
+        }
     }
 }
