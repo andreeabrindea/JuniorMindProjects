@@ -12,7 +12,7 @@ public class IntArrayFacts
         
         Assert.True(array.Contains(3));
         Assert.Equal(0, array.IndexOf(3));
-        Assert.Equal(3, array.Element(0));
+        Assert.Equal(3, array[0]);
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class IntArrayFacts
         
         Assert.True(array.Contains(7));
         Assert.Equal(1, array.IndexOf(7));
-        Assert.Equal(7, array.Element(1));
+        Assert.Equal(7, array[1]);
     }
 
     [Fact]
@@ -39,8 +39,8 @@ public class IntArrayFacts
         
         array.RemoveAt(1);
         
-        Assert.Equal(0, array.Element(0));
-        Assert.Equal(2, array.Element(1));
+        Assert.Equal(0, array[0]);
+        Assert.Equal(2, array[1]);
         Assert.Equal(-1, array.IndexOf(3));
         Assert.Equal(2, array.Count);
     }
@@ -54,8 +54,8 @@ public class IntArrayFacts
         array.Add(2);
         
         array.Remove(1);
-        Assert.Equal(0, array.Element(0));
-        Assert.Equal(2, array.Element(1));
+        Assert.Equal(0, array[0]);
+        Assert.Equal(2, array[1]);
         Assert.Equal(-1, array.IndexOf(3));
         Assert.Equal(2, array.Count);
     }

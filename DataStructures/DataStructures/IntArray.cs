@@ -13,22 +13,18 @@ public class IntArray
 
     public int Count { get; private set; }
 
+    public int this[int index]
+    {
+        get => arrayOfIntegers[index];
+        set => arrayOfIntegers[index] = value;
+    }
+
     public void Add(int element)
     {
         EnsureCapacity();
 
         arrayOfIntegers[Count] = element;
         Count++;
-    }
-
-    public int Element(int index)
-    {
-        if (index < 0 || index > Count)
-        {
-            return -1;
-        }
-
-        return arrayOfIntegers[index];
     }
 
     public void SetElement(int index, int element)
@@ -109,7 +105,7 @@ public class IntArray
     {
         for (int i = index + 1; i < Count; i++)
         {
-            arrayOfIntegers[i - 1] = arrayOfIntegers[i];
+            this[i - 1] = this[i];
         }
     }
 
@@ -117,7 +113,7 @@ public class IntArray
     {
         for (int i = Count; i > index; i--)
         {
-            arrayOfIntegers[i] = arrayOfIntegers[i - 1];
+            this[i] = this[i - 1];
         }
     }
 }
