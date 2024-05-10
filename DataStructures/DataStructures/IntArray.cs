@@ -27,16 +27,6 @@ public class IntArray
         Count++;
     }
 
-    public void SetElement(int index, int element)
-    {
-        if (index < 0 || index > Count)
-        {
-            return;
-        }
-
-        arrayOfIntegers[index] = element;
-    }
-
     public bool Contains(int element)
     {
         return IndexOf(element) > -1;
