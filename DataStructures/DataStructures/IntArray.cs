@@ -2,8 +2,8 @@
 
 public class IntArray
 {
+    private readonly int count;
     private int[] arrayOfIntegers;
-    private int count;
 
     public IntArray(int initialCapacity = 3)
     {
@@ -11,22 +11,19 @@ public class IntArray
         count = 0;
     }
 
+    public int Count { get; private set; }
+
     public void Add(int element)
     {
         EnsureCapacity();
 
-        arrayOfIntegers[count] = element;
-        count++;
-    }
-
-    public int Count()
-    {
-        return count;
+        arrayOfIntegers[Count] = element;
+        Count++;
     }
 
     public int Element(int index)
     {
-        if (index < 0 || index > count)
+        if (index < 0 || index > Count)
         {
             return -1;
         }
@@ -36,7 +33,7 @@ public class IntArray
 
     public void SetElement(int index, int element)
     {
-        if (index < 0 || index > count)
+        if (index < 0 || index > Count)
         {
             return;
         }
@@ -64,7 +61,7 @@ public class IntArray
 
     public void Insert(int index, int element)
     {
-        if (index < 0 || index > count)
+        if (index < 0 || index > Count)
         {
             return;
         }
@@ -72,13 +69,13 @@ public class IntArray
         EnsureCapacity();
         ShiftElementsToRight(index);
         arrayOfIntegers[index] = element;
-        count++;
+        Count++;
     }
 
     public void Clear()
     {
         Array.Clear(arrayOfIntegers, 0, arrayOfIntegers.Length);
-        count = 0;
+        Count = 0;
     }
 
     public void Remove(int element)
@@ -88,18 +85,18 @@ public class IntArray
 
     public void RemoveAt(int index)
     {
-        if (index < 0 || index > count)
+        if (index < 0 || index > Count)
         {
             return;
         }
 
         ShiftElementsToLeft(index);
-        count--;
+        Count--;
     }
 
     private void EnsureCapacity()
     {
-        if (count < arrayOfIntegers.Length)
+        if (Count < arrayOfIntegers.Length)
         {
             return;
         }
@@ -110,7 +107,7 @@ public class IntArray
 
     private void ShiftElementsToLeft(int index)
     {
-        for (int i = index + 1; i < count; i++)
+        for (int i = index + 1; i < Count; i++)
         {
             arrayOfIntegers[i - 1] = arrayOfIntegers[i];
         }
@@ -118,7 +115,7 @@ public class IntArray
 
     private void ShiftElementsToRight(int index)
     {
-        for (int i = count; i > index; i--)
+        for (int i = Count; i > index; i--)
         {
             arrayOfIntegers[i] = arrayOfIntegers[i - 1];
         }
