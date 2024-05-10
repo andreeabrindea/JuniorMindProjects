@@ -15,15 +15,32 @@ public class IntArray
 
     public int this[int index]
     {
-        get => arrayOfIntegers[index];
-        set => arrayOfIntegers[index] = value;
+        get
+        {
+            if (index < 0 || index > count)
+            {
+                return -1;
+            }
+
+            return arrayOfIntegers[index];
+        }
+
+        private set
+        {
+            if (index < 0 || index > count)
+            {
+                return;
+            }
+
+            arrayOfIntegers[index] = value;
+        }
     }
 
     public void Add(int element)
     {
         EnsureCapacity();
 
-        arrayOfIntegers[Count] = element;
+        this[Count] = element;
         Count++;
     }
 
@@ -36,7 +53,7 @@ public class IntArray
     {
         for (int i = 0; i < arrayOfIntegers.Length; i++)
         {
-            if (arrayOfIntegers[i] == element)
+            if (this[i] == element)
             {
                 return i;
             }
@@ -54,7 +71,7 @@ public class IntArray
 
         EnsureCapacity();
         ShiftElementsToRight(index);
-        arrayOfIntegers[index] = element;
+        this[index] = element;
         Count++;
     }
 
