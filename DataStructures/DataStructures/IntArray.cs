@@ -15,25 +15,8 @@ public class IntArray
 
     public int this[int index]
     {
-        get
-        {
-            if (index < 0 || index > count)
-            {
-                return -1;
-            }
-
-            return arrayOfIntegers[index];
-        }
-
-        private set
-        {
-            if (index < 0 || index > count)
-            {
-                return;
-            }
-
-            arrayOfIntegers[index] = value;
-        }
+        get => arrayOfIntegers[index];
+        private set => arrayOfIntegers[index] = value;
     }
 
     public void Add(int element)
