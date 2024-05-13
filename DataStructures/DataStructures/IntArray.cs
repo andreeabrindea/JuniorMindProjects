@@ -16,7 +16,7 @@ public class IntArray
     public int this[int index]
     {
         get => arrayOfIntegers[index];
-        private set => arrayOfIntegers[index] = value;
+        set => arrayOfIntegers[index] = value;
     }
 
     public void Add(int element)
