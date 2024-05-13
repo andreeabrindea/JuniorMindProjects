@@ -16,15 +16,15 @@ public class SortedIntArray : IntArray
 
     private void BubbleSort()
     {
-        for (int i = 2; i < arrayOfIntegers.Count(); ++i)
+        for (int i = 0; i < Count; ++i)
         {
             bool swapped = false;
 
-            for (int j = 2; j < arrayOfIntegers.Count() - i - 1; ++j)
+            for (int j = 0; j < Count - i - 1; ++j)
             {
-                if (arrayOfIntegers[j] > arrayOfIntegers[j + 1])
+                if (this[j] > this[j + 1])
                 {
-                    (arrayOfIntegers[j], arrayOfIntegers[j + 1]) = (arrayOfIntegers[j + 1], arrayOfIntegers[j]);
+                    (this[j], this[j + 1]) = (this[j + 1], this[j]);
 
                     swapped = true;
                 }
