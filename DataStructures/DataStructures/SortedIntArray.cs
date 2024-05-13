@@ -2,6 +2,12 @@ namespace DataStructures;
 
 public class SortedIntArray : IntArray
 {
+    public override int this[int index]
+    {
+        get => arrayOfIntegers[index];
+        set => arrayOfIntegers[index] = value;
+    }
+
     public override void Add(int element)
     {
         base.Add(element);
