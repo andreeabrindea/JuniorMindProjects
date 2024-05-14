@@ -2,8 +2,8 @@
 
 public class IntArray
 {
-    protected int[] arrayOfIntegers;
     private readonly int count;
+    private int[] arrayOfIntegers;
 
     public IntArray(int initialCapacity = 3)
     {
@@ -13,7 +13,7 @@ public class IntArray
 
     public int Count { get; private set; }
 
-    public virtual int this[int index]
+    public int this[int index]
     {
         get => arrayOfIntegers[index];
         set => arrayOfIntegers[index] = value;
