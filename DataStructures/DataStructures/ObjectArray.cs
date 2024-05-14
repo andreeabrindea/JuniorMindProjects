@@ -36,13 +36,29 @@ public class ObjectArray<T>
     {
         for (int i = 0; i < arrayOfObjects.Length; i++)
         {
-            if (this[i]!.Equals(element))
+            if (this[i] != null && this[i].Equals(element))
             {
                 return i;
             }
         }
 
         return -1;
+    }
+
+    public void Remove(T element)
+    {
+        RemoveAt(IndexOf(element));
+    }
+
+    public void RemoveAt(int index)
+    {
+        if (index < 0 || index > Count)
+        {
+            return;
+        }
+
+        ShiftElementsToLeft(index);
+        Count--;
     }
 
     private void EnsureCapacity()
@@ -54,5 +70,13 @@ public class ObjectArray<T>
 
         int resizingValue = arrayOfObjects.Length * 2;
         Array.Resize(ref arrayOfObjects, resizingValue);
+    }
+
+    private void ShiftElementsToLeft(int index)
+    {
+        for (int i = index + 1; i < Count; i++)
+        {
+            this[i - 1] = this[i];
+        }
     }
 }

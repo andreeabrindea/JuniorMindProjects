@@ -31,4 +31,45 @@ public class ObjectArrayFacts {
         
         Assert.Equal(3, objectArray.Count);
     }
+
+
+    [Fact]
+    public void RemoveStringElement()
+    {
+        ObjectArray<object> objectArray = new();
+        objectArray.Add("First element");
+        objectArray.Add(1);
+        objectArray.Add(2);
+        objectArray.Add(3);
+        
+        objectArray.Remove("First element");
+        Assert.False(objectArray.Contains("First element"));
+        Assert.Equal(1, objectArray[0]);
+        Assert.Equal(3, objectArray.Count);
+    }
+
+    [Fact]
+    public void RemoveObjectElement()
+    {
+        ObjectArray<object> objectArray = new();
+        
+        IntArray intArray = new();
+        intArray.Add(10);
+        intArray.Add(30);
+        intArray.Add(20);
+
+        SortedIntArray sortedIntArray = new();
+        sortedIntArray.Add(60);
+        sortedIntArray.Add(40);
+        sortedIntArray.Add(50);
+        
+        objectArray.Add(intArray);
+        objectArray.Add(sortedIntArray);
+        
+        Assert.Equal(2, objectArray.Count);
+        
+        objectArray.Remove(intArray);
+        Assert.Equal(1, objectArray.Count);
+        Assert.Equal(typeof(SortedIntArray), objectArray[0].GetType());
+    }
 }
