@@ -49,5 +49,33 @@ public class SortedIntArrayFacts
         Assert.Equal(-1, sortedIntArray.IndexOf(20));
         Assert.Equal(2, sortedIntArray.Count);
     }
+
+    [Fact]
+    public void InsertAtFirstPosition()
+    {
+        SortedIntArray sortedIntArray = new();
+        sortedIntArray.Add(32);
+        sortedIntArray.Add(12);
+        sortedIntArray.Add(20);
+        sortedIntArray.Add(18);
+        
+        sortedIntArray.Insert(0, 90);
+        
+        Assert.Equal(12, sortedIntArray[0]);
+        Assert.Equal(0, sortedIntArray.IndexOf(12));
+        
+        Assert.Equal(18, sortedIntArray[1]);
+        Assert.Equal(1, sortedIntArray.IndexOf(18));
+        
+        Assert.Equal(20, sortedIntArray[2]);
+        Assert.Equal(2, sortedIntArray.IndexOf(20));
+        
+        Assert.Equal(32, sortedIntArray[3]);
+        Assert.Equal(3, sortedIntArray.IndexOf(32));
+        
+        Assert.True(sortedIntArray.Contains(90));
+        Assert.Equal(90, sortedIntArray[4]);
+        Assert.Equal(4, sortedIntArray.IndexOf(90));
+    }
     
 }

@@ -14,6 +14,12 @@ public class SortedIntArray : IntArray
         BubbleSort();
     }
 
+    public override void Insert(int index, int element)
+    {
+        base.Insert(index, element);
+        BubbleSort();
+    }
+
     private void BubbleSort()
     {
         for (int i = 0; i < Count; ++i)
