@@ -27,6 +27,24 @@ public class ObjectArray<T>
         Count++;
     }
 
+    public bool Contains(T element)
+    {
+        return IndexOf(element) > -1;
+    }
+
+    public int IndexOf(T element)
+    {
+        for (int i = 0; i < arrayOfObjects.Length; i++)
+        {
+            if (this[i]!.Equals(element))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     private void EnsureCapacity()
     {
         if (Count < arrayOfObjects.Length)
