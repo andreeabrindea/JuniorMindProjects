@@ -45,6 +45,19 @@ public class ObjectArray<T>
         return -1;
     }
 
+    public void Insert(int index, T element)
+    {
+        if (index < 0 || index > Count)
+        {
+            return;
+        }
+
+        EnsureCapacity();
+        ShiftElementsToRight(index);
+        this[index] = element;
+        Count++;
+    }
+
     public void Remove(T element)
     {
         RemoveAt(IndexOf(element));
@@ -77,6 +90,14 @@ public class ObjectArray<T>
         for (int i = index + 1; i < Count; i++)
         {
             this[i - 1] = this[i];
+        }
+    }
+
+    private void ShiftElementsToRight(int index)
+    {
+        for (int i = Count; i > index; i--)
+        {
+            this[i] = this[i - 1];
         }
     }
 }

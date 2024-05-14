@@ -72,4 +72,27 @@ public class ObjectArrayFacts {
         Assert.Equal(1, objectArray.Count);
         Assert.Equal(typeof(SortedIntArray), objectArray[0].GetType());
     }
+
+    [Fact]
+    public void InsertNewElement()
+    {
+        ObjectArray<object> objectArray = new();
+        objectArray.Add(1);
+        objectArray.Add("1");
+
+        IntArray intArray = new();
+        intArray.Add(1);
+        intArray.Add(2);
+        intArray.Add(3);
+        
+        objectArray.Add(intArray);
+        objectArray.Add(3.14);
+        
+        objectArray.Insert(2, "element");
+        
+        Assert.Equal("element", objectArray[2]);
+        Assert.Equal(2, objectArray.IndexOf("element"));
+        Assert.Equal(5, objectArray.Count);
+    }
+    
 }
