@@ -7,7 +7,7 @@ public class ObjectArrayFacts {
     [Fact]
     public void AddIntStringObjectElements()
     {
-        ObjectArray<object> objectArray = new();
+        ObjectArray objectArray = new();
         
         objectArray.Add(2);
         objectArray.Add("ello");
@@ -36,7 +36,7 @@ public class ObjectArrayFacts {
     [Fact]
     public void RemoveStringElement()
     {
-        ObjectArray<object> objectArray = new();
+        ObjectArray objectArray = new();
         objectArray.Add("First element");
         objectArray.Add(1);
         objectArray.Add(2);
@@ -51,7 +51,7 @@ public class ObjectArrayFacts {
     [Fact]
     public void RemoveObjectElement()
     {
-        ObjectArray<object> objectArray = new();
+        ObjectArray objectArray = new();
         
         IntArray intArray = new();
         intArray.Add(10);
@@ -76,7 +76,7 @@ public class ObjectArrayFacts {
     [Fact]
     public void InsertNewElement()
     {
-        ObjectArray<object> objectArray = new();
+        ObjectArray objectArray = new();
         objectArray.Add(1);
         objectArray.Add("1");
 

@@ -1,25 +1,25 @@
 namespace DataStructures;
 
-public class ObjectArray<T>
+public class ObjectArray
 {
     private readonly int count;
-    private T[] arrayOfObjects;
+    private object[] arrayOfObjects;
 
     public ObjectArray(int initialCapacity = 3)
     {
-        this.arrayOfObjects = new T[initialCapacity];
+        this.arrayOfObjects = new object[initialCapacity];
         count = 0;
     }
 
     public int Count { get; private set; }
 
-    public T this[int index]
+    public object this[int index]
     {
         get => arrayOfObjects[index];
         set => arrayOfObjects[index] = value;
     }
 
-    public void Add(T element)
+    public void Add(object element)
     {
         EnsureCapacity();
 
@@ -27,16 +27,16 @@ public class ObjectArray<T>
         Count++;
     }
 
-    public bool Contains(T element)
+    public bool Contains(object element)
     {
         return IndexOf(element) > -1;
     }
 
-    public int IndexOf(T element)
+    public int IndexOf(object element)
     {
         for (int i = 0; i < arrayOfObjects.Length; i++)
         {
-            if (this[i] != null && this[i].Equals(element))
+            if (this[i]?.Equals(element) == true)
             {
                 return i;
             }
@@ -45,7 +45,7 @@ public class ObjectArray<T>
         return -1;
     }
 
-    public void Insert(int index, T element)
+    public void Insert(int index, object element)
     {
         if (index < 0 || index > Count)
         {
@@ -58,7 +58,7 @@ public class ObjectArray<T>
         Count++;
     }
 
-    public void Remove(T element)
+    public void Remove(object element)
     {
         RemoveAt(IndexOf(element));
     }
