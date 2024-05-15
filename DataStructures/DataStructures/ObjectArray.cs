@@ -36,7 +36,7 @@ public class ObjectArray
     {
         for (int i = 0; i < arrayOfObjects.Length; i++)
         {
-            if (this[i]?.Equals(element) == true)
+            if ((arrayOfObjects[i] == null && element == null) || (this[i]?.Equals(element) == true))
             {
                 return i;
             }

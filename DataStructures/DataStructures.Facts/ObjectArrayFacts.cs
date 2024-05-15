@@ -94,5 +94,12 @@ public class ObjectArrayFacts {
         Assert.Equal(2, objectArray.IndexOf("element"));
         Assert.Equal(5, objectArray.Count);
     }
-    
+
+    [Fact]
+    public void GetIndexOfNullElementInArray()
+    {
+        ObjectArray objectArray = new();
+        objectArray.Add(null);
+        Assert.Equal(0, objectArray.IndexOf(null));
+    }
 }
