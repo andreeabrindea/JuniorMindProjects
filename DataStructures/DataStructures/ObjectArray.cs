@@ -1,6 +1,10 @@
+#pragma warning disable CA1710
+
+using System.Collections;
+
 namespace DataStructures;
 
-public class ObjectArray
+public class ObjectArray : IEnumerable
 {
     private readonly int count;
     private object[] arrayOfObjects;
@@ -74,6 +78,11 @@ public class ObjectArray
         Count--;
     }
 
+    public IEnumerator GetEnumerator()
+    {
+        return new ObjectArrayEnumerator(arrayOfObjects);
+    }
+
     private void EnsureCapacity()
     {
         if (Count < arrayOfObjects.Length)
@@ -101,3 +110,4 @@ public class ObjectArray
         }
     }
 }
+#pragma warning restore CA1710
