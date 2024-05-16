@@ -13,7 +13,20 @@ public class ObjectArrayEnumerator : IEnumerator
         this.index = index;
     }
 
-    public object Current => arrayOfObjects[index];
+    public object Current
+    {
+        get
+        {
+            try
+            {
+                return arrayOfObjects[index];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+    }
 
     public bool MoveNext()
     {
