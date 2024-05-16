@@ -78,7 +78,12 @@ public class ObjectArray : IEnumerable
         Count--;
     }
 
-    public IEnumerator GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public ObjectArrayEnumerator GetEnumerator()
     {
         return new ObjectArrayEnumerator(arrayOfObjects);
     }
