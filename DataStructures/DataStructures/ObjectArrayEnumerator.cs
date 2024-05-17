@@ -4,10 +4,10 @@ namespace DataStructures;
 
 public class ObjectArrayEnumerator : IEnumerator
 {
-    private readonly object[] arrayOfObjects;
+    private readonly ObjectArray arrayOfObjects;
     private int index;
 
-    public ObjectArrayEnumerator(object[] array, int index = -1)
+    public ObjectArrayEnumerator(ObjectArray array, int index = -1)
     {
         this.arrayOfObjects = array;
         this.index = index;
@@ -31,7 +31,7 @@ public class ObjectArrayEnumerator : IEnumerator
     public bool MoveNext()
     {
         index++;
-        return index < arrayOfObjects.Length;
+        return index < arrayOfObjects.Count;
     }
 
     public void Reset()

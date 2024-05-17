@@ -85,7 +85,7 @@ public class ObjectArray : IEnumerable
 
     public ObjectArrayEnumerator GetEnumerator()
     {
-        return new ObjectArrayEnumerator(arrayOfObjects);
+        return new ObjectArrayEnumerator(this);
     }
 
     private void EnsureCapacity()
