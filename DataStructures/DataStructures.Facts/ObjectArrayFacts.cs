@@ -102,4 +102,27 @@ public class ObjectArrayFacts {
         objectArray.Add(null);
         Assert.Equal(0, objectArray.IndexOf(null));
     }
+
+    [Fact]
+    public void GetElements()
+    {
+        var objectArray = new ObjectArray { 1, "ello", 2 };
+        var elements = objectArray.GetElements();
+        object[] expectedValues = new object[3];
+        int count = 0;
+        foreach (var element in elements)
+        {
+            expectedValues[count++] = element;
+        }
+        Assert.Equal(1, expectedValues[0]);
+        Assert.Equal("ello", expectedValues[1]);
+        Assert.Equal(2, expectedValues[2]);
+        Assert.Equal(3, expectedValues.Length);
+    }
+
+    [Fact]
+    public void GetElementsWhenThereIsNoElement()
+    {
+        
+    }
 }

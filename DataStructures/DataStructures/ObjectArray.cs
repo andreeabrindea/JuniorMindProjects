@@ -11,7 +11,7 @@ public class ObjectArray : IEnumerable
 
     public ObjectArray(int initialCapacity = 3)
     {
-        this.arrayOfObjects = new object[initialCapacity];
+        arrayOfObjects = new object[initialCapacity];
         count = 0;
     }
 
@@ -78,12 +78,15 @@ public class ObjectArray : IEnumerable
         Count--;
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
+    public IEnumerable GetElements()
     {
-        return GetEnumerator();
+        for (int i = 0; i < Count; i++)
+        {
+            yield return arrayOfObjects[i];
+        }
     }
 
-    public ObjectArrayEnumerator GetEnumerator()
+    public IEnumerator GetEnumerator()
     {
         return new ObjectArrayEnumerator(this);
     }
