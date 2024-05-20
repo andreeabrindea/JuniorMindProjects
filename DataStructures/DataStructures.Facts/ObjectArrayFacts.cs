@@ -58,19 +58,19 @@ public class ObjectArrayFacts {
         intArray.Add(30);
         intArray.Add(20);
 
-        SortedIntArray sortedIntArray = new();
-        sortedIntArray.Add(60);
-        sortedIntArray.Add(40);
-        sortedIntArray.Add(50);
+        SortedList<int> sortedList = new();
+        sortedList.Add(60);
+        sortedList.Add(40);
+        sortedList.Add(50);
         
         list.Add(intArray);
-        list.Add(sortedIntArray);
+        list.Add(sortedList);
         
         Assert.Equal(2, list.Count);
         
         list.Remove(intArray);
         Assert.Equal(1, list.Count);
-        Assert.Equal(typeof(SortedIntArray), list[0].GetType());
+        Assert.Equal(typeof(SortedList<int>), list[0].GetType());
     }
 
     [Fact]

@@ -1,14 +1,15 @@
 namespace DataStructures;
 
-public class SortedIntArray : IntArray
+public class SortedList<T> : List<T>
+    where T : IComparable<T>
 {
-    public override void Add(int element)
+    public override void Add(T element)
     {
         base.Add(element);
         BubbleSort();
     }
 
-    public override void Insert(int index, int element)
+    public override void Insert(int index, T element)
     {
         base.Insert(index, element);
         BubbleSort();
@@ -22,7 +23,7 @@ public class SortedIntArray : IntArray
 
             for (int j = 0; j < Count - i - 1; ++j)
             {
-                if (this[j] > this[j + 1])
+                if (this[j].CompareTo(this[j + 1]) > 0)
                 {
                     (this[j], this[j + 1]) = (this[j + 1], this[j]);
 

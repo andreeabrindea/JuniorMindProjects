@@ -23,7 +23,7 @@ public class List<T> : IEnumerable
         set => arrayOfObjects[index] = value;
     }
 
-    public void Add(T element)
+    public virtual void Add(T element)
     {
         EnsureCapacity();
 
@@ -49,7 +49,7 @@ public class List<T> : IEnumerable
         return -1;
     }
 
-    public void Insert(int index, T element)
+    public virtual void Insert(int index, T element)
     {
         if (index < 0 || index > Count)
         {
