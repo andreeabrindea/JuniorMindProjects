@@ -2,12 +2,12 @@ using System.Collections;
 
 namespace DataStructures;
 
-public class ObjectArrayEnumerator : IEnumerator
+public class ListEnumerator<T> : IEnumerator
 {
-    private readonly ObjectArray arrayOfObjects;
+    private readonly List<T> arrayOfObjects;
     private int index;
 
-    public ObjectArrayEnumerator(ObjectArray array, int index = -1)
+    public ListEnumerator(List<T> array, int index = -1)
     {
         this.arrayOfObjects = array;
         this.index = index;

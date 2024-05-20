@@ -4,26 +4,26 @@ using System.Collections;
 
 namespace DataStructures;
 
-public class ObjectArray : IEnumerable
+public class List<T> : IEnumerable
 {
     private readonly int count;
-    private object[] arrayOfObjects;
+    private T[] arrayOfObjects;
 
-    public ObjectArray(int initialCapacity = 3)
+    public List(int initialCapacity = 3)
     {
-        arrayOfObjects = new object[initialCapacity];
+        arrayOfObjects = new T[initialCapacity];
         count = 0;
     }
 
     public int Count { get; private set; }
 
-    public object this[int index]
+    public T this[int index]
     {
         get => arrayOfObjects[index];
         set => arrayOfObjects[index] = value;
     }
 
-    public void Add(object element)
+    public void Add(T element)
     {
         EnsureCapacity();
 
@@ -31,7 +31,7 @@ public class ObjectArray : IEnumerable
         Count++;
     }
 
-    public bool Contains(object element)
+    public bool Contains(T element)
     {
         return IndexOf(element) > -1;
     }
@@ -49,7 +49,7 @@ public class ObjectArray : IEnumerable
         return -1;
     }
 
-    public void Insert(int index, object element)
+    public void Insert(int index, T element)
     {
         if (index < 0 || index > Count)
         {
@@ -88,7 +88,7 @@ public class ObjectArray : IEnumerable
 
     public IEnumerator GetEnumerator()
     {
-        return new ObjectArrayEnumerator(this);
+        return new ListEnumerator<T>(this);
     }
 
     private void EnsureCapacity()

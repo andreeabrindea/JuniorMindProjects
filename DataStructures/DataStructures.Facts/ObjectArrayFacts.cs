@@ -7,51 +7,51 @@ public class ObjectArrayFacts {
     [Fact]
     public void AddIntStringObjectElements()
     {
-        ObjectArray objectArray = new();
+        List<object> list = new();
         
-        objectArray.Add(2);
-        objectArray.Add("ello");
+        list.Add(2);
+        list.Add("ello");
         
         IntArray arrayOfInteger = new();
         arrayOfInteger.Add(0);
-        objectArray.Add(arrayOfInteger);
+        list.Add(arrayOfInteger);
         
-        Assert.Equal(2, objectArray[0]);
-        Assert.True(objectArray.Contains(2));
+        Assert.Equal(2, list[0]);
+        Assert.True(list.Contains(2));
         
-        Assert.False(objectArray.Contains(3));
+        Assert.False(list.Contains(3));
         
-        Assert.Equal("ello", objectArray[1]);
-        Assert.True(objectArray.Contains("ello"));
+        Assert.Equal("ello", list[1]);
+        Assert.True(list.Contains("ello"));
         
-        Assert.False(objectArray.Contains("hello"));
+        Assert.False(list.Contains("hello"));
         
-        Assert.Equal(typeof(IntArray), objectArray[2].GetType());
-        Assert.True(objectArray.Contains(arrayOfInteger));
+        Assert.Equal(typeof(IntArray), list[2].GetType());
+        Assert.True(list.Contains(arrayOfInteger));
         
-        Assert.Equal(3, objectArray.Count);
+        Assert.Equal(3, list.Count);
     }
 
 
     [Fact]
     public void RemoveStringElement()
     {
-        ObjectArray objectArray = new();
-        objectArray.Add("First element");
-        objectArray.Add(1);
-        objectArray.Add(2);
-        objectArray.Add(3);
+        List<object> list = new();
+        list.Add("First element");
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
         
-        objectArray.Remove("First element");
-        Assert.False(objectArray.Contains("First element"));
-        Assert.Equal(1, objectArray[0]);
-        Assert.Equal(3, objectArray.Count);
+        list.Remove("First element");
+        Assert.False(list.Contains("First element"));
+        Assert.Equal(1, list[0]);
+        Assert.Equal(3, list.Count);
     }
 
     [Fact]
     public void RemoveObjectElement()
     {
-        ObjectArray objectArray = new();
+        List<object> list = new();
         
         IntArray intArray = new();
         intArray.Add(10);
@@ -63,50 +63,50 @@ public class ObjectArrayFacts {
         sortedIntArray.Add(40);
         sortedIntArray.Add(50);
         
-        objectArray.Add(intArray);
-        objectArray.Add(sortedIntArray);
+        list.Add(intArray);
+        list.Add(sortedIntArray);
         
-        Assert.Equal(2, objectArray.Count);
+        Assert.Equal(2, list.Count);
         
-        objectArray.Remove(intArray);
-        Assert.Equal(1, objectArray.Count);
-        Assert.Equal(typeof(SortedIntArray), objectArray[0].GetType());
+        list.Remove(intArray);
+        Assert.Equal(1, list.Count);
+        Assert.Equal(typeof(SortedIntArray), list[0].GetType());
     }
 
     [Fact]
     public void InsertNewElement()
     {
-        ObjectArray objectArray = new();
-        objectArray.Add(1);
-        objectArray.Add("1");
+        List<object> list = new();
+        list.Add(1);
+        list.Add("1");
 
         IntArray intArray = new();
         intArray.Add(1);
         intArray.Add(2);
         intArray.Add(3);
         
-        objectArray.Add(intArray);
-        objectArray.Add(3.14);
+        list.Add(intArray);
+        list.Add(3.14);
         
-        objectArray.Insert(2, "element");
+        list.Insert(2, "element");
         
-        Assert.Equal("element", objectArray[2]);
-        Assert.Equal(2, objectArray.IndexOf("element"));
-        Assert.Equal(5, objectArray.Count);
+        Assert.Equal("element", list[2]);
+        Assert.Equal(2, list.IndexOf("element"));
+        Assert.Equal(5, list.Count);
     }
 
     [Fact]
     public void GetIndexOfNullElementInArray()
     {
-        ObjectArray objectArray = new();
-        objectArray.Add(null);
-        Assert.Equal(0, objectArray.IndexOf(null));
+        List<object> list = new();
+        list.Add(null);
+        Assert.Equal(0, list.IndexOf(null));
     }
 
     [Fact]
     public void GetElements()
     {
-        var objectArray = new ObjectArray { 1, "ello", 2 };
+        var objectArray = new List<object> { 1, "ello", 2 };
         var elements = objectArray.GetElements();
         object[] expectedValues = new object[objectArray.Count];
         int count = 0;
@@ -123,7 +123,7 @@ public class ObjectArrayFacts {
     [Fact]
     public void GetElementsWhenThereIsNoElement()
     {
-        var objectArray = new ObjectArray { };
+        var objectArray = new List<object> { };
         var elements = objectArray.GetElements();
         object[] expectedValues = new object[objectArray.Count];
         int count = 0;
