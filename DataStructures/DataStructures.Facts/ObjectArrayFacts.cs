@@ -108,7 +108,7 @@ public class ObjectArrayFacts {
     {
         var objectArray = new ObjectArray { 1, "ello", 2 };
         var elements = objectArray.GetElements();
-        object[] expectedValues = new object[3];
+        object[] expectedValues = new object[objectArray.Count];
         int count = 0;
         foreach (var element in elements)
         {
@@ -123,6 +123,14 @@ public class ObjectArrayFacts {
     [Fact]
     public void GetElementsWhenThereIsNoElement()
     {
-        
+        var objectArray = new ObjectArray { };
+        var elements = objectArray.GetElements();
+        object[] expectedValues = new object[objectArray.Count];
+        int count = 0;
+        foreach (var element in elements)
+        {
+            expectedValues[count++] = element;
+        }
+        Assert.Empty(expectedValues);
     }
 }
