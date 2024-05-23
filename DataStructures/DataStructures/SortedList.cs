@@ -3,9 +3,8 @@ namespace DataStructures;
 public class SortedList<T> : List<T>
     where T : IComparable<T>
 {
-    public virtual T this[int index]
+    public override T this[int index]
     {
-        get => base[index];
         set
         {
             base[index] = value;
