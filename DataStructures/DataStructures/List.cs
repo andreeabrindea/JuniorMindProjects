@@ -17,7 +17,7 @@ public class List<T> : IEnumerable<T>
 
     public int Count { get; private set; }
 
-    public T this[int index]
+    public virtual T this[int index]
     {
         get => arrayOfObjects[index];
         set => arrayOfObjects[index] = value;
@@ -36,11 +36,11 @@ public class List<T> : IEnumerable<T>
         return IndexOf(element) > -1;
     }
 
-    public int IndexOf(object element)
+    public int IndexOf(T element)
     {
-        for (int i = 0; i < arrayOfObjects.Length; i++)
+        for (int i = 0; i < arrayOfObjects.Count(); i++)
         {
-            if ((arrayOfObjects[i] == null && element == null) || (this[i]?.Equals(element) == true))
+            if ((arrayOfObjects[i].Equals(null) && element.Equals(null)) || (this[i]?.Equals(element) == true))
             {
                 return i;
             }
@@ -62,7 +62,7 @@ public class List<T> : IEnumerable<T>
         Count++;
     }
 
-    public void Remove(object element)
+    public void Remove(T element)
     {
         RemoveAt(IndexOf(element));
     }
