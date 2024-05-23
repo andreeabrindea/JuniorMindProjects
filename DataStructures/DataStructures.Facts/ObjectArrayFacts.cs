@@ -107,30 +107,22 @@ public class ObjectArrayFacts {
     public void GetElements()
     {
         var objectArray = new List<object> { 1, "ello", 2 };
-        var elements = objectArray.GetElements();
-        object[] expectedValues = new object[objectArray.Count];
+        var elements = objectArray.GetEnumerator();
         int count = 0;
-        foreach (var element in elements)
-        {
-            expectedValues[count++] = element;
-        }
-        Assert.Equal(1, expectedValues[0]);
-        Assert.Equal("ello", expectedValues[1]);
-        Assert.Equal(2, expectedValues[2]);
-        Assert.Equal(3, expectedValues.Length);
+        elements.MoveNext();
+        Assert.Equal(1, elements.Current);
+        elements.MoveNext();
+        Assert.Equal("ello", elements.Current);
+        elements.MoveNext();
+        Assert.Equal(2, elements.Current);
     }
 
     [Fact]
     public void GetElementsWhenThereIsNoElement()
     {
         var objectArray = new List<object> { };
-        var elements = objectArray.GetElements();
-        object[] expectedValues = new object[objectArray.Count];
-        int count = 0;
-        foreach (var element in elements)
-        {
-            expectedValues[count++] = element;
-        }
-        Assert.Empty(expectedValues);
+        var elements = objectArray.GetEnumerator();
+        elements.MoveNext();
+        Assert.Null(elements.Current);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace DataStructures;
 
-public class List<T> : IEnumerable
+public class List<T> : IEnumerable<T>
 {
     private readonly int count;
     private T[] arrayOfObjects;
@@ -78,7 +78,7 @@ public class List<T> : IEnumerable
         Count--;
     }
 
-    public IEnumerable GetElements()
+    public IEnumerator<T> GetEnumerator()
     {
         for (int i = 0; i < Count; i++)
         {
@@ -86,9 +86,9 @@ public class List<T> : IEnumerable
         }
     }
 
-    public IEnumerator GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        return new ListEnumerator<T>(this);
+        return GetEnumerator();
     }
 
     private void EnsureCapacity()
