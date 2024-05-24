@@ -31,6 +31,12 @@ public class List<T> : IEnumerable<T>
         Count++;
     }
 
+    public void Clear()
+    {
+        Array.Clear(arrayOfObjects, 0, arrayOfObjects.Length);
+        Count = 0;
+    }
+
     public bool Contains(T element)
     {
         return IndexOf(element) > -1;
@@ -38,9 +44,10 @@ public class List<T> : IEnumerable<T>
 
     public int IndexOf(T element)
     {
-        for (int i = 0; i < arrayOfObjects.Count(); i++)
+        for (int i = 0; i < arrayOfObjects.Length; i++)
         {
-            if ((arrayOfObjects[i].Equals(null) && element.Equals(null)) || (this[i]?.Equals(element) == true))
+            var isNull = arrayOfObjects[i] == null && element == null;
+            if (isNull || this[i]?.Equals(element) == true)
             {
                 return i;
             }

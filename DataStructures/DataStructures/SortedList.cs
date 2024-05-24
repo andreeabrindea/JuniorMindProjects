@@ -32,9 +32,9 @@ public class SortedList<T> : List<T>
 
             for (int j = 0; j < Count - i - 1; ++j)
             {
-                if (this[j].CompareTo(this[j + 1]) > 0)
+                if (base[j].CompareTo(base[j + 1]) > 0)
                 {
-                    (this[j], this[j + 1]) = (this[j + 1], this[j]);
+                    (base[j], base[j + 1]) = (base[j + 1], base[j]);
 
                     swapped = true;
                 }
