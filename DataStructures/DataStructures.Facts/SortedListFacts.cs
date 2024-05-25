@@ -73,7 +73,7 @@ public class SortedListFacts
         Assert.Equal(32, sortedList[3]);
         Assert.Equal(3, sortedList.IndexOf(32));
         
-        Assert.True(sortedList.Contains(90));
+        Assert.Contains(90, sortedList);
         Assert.Equal(90, sortedList[4]);
         Assert.Equal(4, sortedList.IndexOf(90));
     }
@@ -84,7 +84,7 @@ public class SortedListFacts
         SortedList<int> sortedList = new(){6, 2, 8, 5, 11, 10};
         Assert.Equal(2, sortedList[0]);
         Assert.Equal(5, sortedList[1]);
-        //Assert.Equal(6, sortedList[2]);
+        Assert.Equal(6, sortedList[2]);
         Assert.Equal(8, sortedList[3]);
         Assert.Equal(10, sortedList[4]);
         Assert.Equal(11, sortedList[5]);
@@ -97,4 +97,19 @@ public class SortedListFacts
         Assert.Equal(10, sortedList[3]);
         Assert.Equal(11, sortedList[4]);
     }
+
+    [Fact]
+    public void SetAnExistingElement()
+    {
+        SortedList<int> sortedList = new(){6, 2, 8, 5, 11, 10};
+        sortedList[2] = 17;
+        
+        Assert.Equal(2, sortedList[0]);
+        Assert.Equal(5, sortedList[1]);
+        Assert.Equal(8, sortedList[2]);
+        Assert.Equal(10, sortedList[3]);
+        Assert.Equal(11, sortedList[4]);
+        Assert.Equal(17, sortedList[5]);
+    }
+    
 }

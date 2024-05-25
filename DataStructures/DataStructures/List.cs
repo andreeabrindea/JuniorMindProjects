@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace DataStructures;
 
-public class List<T> : IEnumerable<T>
+public class List<T> : IList<T>
 {
     private readonly int count;
     private T[] arrayOfObjects;
@@ -17,10 +17,23 @@ public class List<T> : IEnumerable<T>
 
     public int Count { get; private set; }
 
+    public bool IsReadOnly => false;
+
     public virtual T this[int index]
     {
         get => arrayOfObjects[index];
         set => arrayOfObjects[index] = value;
+    }
+
+    bool ICollection<T>.Remove(T item)
+    {
+        if (IndexOf(item) < 0)
+        {
+            return false;
+        }
+
+        Remove(item);
+        return IndexOf(item) < 0;
     }
 
     public virtual void Add(T element)
@@ -40,6 +53,14 @@ public class List<T> : IEnumerable<T>
     public bool Contains(T element)
     {
         return IndexOf(element) > -1;
+    }
+
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        for (int i = 0; i < Count; i++)
+        {
+            array[arrayIndex + i] = arrayOfObjects[i];
+        }
     }
 
     public int IndexOf(T element)

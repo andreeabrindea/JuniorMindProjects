@@ -2,7 +2,7 @@ using Xunit;
 
 namespace DataStructures.Facts;
 
-public class ObjectArrayFacts {
+public class ListFacts {
     
     [Fact]
     public void AddIntStringObjectElements()
@@ -108,7 +108,6 @@ public class ObjectArrayFacts {
     {
         var objectArray = new List<object> { 1, "ello", 2 };
         var elements = objectArray.GetEnumerator();
-        int count = 0;
         elements.MoveNext();
         Assert.Equal(1, elements.Current);
         elements.MoveNext();
@@ -124,5 +123,32 @@ public class ObjectArrayFacts {
         var elements = objectArray.GetEnumerator();
         elements.MoveNext();
         Assert.Null(elements.Current);
+    }
+    
+    [Fact]
+    public void RemoveExistingItemFromCollection()
+    {
+        List<string> list = new() { "abc", "xyz", "efg", "def", "opq" };
+        var remove = ((ICollection<string>)list).Remove("xyz");
+        Assert.True(remove);
+        Assert.Equal("abc", list[0]);
+        Assert.Equal("efg", list[1]);
+        Assert.Equal("def", list[2]);
+        Assert.Equal("opq", list[3]);
+        Assert.Equal(4, list.Count);
+    }
+        
+    [Fact]
+    public void RemoveNonExistingItemFromCollection()
+    {
+        List<string> list = new() { "abc", "xyz", "efg", "def", "opq" };
+        var remove = ((ICollection<string>)list).Remove("mno");
+        Assert.False(remove);
+        Assert.Equal("abc", list[0]);
+        Assert.Equal("xyz", list[1]);
+        Assert.Equal("efg", list[2]);
+        Assert.Equal("def", list[3]);
+        Assert.Equal("opq", list[4]);
+        Assert.Equal(5, list.Count);
     }
 }
