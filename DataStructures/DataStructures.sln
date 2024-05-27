@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "DataStruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures.Facts", "DataStructures.Facts\DataStructures.Facts.csproj", "{6ED0F392-6817-428A-9EBC-835CFF51068D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exceptions", "Exceptions\Exceptions.csproj", "{9840EDDE-EC51-44A2-97C5-2B4BF940077B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExceptionsFacts", "ExceptionsFacts\ExceptionsFacts.csproj", "{DC89F2FE-8698-4CC8-BD9C-88372D6182EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{6ED0F392-6817-428A-9EBC-835CFF51068D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ED0F392-6817-428A-9EBC-835CFF51068D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ED0F392-6817-428A-9EBC-835CFF51068D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9840EDDE-EC51-44A2-97C5-2B4BF940077B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9840EDDE-EC51-44A2-97C5-2B4BF940077B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9840EDDE-EC51-44A2-97C5-2B4BF940077B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9840EDDE-EC51-44A2-97C5-2B4BF940077B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC89F2FE-8698-4CC8-BD9C-88372D6182EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC89F2FE-8698-4CC8-BD9C-88372D6182EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC89F2FE-8698-4CC8-BD9C-88372D6182EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC89F2FE-8698-4CC8-BD9C-88372D6182EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
