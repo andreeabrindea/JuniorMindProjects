@@ -25,17 +25,6 @@ public class List<T> : IList<T>
         set => arrayOfObjects[index] = value;
     }
 
-    bool ICollection<T>.Remove(T item)
-    {
-        if (IndexOf(item) < 0)
-        {
-            return false;
-        }
-
-        Remove(item);
-        return IndexOf(item) < 0;
-    }
-
     public virtual void Add(T element)
     {
         EnsureCapacity();
@@ -90,9 +79,10 @@ public class List<T> : IList<T>
         Count++;
     }
 
-    public void Remove(T element)
+    public bool Remove(T element)
     {
         RemoveAt(IndexOf(element));
+        return IndexOf(element) < 0;
     }
 
     public void RemoveAt(int index)
