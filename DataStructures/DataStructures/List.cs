@@ -46,6 +46,21 @@ public class List<T> : IList<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
+        if (array == null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        if (arrayIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        }
+
+        if (array.Length - arrayIndex > Count)
+        {
+            throw new ArgumentException("not enough space to copy", nameof(array));
+        }
+
         for (int i = 0; i < Count; i++)
         {
             array[arrayIndex + i] = arrayOfObjects[i];
@@ -70,7 +85,7 @@ public class List<T> : IList<T>
     {
         if (index < 0 || index > Count)
         {
-            return;
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         EnsureCapacity();
@@ -89,7 +104,7 @@ public class List<T> : IList<T>
     {
         if (index < 0 || index > Count)
         {
-            return;
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         ShiftElementsToLeft(index);

@@ -32,6 +32,10 @@ public static class Exceptions
 
     public static double DivisionUncatched(int a, int b)
     {
+        if (b == 0)
+        {
+            throw new DivideByZeroException(nameof(b));
+        }
         return a / b;
     }
 
