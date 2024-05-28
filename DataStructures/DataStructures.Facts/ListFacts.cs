@@ -8,6 +8,7 @@ public class ListFacts {
     public void AddIntStringObjectElements()
     {
         List<object> list = new();
+        list.IsReadOnly = false;
         if (!list.IsReadOnly)
         {
             list.Add(2);
@@ -33,11 +34,12 @@ public class ListFacts {
 
         Assert.Equal(3, list.Count);
         }
-        Assert.Throws<NotSupportedException>(() => list.Add(2));
-}
-
-
-
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add(2));
+        }
+    }
+    
     [Fact]
     public void RemoveStringElement()
     {
@@ -54,8 +56,10 @@ public class ListFacts {
             Assert.Equal(1, list[0]);
             Assert.Equal(3, list.Count);
         }
-        Assert.Throws<NotSupportedException>(() => list.Add("First element"));
-    }
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add("First element"));
+        }    }
 
     [Fact]
     public void RemoveObjectElement()
@@ -71,14 +75,15 @@ public class ListFacts {
         if (!list.IsReadOnly)
         {
             list.Add(intArray);
-
-            Assert.Equal(2, list.Count);
-
+            Assert.Single(list);
             list.Remove(intArray);
-            Assert.Equal(0, list.Count);
+            Assert.Empty(list);
         }
 
-        Assert.Throws<NotSupportedException>(() => list.Add(intArray));
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add(intArray));
+        }
     }
 
     [Fact]
@@ -105,21 +110,26 @@ public class ListFacts {
             Assert.Equal(2, list.IndexOf("element"));
             Assert.Equal(5, list.Count);
         }
-        Assert.Throws<NotSupportedException>(() => list.Add(intArray));
-
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add(intArray));
+        }
     }
 
     [Fact]
     public void GetIndexOfNullElementInArray()
     {
         List<object> list = new();
+        list.IsReadOnly = true;
         if (!list.IsReadOnly)
         {
             list.Add(null);
             Assert.Equal(0, list.IndexOf(null));
         }
-        
-        Assert.Throws<NotSupportedException>(() => list.Add(null));
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add(null));
+        }
     }
 
     [Fact]
@@ -139,8 +149,10 @@ public class ListFacts {
             elements.MoveNext();
             Assert.Equal(2, elements.Current);
         }
-        
-        Assert.Throws<NotSupportedException>(() => objectArray.Add(1));
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => objectArray.Add(1));
+        }
     }
 
     [Fact]
@@ -172,7 +184,10 @@ public class ListFacts {
             Assert.Equal(4, list.Count);
             
         }
-        Assert.Throws<NotSupportedException>(() => list.Add(null));
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add(null));
+        }
     }
         
     [Fact]
@@ -195,8 +210,10 @@ public class ListFacts {
             Assert.Equal("opq", list[4]);
             Assert.Equal(5, list.Count);
         }
-        
-        Assert.Throws<NotSupportedException>(() => list.Add("mno"));
+        else
+        {
+            Assert.Throws<NotSupportedException>(() => list.Add("mno"));
+        }
 
     }
 }

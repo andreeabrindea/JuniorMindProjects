@@ -17,7 +17,7 @@ public class List<T> : IList<T>
 
     public int Count { get; private set; }
 
-    public bool IsReadOnly => true;
+    public bool IsReadOnly { get;  set; }
 
     public virtual T this[int index]
     {
