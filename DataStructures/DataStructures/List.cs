@@ -17,7 +17,7 @@ public class List<T> : IList<T>
 
     public int Count { get; private set; }
 
-    public bool IsReadOnly => false;
+    public bool IsReadOnly => true;
 
     public virtual T this[int index]
     {
@@ -27,6 +27,7 @@ public class List<T> : IList<T>
 
     public virtual void Add(T element)
     {
+        ThrowNotSupportedException();
         EnsureCapacity();
 
         arrayOfObjects[Count] = element;
@@ -35,6 +36,7 @@ public class List<T> : IList<T>
 
     public void Clear()
     {
+        ThrowNotSupportedException();
         Array.Clear(arrayOfObjects, 0, arrayOfObjects.Length);
         Count = 0;
     }
@@ -83,6 +85,7 @@ public class List<T> : IList<T>
 
     public virtual void Insert(int index, T element)
     {
+        ThrowNotSupportedException();
         ValidateIndex(index);
         EnsureCapacity();
         ShiftElementsToRight(index);
@@ -92,6 +95,7 @@ public class List<T> : IList<T>
 
     public bool Remove(T element)
     {
+        ThrowNotSupportedException();
         var index = IndexOf(element);
         if (index <= -1)
         {
@@ -104,6 +108,7 @@ public class List<T> : IList<T>
 
     public void RemoveAt(int index)
     {
+        ThrowNotSupportedException();
         ValidateIndex(index);
         ShiftElementsToLeft(index);
         Count--;
@@ -157,6 +162,16 @@ public class List<T> : IList<T>
         }
 
         throw new ArgumentOutOfRangeException(nameof(index));
+    }
+
+    private void ThrowNotSupportedException()
+    {
+        if (!IsReadOnly)
+        {
+            return;
+        }
+
+        throw new NotSupportedException();
     }
 }
 #pragma warning restore CA1710
