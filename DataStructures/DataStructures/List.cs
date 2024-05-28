@@ -83,11 +83,7 @@ public class List<T> : IList<T>
 
     public virtual void Insert(int index, T element)
     {
-        if (index < 0 || index > Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
+        ValidateIndex(index);
         EnsureCapacity();
         ShiftElementsToRight(index);
         this[index] = element;
@@ -96,17 +92,19 @@ public class List<T> : IList<T>
 
     public bool Remove(T element)
     {
-        RemoveAt(IndexOf(element));
-        return IndexOf(element) < 0;
+        var index = IndexOf(element);
+        if (index <= -1)
+        {
+            return false;
+        }
+
+        RemoveAt(index);
+        return true;
     }
 
     public void RemoveAt(int index)
     {
-        if (index < 0 || index > Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
-
+        ValidateIndex(index);
         ShiftElementsToLeft(index);
         Count--;
     }
@@ -149,6 +147,16 @@ public class List<T> : IList<T>
         {
             this[i] = this[i - 1];
         }
+    }
+
+    private void ValidateIndex(int index)
+    {
+        if (index >= 0 && index <= Count)
+        {
+            return;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(index));
     }
 }
 #pragma warning restore CA1710
