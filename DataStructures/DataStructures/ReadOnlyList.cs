@@ -4,26 +4,26 @@ namespace DataStructures;
 
 public class ReadOnlyList<T> : IList<T>
 {
-    private readonly IList<T> readonlyListArray;
+    private readonly IList<T> list;
 
-    public ReadOnlyList(IList<T> readonlyListArray)
+    public ReadOnlyList(IList<T> list)
     {
-        this.readonlyListArray = readonlyListArray;
+        this.list = list;
     }
 
-    public int Count => readonlyListArray.Count;
+    public int Count => list.Count;
 
     public bool IsReadOnly => true;
 
     public T this[int index]
     {
-        get => readonlyListArray[index];
+        get => list[index];
         set => throw new NotSupportedException();
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        return readonlyListArray.GetEnumerator();
+        return list.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -43,12 +43,12 @@ public class ReadOnlyList<T> : IList<T>
 
     public bool Contains(T item)
     {
-        return this.readonlyListArray.Contains(item);
+        return this.list.Contains(item);
     }
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        this.readonlyListArray.CopyTo(array, arrayIndex);
+        this.list.CopyTo(array, arrayIndex);
     }
 
     public bool Remove(T item)
@@ -59,7 +59,7 @@ public class ReadOnlyList<T> : IList<T>
 
     public int IndexOf(T item)
     {
-        return readonlyListArray.IndexOf(item);
+        return list.IndexOf(item);
     }
 
     public void Insert(int index, T item)
