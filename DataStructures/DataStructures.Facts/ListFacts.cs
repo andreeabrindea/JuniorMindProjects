@@ -32,8 +32,8 @@ public class ListFacts {
 
         Assert.Equal(3, list.Count);
         
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add(2));
+        var readOnlyList = new ReadOnlyList<object>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(2));
     }
     
     [Fact]
@@ -49,8 +49,8 @@ public class ListFacts {
         Assert.Equal(1, list[0]); 
         Assert.Equal(3, list.Count); 
         
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add("First element"));
+        var readOnlyList = new ReadOnlyList<object>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add("First element"));
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class ListFacts {
         list.Remove(intArray);
         Assert.Empty(list);
 
-       list.ToReadOnlyList();
-       Assert.Throws<NotSupportedException>(() => list.Add(intArray));
+        var readOnlyList = new ReadOnlyList<object>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(intArray));
     }
 
     [Fact]
@@ -92,8 +92,8 @@ public class ListFacts {
         Assert.Equal(2, list.IndexOf("element"));
         Assert.Equal(5, list.Count);
         
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add(intArray));
+        var readOnlyList = new ReadOnlyList<object>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(intArray));
     }
 
     [Fact]
@@ -103,8 +103,8 @@ public class ListFacts {
         list.Add(null);
         Assert.Equal(0, list.IndexOf(null));
         
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add(null));
+        var readOnlyList = new ReadOnlyList<object>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(null));
     }
 
     [Fact]
@@ -123,8 +123,8 @@ public class ListFacts {
         elements.MoveNext();
         Assert.Equal(2, elements.Current);
         
-        objectArray.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => objectArray.Add(1));
+        var readOnlyList = new ReadOnlyList<object>(objectArray);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(1));
     }
 
     [Fact]
@@ -153,9 +153,9 @@ public class ListFacts {
         Assert.Equal("def", list[2]);
         Assert.Equal("opq", list[3]);
         Assert.Equal(4, list.Count);
-            
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add(null));
+
+        var readOnlyList = new ReadOnlyList<string>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add(null));
     }
         
     [Fact]
@@ -172,7 +172,7 @@ public class ListFacts {
         Assert.Equal("opq", list[4]);
         Assert.Equal(5, list.Count);
        
-        list.ToReadOnlyList();
-        Assert.Throws<NotSupportedException>(() => list.Add("mno"));
+        var readOnlyList = new ReadOnlyList<string>(list);
+        Assert.Throws<NotSupportedException>(() => readOnlyList.Add("mno"));
     }
 }

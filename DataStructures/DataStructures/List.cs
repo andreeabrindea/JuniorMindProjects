@@ -1,5 +1,4 @@
 #pragma warning disable CA1710
-
 using System.Collections;
 
 namespace DataStructures;
@@ -8,22 +7,16 @@ public class List<T> : IList<T>
 {
     private readonly int count;
     private T[] arrayOfObjects;
-    private bool isReadOnly;
 
     public List(int initialCapacity = 3)
     {
         arrayOfObjects = new T[initialCapacity];
         count = 0;
-        isReadOnly = false;
     }
 
     public int Count { get; private set; }
 
-    public bool IsReadOnly
-    {
-        get => isReadOnly;
-        private set => isReadOnly = value;
-    }
+    public bool IsReadOnly => false;
 
     public virtual T this[int index]
     {
@@ -118,11 +111,6 @@ public class List<T> : IList<T>
         ValidateIndex(index);
         ShiftElementsToLeft(index);
         Count--;
-    }
-
-    public void ToReadOnlyList()
-    {
-        IsReadOnly = true;
     }
 
     public IEnumerator<T> GetEnumerator()
