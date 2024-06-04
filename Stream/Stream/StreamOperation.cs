@@ -26,8 +26,23 @@ public class StreamOperation
         WriteStream(content, inputFile, outputFile, true, true);
     }
 
-    public static string ReadStream(Stream stream)
+    public static string ReadStream(Stream stream, bool gzip = false, bool crypt = false)
     {
+        if (gzip)
+        {
+            using (FileStream gzipfile = File.OpenRead("/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz"))
+            using (GZipStream zip = new GZipStream(gzipfile, CompressionMode.Decompress, true))
+            {
+                using var readerZip = new StreamReader(zip, leaveOpen: true);
+                return readerZip.ReadToEnd();
+            }
+        }
+
+        if (crypt)
+        {
+            stream = new CryptoStream(stream, Aes.CreateDecryptor(), CryptoStreamMode.Read);
+        }
+
         using var reader = new StreamReader(stream, leaveOpen: true);
         return reader.ReadToEnd();
     }
@@ -51,17 +66,6 @@ public class StreamOperation
         }
 
         Gzip(content, "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz");
-    }
-
-    public static string Decrypt(Stream encryptedStream)
-    {
-        ICryptoTransform aesDecryptor = Aes.CreateDecryptor();
-
-        using var decryptedStream = new MemoryStream();
-        using CryptoStream cryptoStream = new(encryptedStream, aesDecryptor, CryptoStreamMode.Read);
-        cryptoStream.CopyTo(decryptedStream);
-
-        return ReadStream(decryptedStream);
     }
 
     private static void Encrypt(Stream input, Stream output)

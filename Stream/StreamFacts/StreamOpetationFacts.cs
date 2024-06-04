@@ -27,14 +27,7 @@ public class StreamOperationFacts
 
         StreamOperation.WriteStream(inputContent, inputStream, outputStream, gzip: true);
 
-        string content;
-        using (FileStream reader = File.OpenRead("/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz"))
-        using (GZipStream zip = new GZipStream(reader, CompressionMode.Decompress, true))
-        {
-            content = StreamOperation.ReadStream(zip);
-        }
-
-        Assert.Equal(inputContent, content);
+        Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream, gzip: true));
     }
 
     [Fact]
@@ -45,9 +38,7 @@ public class StreamOperationFacts
         using var outputStream = new MemoryStream();
 
         StreamOperation.WriteStream(inputContent, inputStream, outputStream, crypt: true);
-        outputStream.Position = 0;
-        string decryptedContent = StreamOperation.Decrypt(outputStream);
 
-        Assert.Equal(inputContent, decryptedContent);
+        Assert.Equal(inputContent, StreamOperation.ReadStream(outputStream, crypt: true));
     }
 }
