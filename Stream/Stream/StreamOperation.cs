@@ -20,8 +20,8 @@ public class StreamOperation
             FileAccess.Write,
             FileShare.None);
 
-        Console.WriteLine(ReadStream(inputFile));
-        WriteStream(inputFile, outputFile, true, true);
+        string content = ReadStream(inputFile);
+        WriteStream(content, inputFile, outputFile, false, false);
     }
 
     public static string ReadStream(Stream stream)
@@ -31,7 +31,7 @@ public class StreamOperation
         return reader.ReadToEnd();
     }
 
-    public static void WriteStream(Stream input, Stream output, bool gzip = false, bool crypt = false)
+    public static void WriteStream(string content, Stream input, Stream output, bool gzip = false, bool crypt = false)
     {
         input.Position = 0;
         if (crypt)
@@ -42,19 +42,17 @@ public class StreamOperation
         }
         else
         {
-            string content = ReadStream(input);
-            StreamWriter writer = new StreamWriter(output);
+            using StreamWriter writer = new StreamWriter(output, leaveOpen: true);
             writer.Write(content);
             writer.Flush();
-            output.Position = 0;
-            writer.Dispose();
         }
 
-        if (gzip)
+        if (!gzip)
         {
-            string content = ReadStream(input);
-            Gzip(content, "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz");
+            return;
         }
+
+        Gzip(content, "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz");
     }
 
     public static void Gzip(string content, string outputPath)

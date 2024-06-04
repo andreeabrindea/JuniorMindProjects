@@ -8,14 +8,12 @@ public class StreamOpetationFacts
     [Fact]
     public void ReadAndWriteStreamWithoutGzipAndEncrypt()
     {
-        string inputContent = "Hello, World!";
+        string inputContent = "hello there";
         using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputContent));
         using var outputStream = new MemoryStream();
 
-        StreamOperation.WriteStream(inputStream, outputStream, gzip: false, crypt: false);
+        StreamOperation.WriteStream(inputContent, inputStream, outputStream, gzip: false, crypt: false);
 
-        using var reader = new StreamReader(outputStream, leaveOpen: true);
-
-        Assert.Equal(inputContent, reader.ReadToEnd());
+        Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream));
     }
 }
