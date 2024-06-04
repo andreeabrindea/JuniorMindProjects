@@ -21,13 +21,12 @@ public class StreamOperation
             FileShare.None);
 
         string content = ReadStream(inputFile);
-        WriteStream(content, inputFile, outputFile, false, false);
+        WriteStream(content, inputFile, outputFile, true, false);
     }
 
     public static string ReadStream(Stream stream)
     {
         using var reader = new StreamReader(stream, leaveOpen: true);
-        stream.Position = 0;
         return reader.ReadToEnd();
     }
 
