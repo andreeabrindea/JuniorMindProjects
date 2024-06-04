@@ -6,6 +6,8 @@ namespace StreamOperations;
 
 public class StreamOperation
 {
+    public static readonly Aes Aes = Aes.Create();
+
     public static void Main()
     {
         using FileStream inputFile = new(
@@ -21,7 +23,7 @@ public class StreamOperation
             FileShare.None);
 
         string content = ReadStream(inputFile);
-        WriteStream(content, inputFile, outputFile, true, false);
+        WriteStream(content, inputFile, outputFile, true, true);
     }
 
     public static string ReadStream(Stream stream)
@@ -32,12 +34,9 @@ public class StreamOperation
 
     public static void WriteStream(string content, Stream input, Stream output, bool gzip = false, bool crypt = false)
     {
-        input.Position = 0;
         if (crypt)
         {
-            Aes aes = Aes.Create();
-            Encrypt(input, output, aes.Key, aes.IV);
-            aes.Dispose();
+            Encrypt(input, output);
         }
         else
         {
@@ -54,7 +53,27 @@ public class StreamOperation
         Gzip(content, "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz");
     }
 
-    public static void Gzip(string content, string outputPath)
+    public static string Decrypt(Stream encryptedStream)
+    {
+        ICryptoTransform aesDecryptor = Aes.CreateDecryptor();
+
+        using var decryptedStream = new MemoryStream();
+        using CryptoStream cryptoStream = new(encryptedStream, aesDecryptor, CryptoStreamMode.Read);
+        cryptoStream.CopyTo(decryptedStream);
+
+        return ReadStream(decryptedStream);
+    }
+
+    private static void Encrypt(Stream input, Stream output)
+    {
+        ICryptoTransform aesEncryptor = Aes.CreateEncryptor();
+
+        using CryptoStream cryptoStream = new(output, aesEncryptor, CryptoStreamMode.Write, leaveOpen: true);
+        input.CopyTo(cryptoStream);
+        cryptoStream.FlushFinalBlock();
+    }
+
+    private static void Gzip(string content, string outputPath)
     {
         byte[] bytes = Encoding.ASCII.GetBytes(content);
         using (FileStream fs = new FileStream(outputPath, FileMode.OpenOrCreate))
@@ -62,19 +81,5 @@ public class StreamOperation
         {
             zipStream.Write(bytes, 0, bytes.Length);
         }
-    }
-
-    public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
-    {
-        using Aes aes = Aes.Create();
-        aes.Key = key;
-        aes.IV = iv;
-        aes.Padding = PaddingMode.PKCS7;
-
-        ICryptoTransform aesEncryptor = aes.CreateEncryptor();
-
-        using CryptoStream cryptoStream = new(output, aesEncryptor, CryptoStreamMode.Write);
-        input.CopyTo(cryptoStream);
-        cryptoStream.FlushFinalBlock();
     }
 }

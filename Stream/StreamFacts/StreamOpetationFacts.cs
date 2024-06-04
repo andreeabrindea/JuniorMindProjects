@@ -1,7 +1,6 @@
-using System.IO.Compression;
-
 namespace StreamOperations.Facts;
 
+using System.IO.Compression;
 using System.Text;
 using Xunit;
 
@@ -36,5 +35,19 @@ public class StreamOperationFacts
         }
 
         Assert.Equal(inputContent, content);
+    }
+
+    [Fact]
+    public void ReadAndWriteWithEncryptTrue()
+    {
+        string inputContent = "hello there";
+        using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputContent));
+        using var outputStream = new MemoryStream();
+
+        StreamOperation.WriteStream(inputContent, inputStream, outputStream, crypt: true);
+        outputStream.Position = 0;
+        string decryptedContent = StreamOperation.Decrypt(outputStream);
+
+        Assert.Equal(inputContent, decryptedContent);
     }
 }
