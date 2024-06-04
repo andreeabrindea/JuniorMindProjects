@@ -3,7 +3,7 @@ namespace StreamOperations.Facts;
 using System.Text;
 using Xunit;
 
-public class StreamOpetationFacts
+public class StreamOperationFacts
 {
     [Fact]
     public void ReadAndWriteStreamWithoutGzipAndEncrypt()
