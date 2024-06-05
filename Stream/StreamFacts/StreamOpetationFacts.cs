@@ -1,6 +1,5 @@
 namespace StreamOperations.Facts;
 
-using System.IO.Compression;
 using System.Text;
 using Xunit;
 
@@ -10,11 +9,10 @@ public class StreamOperationFacts
     public void ReadAndWriteStreamWithoutGzipAndEncrypt()
     {
         string inputContent = "hello there";
-        using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputContent));
-        using var outputStream = new MemoryStream();
+        using var inputStream = new MemoryStream();
 
-        StreamOperation.WriteStream(inputContent, inputStream, outputStream);
-
+        StreamOperation.WriteStream(inputContent, inputStream);
+        inputStream.Seek(0, SeekOrigin.Begin);
         Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream));
     }
 
@@ -22,11 +20,10 @@ public class StreamOperationFacts
     public void ReadAndWriteStreamWithGzip()
     {
         string inputContent = "hello there";
-        using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputContent));
-        using var outputStream = new MemoryStream();
+        using var inputStream = new MemoryStream();
 
-        StreamOperation.WriteStream(inputContent, inputStream, outputStream, gzip: true);
-
+        StreamOperation.WriteStream(inputContent, inputStream, gzip: true);
+        inputStream.Seek(0, SeekOrigin.Begin);
         Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream, gzip: true));
     }
 
@@ -34,11 +31,21 @@ public class StreamOperationFacts
     public void ReadAndWriteWithEncryptTrue()
     {
         string inputContent = "hello there";
-        using var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(inputContent));
-        using var outputStream = new MemoryStream();
+        using var inputStream = new MemoryStream();
 
-        StreamOperation.WriteStream(inputContent, inputStream, outputStream, crypt: true);
+        StreamOperation.WriteStream(inputContent, inputStream, crypt: true);
+        inputStream.Seek(0, SeekOrigin.Begin);
+        Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream, crypt: true));
+    }
 
-        Assert.Equal(inputContent, StreamOperation.ReadStream(outputStream, crypt: true));
+    [Fact]
+    public void ReadAndWriteWithEncryptAndGZipTrue()
+    {
+        string inputContent = "hello there";
+        using var inputStream = new MemoryStream();
+
+        StreamOperation.WriteStream(inputContent, inputStream, gzip: true, crypt: true);
+        inputStream.Seek(0, SeekOrigin.Begin);
+        Assert.Equal(inputContent, StreamOperation.ReadStream(inputStream, gzip: true, crypt: true));
     }
 }

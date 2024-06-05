@@ -2,88 +2,72 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace StreamOperations;
-
-public class StreamOperation
+namespace StreamOperations
 {
-    public static readonly Aes Aes = Aes.Create();
-
-    public static void Main()
+    public class StreamOperation
     {
-        using FileStream inputFile = new(
-            "/Users/andreea/Projects/JSON_Validator/Stream/Stream/file.txt",
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read);
+        public static readonly Aes Aes = Aes.Create();
 
-        using FileStream outputFile = new(
-            "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.txt",
-            FileMode.OpenOrCreate,
-            FileAccess.Write,
-            FileShare.None);
-
-        string content = ReadStream(inputFile);
-        WriteStream(content, inputFile, outputFile, true, true);
-    }
-
-    public static string ReadStream(Stream stream, bool gzip = false, bool crypt = false)
-    {
-        if (gzip)
+        public static void Main()
         {
-            using (FileStream gzipfile = File.OpenRead("/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz"))
-            using (GZipStream zip = new GZipStream(gzipfile, CompressionMode.Decompress, true))
+            const string outputFilePath = "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz";
+
+            const string inputContent = "abcdefghijklmnopqrstuvwxyz";
+            using var outputStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            WriteStream(inputContent, outputStream, gzip: true, crypt: true);
+
+            using var inputStream = new FileStream(outputFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            string content = ReadStream(inputStream, gzip: true, crypt: true);
+            Console.WriteLine(content);
+        }
+
+        public static string ReadStream(Stream inputStream, bool gzip = false, bool crypt = false)
+        {
+            Stream readStream = inputStream;
+
+            if (gzip)
             {
-                using var readerZip = new StreamReader(zip, leaveOpen: true);
-                return readerZip.ReadToEnd();
+                readStream = new GZipStream(readStream, CompressionMode.Decompress);
             }
+
+            if (crypt)
+            {
+                readStream = new CryptoStream(readStream, Aes.CreateDecryptor(), CryptoStreamMode.Read);
+            }
+
+            using var reader = new StreamReader(readStream);
+            return reader.ReadToEnd();
         }
 
-        if (crypt)
+        public static void WriteStream(string content, Stream outputStream, bool gzip = false, bool crypt = false)
         {
-            stream = new CryptoStream(stream, Aes.CreateDecryptor(), CryptoStreamMode.Read);
-        }
+            Stream writeStream = outputStream;
 
-        using var reader = new StreamReader(stream, leaveOpen: true);
-        return reader.ReadToEnd();
-    }
+            if (gzip)
+            {
+                writeStream = new GZipStream(writeStream, CompressionMode.Compress, leaveOpen: true);
+            }
 
-    public static void WriteStream(string content, Stream input, Stream output, bool gzip = false, bool crypt = false)
-    {
-        if (crypt)
-        {
-            Encrypt(input, output);
-        }
-        else
-        {
-            using StreamWriter writer = new StreamWriter(output, leaveOpen: true);
+            if (crypt)
+            {
+                writeStream = new CryptoStream(writeStream, Aes.CreateEncryptor(), CryptoStreamMode.Write, leaveOpen: true);
+            }
+
+            using var writer = new StreamWriter(writeStream, Encoding.UTF8, leaveOpen: true);
             writer.Write(content);
             writer.Flush();
-        }
 
-        if (!gzip)
-        {
-            return;
-        }
+            if (crypt)
+            {
+                ((CryptoStream)writeStream).FlushFinalBlock();
+            }
 
-        Gzip(content, "/Users/andreea/Projects/JSON_Validator/Stream/Stream/output.gz");
-    }
+            if (!gzip)
+            {
+                return;
+            }
 
-    private static void Encrypt(Stream input, Stream output)
-    {
-        ICryptoTransform aesEncryptor = Aes.CreateEncryptor();
-
-        using CryptoStream cryptoStream = new(output, aesEncryptor, CryptoStreamMode.Write, leaveOpen: true);
-        input.CopyTo(cryptoStream);
-        cryptoStream.FlushFinalBlock();
-    }
-
-    private static void Gzip(string content, string outputPath)
-    {
-        byte[] bytes = Encoding.ASCII.GetBytes(content);
-        using (FileStream fs = new FileStream(outputPath, FileMode.OpenOrCreate))
-        using (GZipStream zipStream = new GZipStream(fs, CompressionMode.Compress, false))
-        {
-            zipStream.Write(bytes, 0, bytes.Length);
+            writeStream.Flush();
         }
     }
 }
