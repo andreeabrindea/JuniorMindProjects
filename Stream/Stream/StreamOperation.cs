@@ -57,14 +57,9 @@ namespace StreamOperations
             writer.Write(content);
             writer.Flush();
 
-            if (crypt)
+            if (writeStream is CryptoStream cryptoStream)
             {
-                ((CryptoStream)writeStream).FlushFinalBlock();
-            }
-
-            if (!gzip)
-            {
-                return;
+                cryptoStream.FlushFinalBlock();
             }
 
             writeStream.Flush();
