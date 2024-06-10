@@ -87,7 +87,27 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        throw new NotImplementedException();
+        if (array == null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        if (arrayIndex < 0 || arrayIndex > array.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        }
+
+        if (array.Length - arrayIndex > Count)
+        {
+            throw new ArgumentException("not enough space to copy", nameof(array));
+        }
+
+        var currentNode = sentinel.Next;
+        for (int i = 0; i < Count; i++)
+        {
+            array[arrayIndex + i] = currentNode.Data;
+            currentNode = currentNode.Next;
+        }
     }
 
     public bool Remove(T item)

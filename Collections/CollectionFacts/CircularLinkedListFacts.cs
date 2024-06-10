@@ -88,4 +88,49 @@ public class CircularLinkedListFacts
         
         Assert.False(list.Contains(anotherNode));
     }
+
+    [Fact]
+    public void CopyToEmptyArrayOfIntegers()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+
+        int[] array = new int[3];
+        list.CopyTo(array, 0);
+        Assert.Equal(1, array[0]);
+        Assert.Equal(2, array[1]);
+        Assert.Equal(3, array[2]);
+    }
+    
+    [Fact]
+    public void CopyToNonEmptyArrayOfIntegers()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+
+        int[] array = new int[4];
+        array[0] = 6;
+        list.CopyTo(array, 1);
+        Assert.Equal(6, array[0]);
+        Assert.Equal(1, array[1]);
+        Assert.Equal(2, array[2]);
+        Assert.Equal(3, array[3]);
+    }
+
+    [Fact]
+    public void CopyToEmptyArrayButInvalidIndex()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+
+        int[] array = new int[3];
+        Assert.Throws<ArgumentOutOfRangeException>(() => list.CopyTo(array, -1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => list.CopyTo(array, 9));
+    }
 }
