@@ -165,5 +165,30 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         Count--;
         return true;
     }
+
+    public void AddAfter(T data, T newData)
+    {
+        var newNode = new Node<T>(newData);
+
+        if (Count == 0)
+        {
+            Add(newData);
+        }
+
+        var currentNode = sentinel.Next;
+        for (int i = 0; i < Count; i++)
+        {
+            if (currentNode.Data.Equals(data))
+            {
+                newNode.Previous = currentNode;
+                newNode.Next = currentNode.Next;
+                currentNode.Next.Previous = newNode;
+                currentNode.Next = newNode;
+                Count++;
+            }
+
+            currentNode = currentNode.Next;
+        }
+    }
 }
 #pragma warning restore CA1710

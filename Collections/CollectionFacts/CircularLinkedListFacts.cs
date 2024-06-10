@@ -233,5 +233,45 @@ public class CircularLinkedListFacts
         CircularDoublyLinkedList<int> list = new();
         Assert.False(list.RemoveFirst());
     }
+
+    [Fact]
+    public void AddNewNodeAfterAnExistingElement()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        
+        list.AddAfter(2, 8);
+        Assert.Equal(1, list[0]);
+        Assert.Equal(2, list[1]);
+        Assert.Equal(8, list[2]);
+        Assert.Equal(3, list[3]);
+        Assert.Equal(4, list[4]);
+    }
     
+    [Fact]
+    public void AddNewNodeAfterNonExistingElement()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        
+        list.AddAfter(9, 8);
+        Assert.Equal(1, list[0]);
+        Assert.Equal(2, list[1]);
+        Assert.Equal(3, list[2]);
+        Assert.Equal(4, list[3]);
+    }
+
+    [Fact]
+    public void AddNewNodeInEmptyList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.AddAfter(0, 8);
+        Assert.Equal(8, list[0]);
+    }
 }
