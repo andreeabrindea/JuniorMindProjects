@@ -71,7 +71,18 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Contains(T item)
     {
-        throw new NotImplementedException();
+        var currentNode = sentinel.Next;
+        for (int i = 0; i < count; i++)
+        {
+            if (currentNode.Data.Equals(item))
+            {
+                return true;
+            }
+
+            currentNode = currentNode.Next;
+        }
+
+        return false;
     }
 
     public void CopyTo(T[] array, int arrayIndex)

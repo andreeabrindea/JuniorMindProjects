@@ -32,4 +32,60 @@ public class CircularLinkedListFacts
         list.Clear();
         Assert.Equal(0, list[0]);
     }
+
+    [Fact]
+    public void ListContainsIntegerElement()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+  
+        Assert.True(list.Contains(1));
+    }
+    
+    [Fact]
+    public void ListDoesNotContainIntegerElement()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+  
+        Assert.False(list.Contains(9));
+    }
+
+    [Fact]
+    public void ListContainsStringValue()
+    {
+        CircularDoublyLinkedList<string> list = new();
+        list.Add("a");
+  
+        Assert.True(list.Contains("a"));
+    }
+    
+    [Fact]
+    public void ListDoesNotContainStringValue()
+    {
+        CircularDoublyLinkedList<string> list = new();
+        list.Add("a");
+  
+        Assert.False(list.Contains("b"));
+    }
+
+    [Fact]
+    public void ListContainsObject()
+    {
+        CircularDoublyLinkedList<object> list = new();
+        Node<int> node = new Node<int>(4);
+        list.Add(node);
+        
+        Assert.True(list.Contains(node));
+    }
+    [Fact]
+    public void ListDoesNotContainObject()
+    {
+        CircularDoublyLinkedList<object> list = new();
+        Node<int> node = new Node<int>(4);
+        Node<int> anotherNode = new Node<int>(4);
+        list.Add(node);
+        
+        Assert.False(list.Contains(anotherNode));
+    }
 }
