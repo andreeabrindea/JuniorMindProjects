@@ -173,6 +173,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         if (Count == 0)
         {
             Add(newData);
+            return;
         }
 
         var currentNode = sentinel.Next;
@@ -185,6 +186,33 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
                 currentNode.Next.Previous = newNode;
                 currentNode.Next = newNode;
                 Count++;
+                return;
+            }
+
+            currentNode = currentNode.Next;
+        }
+    }
+
+    public void AddBefore(T data, T newData)
+    {
+        var newNode = new Node<T>(newData);
+        if (Count == 0)
+        {
+            Add(newData);
+            return;
+        }
+
+        var currentNode = sentinel.Next;
+        for (int i = 0; i < Count; i++)
+        {
+            if (currentNode.Data.Equals(data))
+            {
+                newNode.Next = currentNode;
+                newNode.Previous = currentNode.Previous;
+                currentNode.Previous.Next = newNode;
+                currentNode.Previous = newNode;
+                Count++;
+                return;
             }
 
             currentNode = currentNode.Next;

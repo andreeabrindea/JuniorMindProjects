@@ -274,4 +274,21 @@ public class CircularLinkedListFacts
         list.AddAfter(0, 8);
         Assert.Equal(8, list[0]);
     }
+    
+    [Fact]
+    public void AddNewNodeBeforeAnExistingElement()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        
+        list.AddBefore(3, 8);
+        Assert.Equal(1, list[0]);
+        Assert.Equal(2, list[1]);
+        Assert.Equal(8, list[2]);
+        Assert.Equal(3, list[3]);
+        Assert.Equal(4, list[4]);
+    }
 }
