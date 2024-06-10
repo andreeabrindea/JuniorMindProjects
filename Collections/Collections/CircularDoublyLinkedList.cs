@@ -152,5 +152,18 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         Count--;
         return true;
     }
+
+    public bool RemoveFirst()
+    {
+        if (Count <= 0)
+        {
+            return false;
+        }
+
+        sentinel.Next = sentinel.Next.Next;
+        sentinel.Next.Previous = sentinel.Next.Next.Previous;
+        Count--;
+        return true;
+    }
 }
 #pragma warning restore CA1710
