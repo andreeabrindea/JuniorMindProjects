@@ -186,5 +186,30 @@ public class CircularLinkedListFacts
         Assert.Equal(2, list[2]);
         Assert.Equal(3, list[3]);
     }
+
+    [Fact]
+    public void RemoveLastElementInNonEmptyList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.AddFirst(9);
+
+        Assert.True(list.RemoveLast());
+        Assert.Equal(9, list[0]);
+        Assert.Equal(1, list[1]);
+        Assert.Equal(2, list[2]);
+    }
+
+    [Fact]
+    public void RemoveLastElementInEmptyList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Remove(1);
+        Assert.False(list.RemoveLast());
+        Assert.Empty(list);
+    }
     
 }
