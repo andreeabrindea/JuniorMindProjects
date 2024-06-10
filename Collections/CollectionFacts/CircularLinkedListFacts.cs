@@ -146,6 +146,7 @@ public class CircularLinkedListFacts
         Assert.Equal(1, list[0]);
         Assert.Equal(3, list[1]);
     }
+    
     [Fact]
     public void RemoveNonExistingElementInList()
     {
@@ -159,4 +160,31 @@ public class CircularLinkedListFacts
         Assert.Equal(2, list[1]);
         Assert.Equal(3, list[2]);
     }
+
+    [Fact]
+    public void AddNodeToTheFirstPositionInEmptyList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.AddFirst(1);
+        list.AddFirst(2);
+        list.AddFirst(3);
+        Assert.Equal(1, list[2]);
+        Assert.Equal(2, list[1]);
+        Assert.Equal(3, list[0]);
+    }
+    
+    [Fact]
+    public void AddNodeToTheFirstPositionInNonEmptyList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.AddFirst(9);
+        Assert.Equal(9, list[0]);
+        Assert.Equal(1, list[1]);
+        Assert.Equal(2, list[2]);
+        Assert.Equal(3, list[3]);
+    }
+    
 }

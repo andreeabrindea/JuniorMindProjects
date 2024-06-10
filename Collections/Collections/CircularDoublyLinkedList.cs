@@ -61,6 +61,18 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         Count++;
     }
 
+    public void AddFirst(T item)
+    {
+        var newNode = new Node<T>(item);
+        var firstNode = sentinel.Next;
+
+        newNode.Previous = sentinel;
+        sentinel.Next = newNode;
+        newNode.Next = firstNode;
+        firstNode.Previous = newNode;
+        Count++;
+    }
+
     public void Clear()
     {
         sentinel.Previous = sentinel;
