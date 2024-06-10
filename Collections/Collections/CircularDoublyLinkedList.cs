@@ -6,17 +6,16 @@ namespace Collections;
 public class CircularDoublyLinkedList<T> : ICollection<T>
 {
     private readonly Node<T> sentinel;
-    private int count;
 
     public CircularDoublyLinkedList()
     {
         sentinel = new Node<T>();
         sentinel.Next = sentinel;
         sentinel.Previous = sentinel;
-        count = 0;
+        Count = 0;
     }
 
-    public int Count => count;
+    public int Count { get; private set; }
 
     public bool IsReadOnly => false;
 
@@ -37,7 +36,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     public IEnumerator<T> GetEnumerator()
     {
         var currentNode = sentinel.Next;
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < Count; i++)
         {
             yield return currentNode.Data;
             currentNode = currentNode.Next;
@@ -59,20 +58,20 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         lastNode.Next = newNode;
         sentinel.Previous = newNode;
 
-        count++;
+        Count++;
     }
 
     public void Clear()
     {
         sentinel.Previous = sentinel;
         sentinel.Next = sentinel;
-        count = 0;
+        Count = 0;
     }
 
     public bool Contains(T item)
     {
         var currentNode = sentinel.Next;
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < Count; i++)
         {
             if (currentNode.Data.Equals(item))
             {
@@ -112,7 +111,21 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        throw new NotImplementedException();
+        var currentNode = sentinel.Next;
+        for (int i = 0; i < Count; i++)
+        {
+            if (currentNode.Data.Equals(item))
+            {
+                currentNode.Previous.Next = currentNode.Next;
+                currentNode.Next.Previous = currentNode.Previous;
+                Count--;
+                return true;
+            }
+
+            currentNode = currentNode.Next;
+        }
+
+        return false;
     }
 }
 #pragma warning restore CA1710

@@ -133,4 +133,30 @@ public class CircularLinkedListFacts
         Assert.Throws<ArgumentOutOfRangeException>(() => list.CopyTo(array, -1));
         Assert.Throws<ArgumentOutOfRangeException>(() => list.CopyTo(array, 9));
     }
+
+    [Fact]
+    public void RemoveExistingElementInList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+
+        Assert.True(list.Remove(2));
+        Assert.Equal(1, list[0]);
+        Assert.Equal(3, list[1]);
+    }
+    [Fact]
+    public void RemoveNonExistingElementInList()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+
+        Assert.False(list.Remove(5));
+        Assert.Equal(1, list[0]);
+        Assert.Equal(2, list[1]);
+        Assert.Equal(3, list[2]);
+    }
 }
