@@ -35,11 +35,11 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            yield return currentNode.Data;
-            currentNode = currentNode.Next;
+            yield return node.Data;
+            node = node.Next;
         }
     }
 
@@ -50,26 +50,26 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void Add(T item)
     {
-        var newNode = new Node<T>(item);
+        var node = new Node<T>(item);
         var lastNode = sentinel.Previous;
 
-        newNode.Next = sentinel;
-        newNode.Previous = lastNode;
-        lastNode.Next = newNode;
-        sentinel.Previous = newNode;
+        node.Next = sentinel;
+        node.Previous = lastNode;
+        lastNode.Next = node;
+        sentinel.Previous = node;
 
         Count++;
     }
 
     public void AddFirst(T item)
     {
-        var newNode = new Node<T>(item);
+        var node = new Node<T>(item);
         var firstNode = sentinel.Next;
 
-        newNode.Previous = sentinel;
-        sentinel.Next = newNode;
-        newNode.Next = firstNode;
-        firstNode.Previous = newNode;
+        node.Previous = sentinel;
+        sentinel.Next = node;
+        node.Next = firstNode;
+        firstNode.Previous = node;
         Count++;
     }
 
@@ -82,15 +82,15 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Contains(T item)
     {
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            if (currentNode.Data.Equals(item))
+            if (node.Data.Equals(item))
             {
                 return true;
             }
 
-            currentNode = currentNode.Next;
+            node = node.Next;
         }
 
         return false;
@@ -113,28 +113,28 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
             throw new ArgumentException("not enough space to copy", nameof(array));
         }
 
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            array[arrayIndex + i] = currentNode.Data;
-            currentNode = currentNode.Next;
+            array[arrayIndex + i] = node.Data;
+            node = node.Next;
         }
     }
 
     public bool Remove(T item)
     {
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            if (currentNode.Data.Equals(item))
+            if (node.Data.Equals(item))
             {
-                currentNode.Previous.Next = currentNode.Next;
-                currentNode.Next.Previous = currentNode.Previous;
+                node.Previous.Next = node.Next;
+                node.Next.Previous = node.Previous;
                 Count--;
                 return true;
             }
 
-            currentNode = currentNode.Next;
+            node = node.Next;
         }
 
         return false;
@@ -176,20 +176,20 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
             return;
         }
 
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            if (currentNode.Data.Equals(data))
+            if (node.Data.Equals(data))
             {
-                newNode.Previous = currentNode;
-                newNode.Next = currentNode.Next;
-                currentNode.Next.Previous = newNode;
-                currentNode.Next = newNode;
+                newNode.Previous = node;
+                newNode.Next = node.Next;
+                node.Next.Previous = newNode;
+                node.Next = newNode;
                 Count++;
                 return;
             }
 
-            currentNode = currentNode.Next;
+            node = node.Next;
         }
     }
 
@@ -202,20 +202,20 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
             return;
         }
 
-        var currentNode = sentinel.Next;
+        var node = sentinel.Next;
         for (int i = 0; i < Count; i++)
         {
-            if (currentNode.Data.Equals(data))
+            if (node.Data.Equals(data))
             {
-                newNode.Next = currentNode;
-                newNode.Previous = currentNode.Previous;
-                currentNode.Previous.Next = newNode;
-                currentNode.Previous = newNode;
+                newNode.Next = node;
+                newNode.Previous = node.Previous;
+                node.Previous.Next = newNode;
+                node.Previous = newNode;
                 Count++;
                 return;
             }
 
-            currentNode = currentNode.Next;
+            node = node.Next;
         }
     }
 }
