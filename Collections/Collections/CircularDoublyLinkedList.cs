@@ -26,7 +26,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     public IEnumerator<T> GetEnumerator()
     {
         var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
+        for (var i = 0; i < Count; i++)
         {
             yield return node.Data;
             node = node.Next;
@@ -38,9 +38,10 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         return GetEnumerator();
     }
 
-    public void Add(T item)
+    public void Add(T item) => AddLast(new Node<T>(item));
+
+    public void AddLast(Node<T> node)
     {
-        var node = new Node<T>(item);
         var lastNode = sentinel.Previous;
 
         node.Next = sentinel;
@@ -51,11 +52,11 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         Count++;
     }
 
-    public void AddFirst(T item)
-    {
-        var node = new Node<T>(item);
-        var firstNode = sentinel.Next;
+    public void AddFirst(T item) => AddFirst(new Node<T>(item));
 
+    public void AddFirst(Node<T> node)
+    {
+        var firstNode = sentinel.Next;
         node.Previous = sentinel;
         sentinel.Next = node;
         node.Next = firstNode;
@@ -63,46 +64,21 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         Count++;
     }
 
-    public void AddAfter(T data, T newData)
+    public void AddBefore(Node<T> nextNode, Node<T> newNode)
     {
-        var newNode = new Node<T>(newData);
-
-        if (Count == 0)
+        if (!Contains(nextNode.Data))
         {
-            Add(newData);
             return;
         }
 
-        var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
-        {
-            if (node.Data.Equals(data))
-            {
-                newNode.Previous = node;
-                newNode.Next = node.Next;
-                node.Next.Previous = newNode;
-                node.Next = newNode;
-                Count++;
-                return;
-            }
-
-            node = node.Next;
-        }
-    }
-
-    public void AddBefore(T data, T newData)
-    {
-        var newNode = new Node<T>(newData);
         if (Count == 0)
         {
-            Add(newData);
-            return;
+            AddLast(newNode);
         }
 
-        var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
+        for (var node = sentinel.Next; node != null; node = node.Next)
         {
-            if (node.Data.Equals(data))
+            if (node.Data.Equals(nextNode.Data))
             {
                 newNode.Next = node;
                 newNode.Previous = node.Previous;
@@ -111,10 +87,38 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
                 Count++;
                 return;
             }
-
-            node = node.Next;
         }
     }
+
+    public void AddBefore(T data, T newData) => AddBefore(new Node<T>(data), new Node<T>(newData));
+
+    public void AddAfter(Node<T> previousNode, Node<T> newNode)
+    {
+        if (!Contains(previousNode.Data))
+        {
+            return;
+        }
+
+        if (Count == 0)
+        {
+            AddLast(newNode);
+        }
+
+        for (var node = sentinel.Next; node != null; node = node.Next)
+        {
+            if (node.Data.Equals(previousNode.Data))
+            {
+                newNode.Previous = node;
+                newNode.Next = node.Next;
+                node.Next.Previous = newNode;
+                node.Next = newNode;
+                Count++;
+                return;
+            }
+        }
+    }
+
+    public void AddAfter(T data, T newData) => AddAfter(new Node<T>(data), new Node<T>(newData));
 
     public void Clear()
     {

@@ -253,7 +253,7 @@ public class CircularLinkedListFacts
     {
         CircularDoublyLinkedList<int> list = new();
         list.AddAfter(0, 8);
-        Assert.Equal("8 ", list.ToString());
+        Assert.Equal("", list.ToString());
     }
     
     [Fact]
@@ -311,7 +311,7 @@ public class CircularLinkedListFacts
     public void GetFirstNodeOfEmptyList()
     {
         CircularDoublyLinkedList<int> list = new();
-        Assert.Equal(0, list.First.Data);
+        Assert.Null(list.First);
     }
     
         
@@ -319,7 +319,7 @@ public class CircularLinkedListFacts
     public void GetLastNodeOfEmptyList()
     {
         CircularDoublyLinkedList<int> list = new();
-        Assert.Equal(0, list.Last.Data);
+        Assert.Null(list.Last);
     }
     
     [Fact]
@@ -332,5 +332,95 @@ public class CircularLinkedListFacts
         list.Add(4);
         
         Assert.Equal(4, list.Last.Data);
+    }
+    
+     [Fact]
+    public void AddNewNodeAfterAnExistingOne()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var previousNode = list.FindLast(2);
+        var node = new Node<int>(9);
+        list.AddAfter(previousNode, node);
+        Assert.Equal("1 2 9 3 4 ", list.ToString());
+    }
+
+    [Fact]
+    public void AddNewNodeAfterANonExistingOne()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var previousNode = new Node<int>(11);
+        var node = new Node<int>(9);
+        list.AddAfter(previousNode, node);
+        Assert.Equal("1 2 3 4 ", list.ToString());
+    }
+
+    [Fact]
+    public void AddNewNodeBeforeAnExistingOne()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var nextNode = list.FindLast(2);
+        var node = new Node<int>(9);
+        list.AddBefore(nextNode, node);
+
+        Assert.Equal("1 9 2 3 4 ", list.ToString());
+    }
+
+    [Fact]
+    public void AddNewNodeBeforeANonExistingOne()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var nextNode = new Node<int>(11);
+        var node = new Node<int>(9);
+        list.AddBefore(nextNode, node);
+
+        Assert.Equal("1 2 3 4 ", list.ToString());
+    }
+
+    [Fact]
+    public void AddNodeToLastPosition()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var newNode = new Node<int>(5);
+        list.AddLast(newNode);
+        Assert.Equal("1 2 3 4 5 ", list.ToString());
+    }
+
+    [Fact]
+    public void AddNodeToFirstPosition()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+
+        var newNode = new Node<int>(5);
+        list.AddFirst(newNode);
+        Assert.Equal("5 1 2 3 4 ", list.ToString());
     }
 }
