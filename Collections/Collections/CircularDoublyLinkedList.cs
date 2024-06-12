@@ -84,7 +84,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
         if (!Contains(nextNode.Data))
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         for (var node = sentinel.Next; node != sentinel; node = node.Next)
@@ -117,7 +117,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
         if (!Contains(previousNode.Data))
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         for (var node = sentinel.Next; node != sentinel; node = node.Next)
