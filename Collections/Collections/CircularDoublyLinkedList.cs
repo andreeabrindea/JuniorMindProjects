@@ -25,11 +25,9 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        var node = sentinel.Next;
-        for (var i = 0; i < Count; i++)
+        for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             yield return node.Data;
-            node = node.Next;
         }
     }
 
@@ -42,13 +40,16 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddLast(Node<T> node)
     {
-        var lastNode = sentinel.Previous;
+        if (node == null)
+        {
+            throw new ArgumentNullException(nameof(node));
+        }
 
+        var lastNode = sentinel.Previous;
         node.Next = sentinel;
         node.Previous = lastNode;
         lastNode.Next = node;
         sentinel.Previous = node;
-
         Count++;
     }
 
@@ -56,6 +57,11 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddFirst(Node<T> node)
     {
+        if (node == null)
+        {
+            throw new ArgumentNullException(nameof(node));
+        }
+
         var firstNode = sentinel.Next;
         node.Previous = sentinel;
         sentinel.Next = node;
@@ -66,17 +72,22 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddBefore(Node<T> nextNode, Node<T> newNode)
     {
+        if (nextNode == null)
+        {
+            throw new ArgumentNullException(nameof(nextNode));
+        }
+
+        if (newNode == null)
+        {
+            throw new ArgumentNullException(nameof(newNode));
+        }
+
         if (!Contains(nextNode.Data))
         {
             return;
         }
 
-        if (Count == 0)
-        {
-            AddLast(newNode);
-        }
-
-        for (var node = sentinel.Next; node != null; node = node.Next)
+        for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             if (node.Data.Equals(nextNode.Data))
             {
@@ -94,17 +105,22 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddAfter(Node<T> previousNode, Node<T> newNode)
     {
+        if (previousNode == null)
+        {
+            throw new ArgumentNullException(nameof(previousNode));
+        }
+
+        if (newNode == null)
+        {
+            throw new ArgumentNullException(nameof(newNode));
+        }
+
         if (!Contains(previousNode.Data))
         {
             return;
         }
 
-        if (Count == 0)
-        {
-            AddLast(newNode);
-        }
-
-        for (var node = sentinel.Next; node != null; node = node.Next)
+        for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             if (node.Data.Equals(previousNode.Data))
             {
@@ -129,18 +145,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Contains(T item)
     {
-        var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
-        {
-            if (node.Data.Equals(item))
-            {
-                return true;
-            }
-
-            node = node.Next;
-        }
-
-        return false;
+        return Find(item) != null;
     }
 
     public void CopyTo(T[] array, int arrayIndex)
@@ -170,8 +175,17 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
+        if (Count == 0)
+        {
+            return false;
+        }
+
+        if (!Contains(item))
+        {
+            return false;
+        }
+
+        for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             if (node.Data.Equals(item))
             {
@@ -180,8 +194,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
                 Count--;
                 return true;
             }
-
-            node = node.Next;
         }
 
         return false;
@@ -189,7 +201,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool RemoveLast()
     {
-        if (Count <= 0)
+        if (Count == 0)
         {
             return false;
         }
@@ -202,7 +214,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool RemoveFirst()
     {
-        if (Count <= 0)
+        if (Count == 0)
         {
             return false;
         }
@@ -215,15 +227,17 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public Node<T> Find(T data)
     {
-        var node = sentinel.Next;
-        for (int i = 0; i < Count; i++)
+        if (Count == 0)
+        {
+            return null;
+        }
+
+        for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             if (node.Data.Equals(data))
             {
                 return node;
             }
-
-            node = node.Next;
         }
 
         return null;
@@ -231,34 +245,20 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public Node<T> FindLast(T data)
     {
-        var node = sentinel.Next;
-        Node<T> lastFound = null;
-        for (int i = 0; i < Count; i++)
+        if (Count == 0)
+        {
+            return null;
+        }
+
+        for (var node = sentinel.Previous; node != sentinel; node = node.Previous)
         {
             if (node.Data.Equals(data))
             {
-                lastFound = node;
+                return node;
             }
-
-            node = node.Next;
         }
 
-        return lastFound;
-    }
-
-    public override string ToString()
-    {
-        var node = sentinel.Next;
-        string representation = "";
-
-        for (int i = 0; i < Count; i++)
-        {
-            representation += node.Data + " ";
-
-            node = node.Next;
-        }
-
-        return representation;
+        return null;
     }
 }
 #pragma warning restore CA1710

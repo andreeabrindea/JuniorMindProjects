@@ -3,7 +3,7 @@ using Xunit;
 
 namespace CircularDoublyLinkedListFacts;
 
-public class CircularLinkedListFacts
+public class CircularDoublyLinkedListFacts
 {
 
     [Fact]
@@ -13,8 +13,8 @@ public class CircularLinkedListFacts
         list.Add(1);
         list.Add(2);
         list.Add(3);
-
-        Assert.Equal("1 2 3 ", list.ToString());
+        
+        Assert.Equal(new CircularDoublyLinkedList<int> { 1, 2, 3 }, list);
     }
 
     [Fact]
@@ -24,11 +24,8 @@ public class CircularLinkedListFacts
         list.Add(1);
         list.Add(2);
         list.Add(3);
-    
-        Assert.Equal("1 2 3 ", list.ToString());
-        
         list.Clear();
-        Assert.Equal("", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int> {}, list);
     }
 
     [Fact]
@@ -141,7 +138,7 @@ public class CircularLinkedListFacts
         list.Add(3);
 
         Assert.True(list.Remove(2));
-        Assert.Equal("1 3 ", list.ToString());
+        Assert.Equal(new List<int> { 1, 3 }, list);
     }
     
     [Fact]
@@ -153,7 +150,7 @@ public class CircularLinkedListFacts
         list.Add(3);
 
         Assert.False(list.Remove(5));
-        Assert.Equal("1 2 3 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int> {1, 2, 3}, list);
     }
 
     [Fact]
@@ -164,7 +161,7 @@ public class CircularLinkedListFacts
         list.AddFirst(2);
         list.AddFirst(3);
  
-        Assert.Equal("3 2 1 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int> {3, 2, 1}, list);
     }
     
     [Fact]
@@ -176,7 +173,7 @@ public class CircularLinkedListFacts
         list.Add(3);
         list.AddFirst(9);
 
-        Assert.Equal("9 1 2 3 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{9, 1, 2, 3}, list);
     }
 
     [Fact]
@@ -189,7 +186,7 @@ public class CircularLinkedListFacts
         list.AddFirst(9);
 
         Assert.True(list.RemoveLast());
-        Assert.Equal("9 1 2 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{9, 1, 2}, list);
     }
 
     [Fact]
@@ -212,7 +209,7 @@ public class CircularLinkedListFacts
         list.AddFirst(9);
 
         Assert.True(list.RemoveFirst());
-        Assert.Equal("1 2 3 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3}, list);
     }
     
     [Fact]
@@ -230,9 +227,9 @@ public class CircularLinkedListFacts
         list.Add(2);
         list.Add(3);
         list.Add(4);
-        
+
         list.AddAfter(2, 8);
-        Assert.Equal("1 2 8 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int> {1, 2, 8, 3, 4}, list);
     }
     
     [Fact]
@@ -245,7 +242,7 @@ public class CircularLinkedListFacts
         list.Add(4);
         
         list.AddAfter(9, 8);
-        Assert.Equal("1 2 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
     }
 
     [Fact]
@@ -253,7 +250,7 @@ public class CircularLinkedListFacts
     {
         CircularDoublyLinkedList<int> list = new();
         list.AddAfter(0, 8);
-        Assert.Equal("", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{}, list);
     }
     
     [Fact]
@@ -266,7 +263,7 @@ public class CircularLinkedListFacts
         list.Add(4);
         
         list.AddBefore(3, 8);
-        Assert.Equal("1 2 8 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 8, 3, 4}, list);
     }
 
     [Fact]
@@ -346,7 +343,7 @@ public class CircularLinkedListFacts
         var previousNode = list.FindLast(2);
         var node = new Node<int>(9);
         list.AddAfter(previousNode, node);
-        Assert.Equal("1 2 9 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 9, 3, 4}, list);
     }
 
     [Fact]
@@ -361,7 +358,7 @@ public class CircularLinkedListFacts
         var previousNode = new Node<int>(11);
         var node = new Node<int>(9);
         list.AddAfter(previousNode, node);
-        Assert.Equal("1 2 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
     }
 
     [Fact]
@@ -377,7 +374,7 @@ public class CircularLinkedListFacts
         var node = new Node<int>(9);
         list.AddBefore(nextNode, node);
 
-        Assert.Equal("1 9 2 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 9, 2, 3, 4}, list);
     }
 
     [Fact]
@@ -393,7 +390,7 @@ public class CircularLinkedListFacts
         var node = new Node<int>(9);
         list.AddBefore(nextNode, node);
 
-        Assert.Equal("1 2 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
     }
 
     [Fact]
@@ -407,7 +404,7 @@ public class CircularLinkedListFacts
 
         var newNode = new Node<int>(5);
         list.AddLast(newNode);
-        Assert.Equal("1 2 3 4 5 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4, 5}, list);
     }
 
     [Fact]
@@ -421,6 +418,6 @@ public class CircularLinkedListFacts
 
         var newNode = new Node<int>(5);
         list.AddFirst(newNode);
-        Assert.Equal("5 1 2 3 4 ", list.ToString());
+        Assert.Equal(new CircularDoublyLinkedList<int>{5, 1, 2, 3, 4}, list);
     }
 }
