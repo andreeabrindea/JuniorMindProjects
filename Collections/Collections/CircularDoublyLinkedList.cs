@@ -19,9 +19,9 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool IsReadOnly => false;
 
-    public Node<T> First => sentinel.Next;
+    public Node<T> First => Count == 0 ? null : sentinel.Next;
 
-    public Node<T> Last => sentinel.Previous;
+    public Node<T> Last => Count == 0 ? null : sentinel.Previous;
 
     public IEnumerator<T> GetEnumerator()
     {
