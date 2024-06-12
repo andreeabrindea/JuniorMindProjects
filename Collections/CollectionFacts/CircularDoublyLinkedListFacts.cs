@@ -195,7 +195,7 @@ public class CircularDoublyLinkedListFacts
         CircularDoublyLinkedList<int> list = new();
         list.Add(1);
         list.Remove(1);
-        Assert.False(list.RemoveLast());
+        Assert.Throws<InvalidOperationException>(() => list.RemoveLast());
         Assert.Empty(list);
     }
 
@@ -216,7 +216,7 @@ public class CircularDoublyLinkedListFacts
     public void RemoveFirstElementInEmptyList()
     {
         CircularDoublyLinkedList<int> list = new();
-        Assert.False(list.RemoveFirst());
+        Assert.Throws<InvalidOperationException>(() => list.RemoveFirst());
     }
 
     [Fact]
@@ -241,16 +241,14 @@ public class CircularDoublyLinkedListFacts
         list.Add(3);
         list.Add(4);
         
-        list.AddAfter(9, 8);
-        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
+        Assert.Throws<InvalidOperationException>(() => list.AddAfter(9, 8));
     }
 
     [Fact]
     public void AddNewNodeInEmptyList()
     {
         CircularDoublyLinkedList<int> list = new();
-        list.AddAfter(0, 8);
-        Assert.Equal(new CircularDoublyLinkedList<int>{}, list);
+        Assert.Throws<InvalidOperationException>(() => list.AddAfter(0, 8));
     }
     
     [Fact]
@@ -357,8 +355,7 @@ public class CircularDoublyLinkedListFacts
 
         var previousNode = new Node<int>(11);
         var node = new Node<int>(9);
-        list.AddAfter(previousNode, node);
-        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
+        Assert.Throws<InvalidOperationException>(() => list.AddAfter(previousNode, node));
     }
 
     [Fact]
@@ -388,9 +385,7 @@ public class CircularDoublyLinkedListFacts
 
         var nextNode = new Node<int>(11);
         var node = new Node<int>(9);
-        list.AddBefore(nextNode, node);
-
-        Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3, 4}, list);
+        Assert.Throws<InvalidOperationException>(() => list.AddBefore(nextNode, node));
     }
 
     [Fact]
