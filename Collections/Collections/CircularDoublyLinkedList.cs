@@ -38,46 +38,36 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void Add(T item) => AddLast(new Node<T>(item));
 
-    public void Add(Node<T> node, Node<T> nextNode, Node<T> previousNode)
+    public void AddBefore(Node<T> node, Node<T> newNode)
     {
-        node.Next = nextNode;
-        node.Previous = previousNode;
-        previousNode.Next = node;
-        nextNode.Previous = node;
+        if (node == null)
+        {
+            throw new InvalidOperationException(nameof(node));
+        }
+
+        if (newNode == null)
+        {
+            throw new InvalidOperationException(nameof(newNode));
+        }
+
+        newNode.Next = node;
+        newNode.Previous = node.Previous;
+        node.Previous.Next = newNode;
+        node.Previous = newNode;
         Count++;
     }
 
-    public void AddLast(Node<T> node) => Add(node, sentinel, sentinel.Previous);
+    public void AddBefore(Node<T> node, T value) => AddBefore(node, new Node<T>(value));
 
-    public void AddBefore(Node<T> nextNode, Node<T> newNode) => Add(newNode, nextNode, nextNode.Previous);
+    public void AddAfter(Node<T> node, Node<T> newNode) => AddBefore(node.Next, newNode);
 
-    public void AddBefore(T data, T newData)
-    {
-        var nextNode = Find(data);
-        if (nextNode == null)
-        {
-            throw new InvalidOperationException("Node " + nameof(nextNode) + " was not found");
-        }
+    public void AddAfter(Node<T> node, T value) => AddBefore(node.Next, new Node<T>(value));
 
-        AddBefore(nextNode, new Node<T>(newData));
-    }
+    public void AddFirst(T value) => AddFirst(new Node<T>(value));
 
-    public void AddAfter(Node<T> previousNode, Node<T> newNode) => Add(newNode, previousNode.Next, previousNode);
+    public void AddFirst(Node<T> node) => AddAfter(sentinel, node);
 
-    public void AddAfter(T data, T newData)
-    {
-        var previousNode = Find(data);
-        if (previousNode == null)
-        {
-            throw new InvalidOperationException("Node " + nameof(previousNode) + " was not found");
-        }
-
-        AddAfter(previousNode, new Node<T>(newData));
-    }
-
-    public void AddFirst(T item) => AddFirst(new Node<T>(item));
-
-    public void AddFirst(Node<T> node) => AddBefore(sentinel.Next, node);
+    public void AddLast(Node<T> node) => AddBefore(sentinel, node);
 
     public void Clear()
     {
@@ -123,18 +113,16 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
             return false;
         }
 
-        for (var node = sentinel.Next; node != sentinel; node = node.Next)
+        var nodeToRemove = Find(item);
+        if (nodeToRemove == null)
         {
-            if (node.Data.Equals(item))
-            {
-                node.Previous.Next = node.Next;
-                node.Next.Previous = node.Previous;
-                Count--;
-                return true;
-            }
+            return false;
         }
 
-        return false;
+        nodeToRemove.Previous.Next = nodeToRemove.Next;
+        nodeToRemove.Next.Previous = nodeToRemove.Previous;
+        Count--;
+        return true;
     }
 
     public bool Remove(Node<T> node) => Remove(node.Data);
