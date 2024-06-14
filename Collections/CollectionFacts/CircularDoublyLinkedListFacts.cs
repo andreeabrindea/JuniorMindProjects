@@ -355,7 +355,7 @@ public class CircularDoublyLinkedListFacts
 
         var previousNode = new Node<int>(11);
         var node = new Node<int>(9);
-        Assert.Throws<InvalidOperationException>(() => list.AddAfter(previousNode, node));
+        Assert.Throws<NullReferenceException>(() => list.AddAfter(previousNode, node));
     }
 
     [Fact]
@@ -385,7 +385,7 @@ public class CircularDoublyLinkedListFacts
 
         var nextNode = new Node<int>(11);
         var node = new Node<int>(9);
-        Assert.Throws<InvalidOperationException>(() => list.AddBefore(nextNode, node));
+        Assert.Throws<NullReferenceException>(() => list.AddBefore(nextNode, node));
     }
 
     [Fact]

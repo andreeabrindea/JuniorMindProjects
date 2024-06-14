@@ -38,103 +38,46 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void Add(T item) => AddLast(new Node<T>(item));
 
-    public void AddLast(Node<T> node)
+    public void Add(Node<T> node, Node<T> nextNode, Node<T> previousNode)
     {
-        if (node == null)
+        node.Next = nextNode;
+        node.Previous = previousNode;
+        previousNode.Next = node;
+        nextNode.Previous = node;
+        Count++;
+    }
+
+    public void AddLast(Node<T> node) => Add(node, sentinel, sentinel.Previous);
+
+    public void AddBefore(Node<T> nextNode, Node<T> newNode) => Add(newNode, nextNode, nextNode.Previous);
+
+    public void AddBefore(T data, T newData)
+    {
+        var nextNode = Find(data);
+        if (nextNode == null)
         {
-            throw new ArgumentNullException(nameof(node));
+            throw new InvalidOperationException("Node " + nameof(nextNode) + " was not found");
         }
 
-        var lastNode = sentinel.Previous;
-        node.Next = sentinel;
-        node.Previous = lastNode;
-        lastNode.Next = node;
-        sentinel.Previous = node;
-        Count++;
+        AddBefore(nextNode, new Node<T>(newData));
+    }
+
+    public void AddAfter(Node<T> previousNode, Node<T> newNode) => Add(newNode, previousNode.Next, previousNode);
+
+    public void AddAfter(T data, T newData)
+    {
+        var previousNode = Find(data);
+        if (previousNode == null)
+        {
+            throw new InvalidOperationException("Node " + nameof(previousNode) + " was not found");
+        }
+
+        AddAfter(previousNode, new Node<T>(newData));
     }
 
     public void AddFirst(T item) => AddFirst(new Node<T>(item));
 
-    public void AddFirst(Node<T> node)
-    {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-
-        var firstNode = sentinel.Next;
-        node.Previous = sentinel;
-        sentinel.Next = node;
-        node.Next = firstNode;
-        firstNode.Previous = node;
-        Count++;
-    }
-
-    public void AddBefore(Node<T> nextNode, Node<T> newNode)
-    {
-        if (nextNode == null)
-        {
-            throw new ArgumentNullException(nameof(nextNode));
-        }
-
-        if (newNode == null)
-        {
-            throw new ArgumentNullException(nameof(newNode));
-        }
-
-        if (!Contains(nextNode.Data))
-        {
-            throw new InvalidOperationException();
-        }
-
-        for (var node = sentinel.Next; node != sentinel; node = node.Next)
-        {
-            if (node.Data.Equals(nextNode.Data))
-            {
-                newNode.Next = node;
-                newNode.Previous = node.Previous;
-                node.Previous.Next = newNode;
-                node.Previous = newNode;
-                Count++;
-                return;
-            }
-        }
-    }
-
-    public void AddBefore(T data, T newData) => AddBefore(new Node<T>(data), new Node<T>(newData));
-
-    public void AddAfter(Node<T> previousNode, Node<T> newNode)
-    {
-        if (previousNode == null)
-        {
-            throw new ArgumentNullException(nameof(previousNode));
-        }
-
-        if (newNode == null)
-        {
-            throw new ArgumentNullException(nameof(newNode));
-        }
-
-        if (!Contains(previousNode.Data))
-        {
-            throw new InvalidOperationException();
-        }
-
-        for (var node = sentinel.Next; node != sentinel; node = node.Next)
-        {
-            if (node.Data.Equals(previousNode.Data))
-            {
-                newNode.Previous = node;
-                newNode.Next = node.Next;
-                node.Next.Previous = newNode;
-                node.Next = newNode;
-                Count++;
-                return;
-            }
-        }
-    }
-
-    public void AddAfter(T data, T newData) => AddAfter(new Node<T>(data), new Node<T>(newData));
+    public void AddFirst(Node<T> node) => AddBefore(sentinel.Next, node);
 
     public void Clear()
     {
