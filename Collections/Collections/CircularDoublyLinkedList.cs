@@ -64,10 +64,23 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         return newNode;
     }
 
-    public void AddAfter(Node<T> node, Node<T> newNode) => AddBefore(node.Next, newNode);
+    public void AddAfter(Node<T> node, Node<T> newNode)
+    {
+        if (node == null)
+        {
+            throw new ArgumentNullException(nameof(node));
+        }
+
+        AddBefore(node.Next, newNode);
+    }
 
     public Node<T> AddAfter(Node<T> node, T value)
     {
+        if (node == null)
+        {
+            throw new ArgumentNullException(nameof(node));
+        }
+
         var newNode = new Node<T>(value);
         AddBefore(node.Next, newNode);
         return newNode;
