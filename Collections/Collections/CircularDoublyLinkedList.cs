@@ -165,7 +165,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         return Remove(node.Data);
     }
 
-    public bool RemoveLast()
+    public void RemoveLast()
     {
         if (Count == 0)
         {
@@ -175,10 +175,9 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         sentinel.Previous = sentinel.Previous.Previous;
         sentinel.Previous.Next = sentinel;
         Count--;
-        return true;
     }
 
-    public bool RemoveFirst()
+    public void RemoveFirst()
     {
         if (Count == 0)
         {
@@ -188,7 +187,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         sentinel.Next = sentinel.Next.Next;
         sentinel.Next.Previous = sentinel.Next.Next.Previous;
         Count--;
-        return true;
     }
 
     public Node<T> Find(T data)

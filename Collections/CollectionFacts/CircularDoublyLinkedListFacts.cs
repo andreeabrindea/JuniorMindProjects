@@ -185,7 +185,7 @@ public class CircularDoublyLinkedListFacts
         list.Add(3);
         list.AddFirst(9);
 
-        Assert.True(list.RemoveLast());
+        list.RemoveLast();
         Assert.Equal(new CircularDoublyLinkedList<int>{9, 1, 2}, list);
     }
 
@@ -208,7 +208,7 @@ public class CircularDoublyLinkedListFacts
         list.Add(3);
         list.AddFirst(9);
 
-        Assert.True(list.RemoveFirst());
+        list.RemoveFirst();
         Assert.Equal(new CircularDoublyLinkedList<int>{1, 2, 3}, list);
     }
     
