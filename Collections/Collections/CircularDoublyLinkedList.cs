@@ -140,7 +140,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         if (!Contains(item))
         {
-            throw new InvalidOperationException(nameof(item) + " was not found");
+            return false;
         }
 
         var nodeToRemove = Find(item);
