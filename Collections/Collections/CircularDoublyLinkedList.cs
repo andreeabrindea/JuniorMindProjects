@@ -70,11 +70,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public Node<T> AddAfter(Node<T> node, T value)
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-
+        ArgumentNullException.ThrowIfNull(node);
         var newNode = new Node<T>(value);
         AddBefore(node.Next, newNode);
         return newNode;
@@ -156,7 +152,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         if (Count == 0)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("the list is empty.");
         }
 
         sentinel.Previous = sentinel.Previous.Previous;
@@ -168,7 +164,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         if (Count == 0)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("the list is empty.");
         }
 
         sentinel.Next = sentinel.Next.Next;
