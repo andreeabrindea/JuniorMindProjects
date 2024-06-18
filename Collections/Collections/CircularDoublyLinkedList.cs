@@ -40,14 +40,12 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddBefore(Node<T> node, Node<T> newNode)
     {
-        if (node == null)
-        {
-            throw new InvalidOperationException(nameof(node));
-        }
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(newNode);
 
-        if (newNode == null)
+        if (!Contains(node.Data) && !node.Equals(sentinel))
         {
-            throw new InvalidOperationException(nameof(newNode));
+            throw new InvalidOperationException("node was not found");
         }
 
         newNode.Next = node;
@@ -66,11 +64,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void AddAfter(Node<T> node, Node<T> newNode)
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-
+        ArgumentNullException.ThrowIfNull(node);
         AddBefore(node.Next, newNode);
     }
 
@@ -113,10 +107,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        if (array == null)
-        {
-            throw new ArgumentNullException(nameof(array));
-        }
+        ArgumentNullException.ThrowIfNull(array);
 
         if (arrayIndex < 0 || arrayIndex > array.Length)
         {
@@ -155,14 +146,10 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         return true;
     }
 
-    public bool Remove(Node<T> node)
+    public void Remove(Node<T> node)
     {
-        if (node == null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-
-        return Remove(node.Data);
+        ArgumentNullException.ThrowIfNull(node);
+        Remove(node.Data);
     }
 
     public void RemoveLast()

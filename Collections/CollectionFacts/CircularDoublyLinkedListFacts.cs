@@ -354,7 +354,7 @@ public class CircularDoublyLinkedListFacts
 
         var previousNode = new Node<int>(11);
         var node = new Node<int>(9);
-        Assert.Throws<NullReferenceException>(() => list.AddBefore(previousNode, node));
+        Assert.Throws<InvalidOperationException>(() => list.AddBefore(previousNode, node));
     }
 
     [Fact]
@@ -384,7 +384,7 @@ public class CircularDoublyLinkedListFacts
 
         var nextNode = new Node<int>(11);
         var node = new Node<int>(9);
-        Assert.Throws<InvalidOperationException>(() => list.AddAfter(nextNode, node));
+        Assert.Throws<ArgumentNullException>(() => list.AddAfter(nextNode, node));
     }
 
     [Fact]
@@ -413,5 +413,15 @@ public class CircularDoublyLinkedListFacts
         var newNode = new Node<int>(5);
         list.AddFirst(newNode);
         Assert.Equal(new CircularDoublyLinkedList<int>{5, 1, 2, 3, 4}, list);
+    }
+
+    [Fact]
+    public void RemoveByNode()
+    {
+        CircularDoublyLinkedList<int> list = new CircularDoublyLinkedList<int> { 5, 1, 2, 3, 4 };
+        var node = list.Find(2);
+        list.Remove(node);
+        
+        Assert.Equal(new CircularDoublyLinkedList<int>{5, 1, 3, 4}, list);
     }
 }
