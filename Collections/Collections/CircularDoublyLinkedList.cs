@@ -174,11 +174,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public Node<T> Find(T data)
     {
-        if (Count == 0)
-        {
-            return null;
-        }
-
         for (var node = sentinel.Next; node != sentinel; node = node.Next)
         {
             if (node.Data.Equals(data))
@@ -192,11 +187,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public Node<T> FindLast(T data)
     {
-        if (Count == 0)
-        {
-            return null;
-        }
-
         for (var node = sentinel.Previous; node != sentinel; node = node.Previous)
         {
             if (node.Data.Equals(data))
