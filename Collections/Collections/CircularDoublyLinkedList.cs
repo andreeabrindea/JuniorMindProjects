@@ -43,11 +43,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         ArgumentNullException.ThrowIfNull(node);
         ArgumentNullException.ThrowIfNull(newNode);
 
-        if (!Contains(node.Data) && !node.Equals(sentinel))
-        {
-            throw new InvalidOperationException("node was not found");
-        }
-
         newNode.Next = node;
         newNode.Previous = node.Previous;
         node.Previous.Next = newNode;
