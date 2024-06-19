@@ -354,7 +354,7 @@ public class CircularDoublyLinkedListFacts
 
         var previousNode = new Node<int>(11);
         var node = new Node<int>(9);
-        Assert.Throws<NullReferenceException>(() => list.AddBefore(previousNode, node));
+        Assert.Throws<InvalidOperationException>(() => list.AddBefore(previousNode, node));
     }
 
     [Fact]

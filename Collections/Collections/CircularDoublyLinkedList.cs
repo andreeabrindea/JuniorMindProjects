@@ -13,6 +13,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         sentinel.Next = sentinel;
         sentinel.Previous = sentinel;
         Count = 0;
+        sentinel.Instance = this;
     }
 
     public int Count { get; private set; }
@@ -36,24 +37,36 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         return GetEnumerator();
     }
 
-    public void Add(T item) => AddLast(new Node<T>(item));
+    public void Add(T item)
+    {
+        var node = new Node<T>(item);
+        AddLast(node);
+        node.Instance = this;
+    }
 
     public void AddBefore(Node<T> node, Node<T> newNode)
     {
         ArgumentNullException.ThrowIfNull(node);
         ArgumentNullException.ThrowIfNull(newNode);
 
+        if (node.Instance != this)
+        {
+            throw new InvalidOperationException("Node was not found in the current list.");
+        }
+
         newNode.Next = node;
         newNode.Previous = node.Previous;
         node.Previous.Next = newNode;
         node.Previous = newNode;
         Count++;
+        newNode.Instance = this;
     }
 
     public Node<T> AddBefore(Node<T> node, T value)
     {
         var newNode = new Node<T>(value);
         AddBefore(node,  newNode);
+        newNode.Instance = this;
         return newNode;
     }
 
@@ -61,6 +74,7 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         ArgumentNullException.ThrowIfNull(node);
         AddBefore(node.Next, newNode);
+        newNode.Instance = this;
     }
 
     public Node<T> AddAfter(Node<T> node, T value)
@@ -68,19 +82,34 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         ArgumentNullException.ThrowIfNull(node);
         var newNode = new Node<T>(value);
         AddBefore(node.Next, newNode);
+        newNode.Instance = this;
         return newNode;
     }
 
-    public void AddFirst(T value) => AddFirst(new Node<T>(value));
+    public void AddFirst(T value)
+    {
+        var node = new Node<T>(value);
+        AddFirst(node);
+        node.Instance = this;
+    }
 
-    public void AddFirst(Node<T> node) => AddAfter(sentinel, node);
+    public void AddFirst(Node<T> node)
+    {
+        AddAfter(sentinel, node);
+        node.Instance = this;
+    }
 
-    public void AddLast(Node<T> node) => AddBefore(sentinel, node);
+    public void AddLast(Node<T> node)
+    {
+        AddBefore(sentinel, node);
+        node.Instance = this;
+    }
 
     public Node<T> AddLast(T item)
     {
         var newNode = new Node<T>(item);
         AddLast(newNode);
+        newNode.Instance = this;
         return newNode;
     }
 
