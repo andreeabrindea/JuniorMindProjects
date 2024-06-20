@@ -54,6 +54,11 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
             throw new InvalidOperationException("Node was not found in the current list.");
         }
 
+        if (newNode.Instance != null)
+        {
+            throw new InvalidOperationException("Node from another list.");
+        }
+
         newNode.Next = node;
         newNode.Previous = node.Previous;
         node.Previous.Next = newNode;
@@ -66,7 +71,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         var newNode = new Node<T>(value);
         AddBefore(node,  newNode);
-        newNode.Instance = this;
         return newNode;
     }
 
@@ -74,7 +78,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         ArgumentNullException.ThrowIfNull(node);
         AddBefore(node.Next, newNode);
-        newNode.Instance = this;
     }
 
     public Node<T> AddAfter(Node<T> node, T value)
@@ -82,7 +85,6 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
         ArgumentNullException.ThrowIfNull(node);
         var newNode = new Node<T>(value);
         AddBefore(node.Next, newNode);
-        newNode.Instance = this;
         return newNode;
     }
 
@@ -90,26 +92,16 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     {
         var node = new Node<T>(value);
         AddFirst(node);
-        node.Instance = this;
     }
 
-    public void AddFirst(Node<T> node)
-    {
-        AddAfter(sentinel, node);
-        node.Instance = this;
-    }
+    public void AddFirst(Node<T> node) => AddAfter(sentinel, node);
 
-    public void AddLast(Node<T> node)
-    {
-        AddBefore(sentinel, node);
-        node.Instance = this;
-    }
+    public void AddLast(Node<T> node) => AddBefore(sentinel, node);
 
     public Node<T> AddLast(T item)
     {
         var newNode = new Node<T>(item);
         AddLast(newNode);
-        newNode.Instance = this;
         return newNode;
     }
 
@@ -149,52 +141,33 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        if (!Contains(item))
-        {
-            return false;
-        }
-
         var nodeToRemove = Find(item);
         if (nodeToRemove == null)
         {
             return false;
         }
 
-        nodeToRemove.Previous.Next = nodeToRemove.Next;
-        nodeToRemove.Next.Previous = nodeToRemove.Previous;
-        Count--;
+        Remove(nodeToRemove);
         return true;
     }
 
     public void Remove(Node<T> node)
     {
         ArgumentNullException.ThrowIfNull(node);
-        Remove(node.Data);
-    }
-
-    public void RemoveLast()
-    {
         if (Count == 0)
         {
-            throw new InvalidOperationException("the list is empty.");
+            throw new InvalidOperationException("The list is empty.");
         }
 
-        sentinel.Previous = sentinel.Previous.Previous;
-        sentinel.Previous.Next = sentinel;
+        node.Previous.Next = node.Next;
+        node.Next.Previous = node.Previous;
         Count--;
+        node.Instance = null;
     }
 
-    public void RemoveFirst()
-    {
-        if (Count == 0)
-        {
-            throw new InvalidOperationException("the list is empty.");
-        }
+    public void RemoveLast() => Remove(sentinel.Previous);
 
-        sentinel.Next = sentinel.Next.Next;
-        sentinel.Next.Previous = sentinel.Next.Next.Previous;
-        Count--;
-    }
+    public void RemoveFirst() => Remove(sentinel.Next);
 
     public Node<T> Find(T data)
     {

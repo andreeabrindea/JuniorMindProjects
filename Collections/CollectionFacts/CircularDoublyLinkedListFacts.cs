@@ -342,6 +342,23 @@ public class CircularDoublyLinkedListFacts
         list.AddBefore(list.Find(2), node);
         Assert.Equal(new CircularDoublyLinkedList<int>{1, 9, 2, 3, 4}, list);
     }
+    [Fact]
+    public void AddNewNodeFromAnotherListAfterNode()
+    {
+        CircularDoublyLinkedList<int> list = new();
+        list.Add(1);
+        list.Add(2);
+        list.Add(3);
+        list.Add(4);
+        
+        CircularDoublyLinkedList<int> list2 = new();
+        list2.Add(1);
+        list2.Add(2);
+        list2.Add(3);
+        list2.Add(4);
+
+        Assert.Throws<InvalidOperationException>(() =>  list.AddBefore(list.Find(2), list2.Find(2)));
+    }
 
     [Fact]
     public void AddNewNodeAfterANonExistingOne()
