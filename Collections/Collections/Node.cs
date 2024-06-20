@@ -14,11 +14,11 @@ public class Node<T>
 
     public T Data { get; internal set; }
 
-    internal Node<T> Next { get; set; }
+    public Node<T> Next { get; internal set; }
 
-    internal Node<T> Previous { get; set; }
+    public Node<T> Previous { get; internal set; }
 
-    internal CircularDoublyLinkedList<T> Instance { get;  set; }
+    public CircularDoublyLinkedList<T> Instance { get; internal set; }
 }
 
 #pragma warning restore CA2227
