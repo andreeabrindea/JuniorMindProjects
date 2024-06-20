@@ -10,10 +10,11 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     public CircularDoublyLinkedList()
     {
         sentinel = new Node<T>();
+
         sentinel.Next = sentinel;
         sentinel.Previous = sentinel;
-        Count = 0;
         sentinel.Instance = this;
+        Count = 0;
     }
 
     public int Count { get; private set; }
@@ -154,9 +155,15 @@ public class CircularDoublyLinkedList<T> : ICollection<T>
     public void Remove(Node<T> node)
     {
         ArgumentNullException.ThrowIfNull(node);
+
         if (Count == 0)
         {
             throw new InvalidOperationException("The list is empty.");
+        }
+
+        if (node.Instance != this)
+        {
+            throw new InvalidOperationException("Node was not found in the current list.");
         }
 
         node.Previous.Next = node.Next;
