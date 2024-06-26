@@ -16,4 +16,9 @@ public class Element<TKey, TValue>
     public TValue Value { get; set; }
 
     public TKey Key { get; set; }
+
+    public KeyValuePair<TKey, TValue> KeyValue()
+    {
+        return new(Key, Value);
+    }
 }

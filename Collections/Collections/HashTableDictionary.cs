@@ -2,12 +2,12 @@ using System.Collections;
 
 namespace Collections;
 
-public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
+public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
+    private readonly Element<TKey, TValue>[] elements;
     private int[] buckets;
-    private Element<TKey, TValue>[] elements;
 
-    public Dictionary(int capacity)
+    public HashTableDictionary(int capacity)
     {
         Count = 0;
         buckets = new int[capacity];
@@ -15,13 +15,16 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
         {
             buckets[i] = -1;
         }
+
+        int initialNumberOfElements = capacity * 2;
+        elements = new Element<TKey, TValue>[initialNumberOfElements];
     }
 
     public ICollection<TKey> Keys { get; }
 
     public ICollection<TValue> Values { get; }
 
-    public int Count { get; }
+    public int Count { get; set; }
 
     public bool IsReadOnly => false;
 
@@ -33,7 +36,13 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < buckets.Length; i++)
+        {
+            for (int j = buckets[i]; j != -1; j = elements[j].Next)
+            {
+                yield return elements[j].KeyValue();
+            }
+        }
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -41,10 +50,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return GetEnumerator();
     }
 
-    public void Add(KeyValuePair<TKey, TValue> item)
-    {
-        throw new NotImplementedException();
-    }
+    public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
     public void Clear()
     {
@@ -68,7 +74,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Add(TKey key, TValue value)
     {
-        throw new NotImplementedException();
+        if (Count == buckets.Length)
+        {
+            int resizeValue = buckets.Length * 2;
+            Array.Resize(ref buckets, resizeValue);
+        }
+
+        int bucketIndex = GetBucketIndex(key);
+        int elementIndex = Count++;
+        elements[elementIndex] = new Element<TKey, TValue>(key, value);
+        elements[elementIndex].Next = -1;
+        buckets[bucketIndex] = elementIndex;
     }
 
     public bool ContainsKey(TKey key)
@@ -84,5 +100,12 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>
     public bool TryGetValue(TKey key, out TValue value)
     {
         throw new NotImplementedException();
+    }
+
+    public int GetBucketIndex(TKey key)
+    {
+        return buckets.Length >= Math.Abs(key.GetHashCode())
+            ? buckets.Length % Math.Abs(key.GetHashCode())
+            : Math.Abs(key.GetHashCode()) % buckets.Length;
     }
 }
