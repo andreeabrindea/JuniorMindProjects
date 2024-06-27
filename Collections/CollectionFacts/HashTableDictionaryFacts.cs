@@ -268,4 +268,26 @@ public class HashTableDictionaryFacts
         KeyValuePair<int, string> item = new KeyValuePair<int, string>(default, "g");
         dictionary.Add(item);
     }
+
+    [Fact]
+    public void CopyToArray()
+    {
+        HashTableDictionary<int, string> dictionary = new(5)
+        {
+            { 2, "a" },
+            { 3, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" }
+        };
+        
+        KeyValuePair<int, string>[] array = new KeyValuePair<int, string>[5];
+        dictionary.CopyTo(array, 0);
+        Assert.Equal(new KeyValuePair<int, string>(5, "d"), array[0]);
+        Assert.Equal(new KeyValuePair<int, string>(6, "e"), array[1]);
+        Assert.Equal(new KeyValuePair<int, string>(4, "c"), array[2]);
+        Assert.Equal(new KeyValuePair<int, string>(2, "a"), array[3]);
+        Assert.Equal(new KeyValuePair<int, string>(3, "b"), array[4]);
+
+    }
 }
