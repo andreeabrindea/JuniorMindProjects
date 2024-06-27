@@ -4,8 +4,8 @@ namespace Collections;
 
 public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
+    private readonly int[] buckets;
     private Element<TKey, TValue>[] elements;
-    private int[] buckets;
 
     public HashTableDictionary(int capacity)
     {
@@ -30,8 +30,22 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public TValue this[TKey key]
     {
-        get => throw new NotImplementedException();
-        set => throw new NotImplementedException();
+        get
+        {
+            return TryGetValue(key, out var value) ? value : default;
+        }
+
+        set
+        {
+           int bucketIndex = GetBucketIndex(key);
+           for (int i = bucketIndex; i != -1; i = elements[i].Next)
+           {
+               if (elements[i].Key.Equals(key))
+               {
+                   elements[i].Value = value;
+               }
+           }
+        }
     }
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -84,20 +98,14 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         if (Count == buckets.Length)
         {
             int resizeValue = buckets.Length * 2;
-            Array.Resize(ref buckets, resizeValue);
+            Array.Resize(ref elements, resizeValue);
         }
 
         int bucketIndex = GetBucketIndex(key);
         int elementIndex = Count++;
         elements[elementIndex] = new Element<TKey, TValue>(key, value);
 
-        if (buckets[bucketIndex] != -1)
-        {
-            int previousElementInTheSameBucket = buckets[bucketIndex];
-            elements[previousElementInTheSameBucket].Next = elementIndex;
-        }
-
-        elements[elementIndex].Next = -1;
+        elements[elementIndex].Next = buckets[bucketIndex];
         buckets[bucketIndex] = elementIndex;
     }
 
@@ -113,10 +121,21 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool TryGetValue(TKey key, out TValue value)
     {
-        throw new NotImplementedException();
+        int bucketIndex = GetBucketIndex(key);
+        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+        {
+            if (elements[i].Key.Equals(key))
+            {
+                value = elements[i].Value;
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
     }
 
-    public int GetBucketIndex(TKey key)
+    private int GetBucketIndex(TKey key)
     {
         return buckets.Length >= Math.Abs(key.GetHashCode())
             ? buckets.Length % Math.Abs(key.GetHashCode())
