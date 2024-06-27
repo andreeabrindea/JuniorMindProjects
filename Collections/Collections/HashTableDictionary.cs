@@ -83,6 +83,13 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         int bucketIndex = GetBucketIndex(key);
         int elementIndex = Count++;
         elements[elementIndex] = new Element<TKey, TValue>(key, value);
+
+        if (buckets[bucketIndex] != -1)
+        {
+            int previousElementInTheSameBucket = buckets[bucketIndex];
+            elements[previousElementInTheSameBucket].Next = elementIndex;
+        }
+
         elements[elementIndex].Next = -1;
         buckets[bucketIndex] = elementIndex;
     }

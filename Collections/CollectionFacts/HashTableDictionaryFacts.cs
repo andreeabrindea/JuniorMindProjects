@@ -3,7 +3,7 @@ using Xunit;
 
 namespace CircularDoublyLinkedListFacts;
 
-public class DictionaryFacts
+public class HashTableDictionaryFacts
 {
     [Fact]
     public void AddElementInDictionary()
