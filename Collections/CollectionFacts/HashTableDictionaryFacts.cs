@@ -101,20 +101,29 @@ public class HashTableDictionaryFacts
     }
 
     [Fact]
-    public void GetElementsByIndex()
+    public void GetElementsByKey()
     {
         HashTableDictionary<int, string> dictionary = new(5);
         dictionary.Add(2, "a");
-        dictionary.Add(3, "b");
-        dictionary.Add(4, "c");
         dictionary.Add(5, "d");
-        dictionary.Add(6, "e");
-        dictionary.Add(7, "f");
-        dictionary.Add(8, "g");
         dictionary.Add(9, "h");
         
         Assert.Equal("a", dictionary[2]);
         Assert.Equal("h", dictionary[9]);
         Assert.Equal("d", dictionary[5]);
+    }
+
+    [Fact]
+    public void SetElementByKey()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        
+        Assert.Equal("a", dictionary[2]);
+        dictionary[2] = "z";
+        Assert.Equal("z", dictionary[2]);
+        Assert.Equal("b", dictionary[3]);
     }
 }

@@ -38,7 +38,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         set
         {
            int bucketIndex = GetBucketIndex(key);
-           for (int i = bucketIndex; i != -1; i = elements[i].Next)
+           for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
            {
                if (elements[i].Key.Equals(key))
                {
