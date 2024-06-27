@@ -168,4 +168,17 @@ public class HashTableDictionaryFacts
         dictionary.Add(4, "c");
         Assert.False(dictionary.ContainsKey(9));
     }
+
+    [Fact]
+    public void AddElementWithAlreadyExistingKey()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        dictionary.Add(4, "d");
+        
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {4, "c"}},
+            dictionary);
+    }
 }

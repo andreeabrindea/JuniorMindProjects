@@ -95,7 +95,12 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Add(TKey key, TValue value)
     {
-        if (Count == buckets.Length)
+        if (ContainsKey(key))
+        {
+            return;
+        }
+
+        if (Count == elements.Length)
         {
             int resizeValue = buckets.Length * 2;
             Array.Resize(ref elements, resizeValue);
