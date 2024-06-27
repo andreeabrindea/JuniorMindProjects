@@ -111,7 +111,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool ContainsKey(TKey key)
     {
-        throw new NotImplementedException();
+        return TryGetValue(key, out _);
     }
 
     public bool Remove(TKey key)
