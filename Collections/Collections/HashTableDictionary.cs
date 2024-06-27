@@ -30,10 +30,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public TValue this[TKey key]
     {
-        get
-        {
-            return TryGetValue(key, out var value) ? value : default;
-        }
+        get => TryGetValue(key, out var value) ? value : default;
 
         set
         {
@@ -73,7 +70,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
             buckets[i] = -1;
         }
 
-        var initialSize = buckets.Length * 2;
+        int initialSize = buckets.Length * 2;
         elements = new Element<TKey, TValue>[initialSize];
         Count = 0;
     }
@@ -90,7 +87,27 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
     {
-        throw new NotImplementedException();
+        if (!Contains(item))
+        {
+            return false;
+        }
+
+        int bucketIndex = GetBucketIndex(item.Key);
+        int indexOfElementToBeRemoved = GetIndexOfElement(item);
+
+        if (buckets[bucketIndex] == indexOfElementToBeRemoved)
+        {
+            buckets[bucketIndex] = elements[indexOfElementToBeRemoved].Next;
+        }
+
+        int previousElementIndex = GetPreviousElementIndex(item, indexOfElementToBeRemoved);
+        elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
+
+        elements[indexOfElementToBeRemoved].Key = default;
+        elements[indexOfElementToBeRemoved].Value = default;
+
+        Count--;
+        return true;
     }
 
     public void Add(TKey key, TValue value)
@@ -121,11 +138,14 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool Remove(TKey key)
     {
-        throw new NotImplementedException();
+        TryGetValue(key, out var value);
+        KeyValuePair<TKey, TValue> item = new KeyValuePair<TKey, TValue>(key, value);
+        return Remove(item);
     }
 
     public bool TryGetValue(TKey key, out TValue value)
     {
+        ArgumentNullException.ThrowIfNull(key);
         int bucketIndex = GetBucketIndex(key);
         for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
         {
@@ -145,5 +165,33 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return buckets.Length >= Math.Abs(key.GetHashCode())
             ? buckets.Length % Math.Abs(key.GetHashCode())
             : Math.Abs(key.GetHashCode()) % buckets.Length;
+    }
+
+    private int GetIndexOfElement(KeyValuePair<TKey, TValue> item)
+    {
+        int bucketIndex = GetBucketIndex(item.Key);
+        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+        {
+            if (elements[i].KeyValue().Equals(item))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private int GetPreviousElementIndex(KeyValuePair<TKey, TValue> item, int itemIndex)
+    {
+        int bucketIndex = GetBucketIndex(item.Key);
+        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+        {
+            if (elements[i].Next.Equals(itemIndex))
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

@@ -181,4 +181,54 @@ public class HashTableDictionaryFacts
         Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {4, "c"}},
             dictionary);
     }
+
+    [Fact]
+    public void RemoveElement()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        dictionary.Add(5, "d");
+        dictionary.Add(6, "e");
+        
+        KeyValuePair<int, string> item = new KeyValuePair<int, string>(4, "c");
+        dictionary.Remove(item);
+        
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {5, "d"}, {6, "e"}},
+            dictionary);
+    }
+
+    [Fact]
+    public void RemoveElementByKey()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        dictionary.Add(5, "d");
+        dictionary.Add(6, "e");
+        
+        KeyValuePair<int, string> item = new KeyValuePair<int, string>(4, "c");
+        Assert.True(dictionary.Remove(4));
+        
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {5, "d"}, {6, "e"}},
+            dictionary);
+    }
+    
+    [Fact]
+    public void RemoveElementByNonExistingKey()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        dictionary.Add(5, "d");
+        dictionary.Add(6, "e");
+        
+        Assert.False(dictionary.Remove(9));
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"},{4, "c"}, {5, "d"}, {6, "e"}},
+            dictionary);
+    }
+    
 }
