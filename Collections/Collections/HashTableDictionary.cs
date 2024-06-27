@@ -35,6 +35,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         get
         {
+            ArgumentNullException.ThrowIfNull(key);
             TryGetValue(key, out var value);
             if (!value.Equals(default))
             {
@@ -46,6 +47,12 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
         set
         {
+            ArgumentNullException.ThrowIfNull(key);
+            if (IsReadOnly)
+            {
+                throw new NotSupportedException();
+            }
+
             int bucketIndex = GetBucketIndex(key);
             bool found = false;
             for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
@@ -84,6 +91,11 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Add(TKey key, TValue value)
     {
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
+
         if (ContainsKey(key))
         {
             return;
@@ -104,6 +116,11 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Clear()
     {
+        if (IsReadOnly)
+        {
+            throw new NotSupportedException();
+        }
+
         for (int i = 0; i < buckets.Length; i++)
         {
             buckets[i] = -1;
@@ -137,7 +154,22 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(array);
+
+        if (arrayIndex < 0 || arrayIndex > array.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        }
+
+        if (array.Length - arrayIndex > Count)
+        {
+            throw new ArgumentException("not enough space to copy", nameof(array));
+        }
+
+        foreach (var item in this)
+        {
+            array[arrayIndex++] = item;
+        }
     }
 
     public bool Remove(KeyValuePair<TKey, TValue> item)
