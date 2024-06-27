@@ -18,6 +18,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
         int initialNumberOfElements = capacity * 2;
         elements = new Element<TKey, TValue>[initialNumberOfElements];
+        FreeIndex = -1;
     }
 
     public ICollection<TKey> Keys { get; }
@@ -26,22 +27,42 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public int Count { get; set; }
 
+    public int FreeIndex { get; private set; }
+
     public bool IsReadOnly => false;
 
     public TValue this[TKey key]
     {
-        get => TryGetValue(key, out var value) ? value : default;
+        get
+        {
+            TryGetValue(key, out var value);
+            if (!value.Equals(default))
+            {
+                return value;
+            }
+
+            throw new KeyNotFoundException();
+        }
 
         set
         {
-           int bucketIndex = GetBucketIndex(key);
-           for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
-           {
-               if (elements[i].Key.Equals(key))
-               {
-                   elements[i].Value = value;
-               }
-           }
+            int bucketIndex = GetBucketIndex(key);
+            bool found = false;
+            for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+            {
+                if (elements[i].Key.Equals(key))
+                {
+                    elements[i].Value = value;
+                    found = true;
+                }
+            }
+
+            if (found)
+            {
+                return;
+            }
+
+            throw new KeyNotFoundException();
         }
     }
 
@@ -61,6 +82,24 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return GetEnumerator();
     }
 
+    public void Add(TKey key, TValue value)
+    {
+        if (ContainsKey(key))
+        {
+            return;
+        }
+
+        CheckResizeArray();
+
+        int bucketIndex = GetBucketIndex(key);
+        int nextFreeIndex = GetNextFreeIndex();
+
+        elements[nextFreeIndex] = new Element<TKey, TValue>(key, value);
+
+        elements[nextFreeIndex].Next = buckets[bucketIndex];
+        buckets[bucketIndex] = nextFreeIndex;
+    }
+
     public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
     public void Clear()
@@ -75,73 +114,9 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         Count = 0;
     }
 
-    public bool Contains(KeyValuePair<TKey, TValue> item)
-    {
-        return TryGetValue(item.Key, out var value) && item.Value.Equals(value);
-    }
+    public bool Contains(KeyValuePair<TKey, TValue> item) => TryGetValue(item.Key, out var value) && item.Value.Equals(value);
 
-    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool Remove(KeyValuePair<TKey, TValue> item)
-    {
-        if (!Contains(item))
-        {
-            return false;
-        }
-
-        int bucketIndex = GetBucketIndex(item.Key);
-        int indexOfElementToBeRemoved = GetIndexOfElement(item);
-
-        if (buckets[bucketIndex] == indexOfElementToBeRemoved)
-        {
-            buckets[bucketIndex] = elements[indexOfElementToBeRemoved].Next;
-        }
-
-        int previousElementIndex = GetPreviousElementIndex(item, indexOfElementToBeRemoved);
-        elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
-
-        elements[indexOfElementToBeRemoved].Key = default;
-        elements[indexOfElementToBeRemoved].Value = default;
-
-        Count--;
-        return true;
-    }
-
-    public void Add(TKey key, TValue value)
-    {
-        if (ContainsKey(key))
-        {
-            return;
-        }
-
-        if (Count == elements.Length)
-        {
-            int resizeValue = buckets.Length * 2;
-            Array.Resize(ref elements, resizeValue);
-        }
-
-        int bucketIndex = GetBucketIndex(key);
-        int elementIndex = Count++;
-        elements[elementIndex] = new Element<TKey, TValue>(key, value);
-
-        elements[elementIndex].Next = buckets[bucketIndex];
-        buckets[bucketIndex] = elementIndex;
-    }
-
-    public bool ContainsKey(TKey key)
-    {
-        return TryGetValue(key, out _);
-    }
-
-    public bool Remove(TKey key)
-    {
-        TryGetValue(key, out var value);
-        KeyValuePair<TKey, TValue> item = new KeyValuePair<TKey, TValue>(key, value);
-        return Remove(item);
-    }
+    public bool ContainsKey(TKey key) => TryGetValue(key, out _);
 
     public bool TryGetValue(TKey key, out TValue value)
     {
@@ -160,8 +135,61 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return false;
     }
 
+    public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Remove(KeyValuePair<TKey, TValue> item)
+    {
+        if (!Contains(item))
+        {
+            return false;
+        }
+
+        int bucketIndex = GetBucketIndex(item.Key);
+        int indexOfElementToBeRemoved = GetIndexOfElement(item);
+
+        if (indexOfElementToBeRemoved == -1)
+        {
+            return false;
+        }
+
+        if (buckets[bucketIndex] == indexOfElementToBeRemoved)
+        {
+            buckets[bucketIndex] = elements[indexOfElementToBeRemoved].Next;
+        }
+        else
+        {
+            int previousElementIndex = GetPreviousElementIndex(item, indexOfElementToBeRemoved);
+            if (previousElementIndex != -1)
+            {
+                elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
+            }
+        }
+
+        elements[indexOfElementToBeRemoved].Key = default;
+        elements[indexOfElementToBeRemoved].Value = default;
+        elements[indexOfElementToBeRemoved].Next = FreeIndex;
+        FreeIndex = indexOfElementToBeRemoved;
+
+        Count--;
+        return true;
+    }
+
+    public bool Remove(TKey key)
+    {
+        TryGetValue(key, out var value);
+        return Remove(new KeyValuePair<TKey, TValue>(key, value));
+    }
+
     private int GetBucketIndex(TKey key)
     {
+        if (key.GetHashCode() == 0)
+        {
+            return 0;
+        }
+
         return buckets.Length >= Math.Abs(key.GetHashCode())
             ? buckets.Length % Math.Abs(key.GetHashCode())
             : Math.Abs(key.GetHashCode()) % buckets.Length;
@@ -193,5 +221,28 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         }
 
         return -1;
+    }
+
+    private int GetNextFreeIndex()
+    {
+        if (FreeIndex == -1)
+        {
+            return Count++;
+        }
+
+        var nextFreeIndex = FreeIndex;
+        FreeIndex = elements[FreeIndex].Next;
+        return nextFreeIndex;
+    }
+
+    private void CheckResizeArray()
+    {
+        if (Count < elements.Length)
+        {
+            return;
+        }
+
+        int resizeValue = buckets.Length * 2;
+        Array.Resize(ref elements, resizeValue);
     }
 }

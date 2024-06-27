@@ -227,8 +227,45 @@ public class HashTableDictionaryFacts
         dictionary.Add(6, "e");
         
         Assert.False(dictionary.Remove(9));
-        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"},{4, "c"}, {5, "d"}, {6, "e"}},
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {4, "c"}, {5, "d"}, {6, "e"}},
             dictionary);
     }
+
+    [Fact]
+    public void ReuseIndexes()
+    {
+        HashTableDictionary<int, string> dictionary = new(5)
+        {
+            { 2, "a" },
+            { 3, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" }
+        };
+
+        Assert.True(dictionary.Remove(4));
+        Assert.True(dictionary.Remove(5));
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{ 2, "a" }, { 3, "b" }, { 6, "e" }},
+            dictionary);
     
+        dictionary.Add(8, "f");
+        dictionary.Add(10, "g");
+        Assert.Equal(new HashTableDictionary<int, string>(5) {{2, "a"}, {3, "b"}, {8, "f"}, {10, "g"}, {6, "e"}},
+             dictionary);
+    }
+
+    [Fact]
+    public void TryAddElementWithNullKey()
+    {
+        HashTableDictionary<int, string> dictionary = new(5)
+        {
+            { 2, "a" },
+            { 3, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" }
+        };
+        KeyValuePair<int, string> item = new KeyValuePair<int, string>(default, "g");
+        dictionary.Add(item);
+    }
 }
