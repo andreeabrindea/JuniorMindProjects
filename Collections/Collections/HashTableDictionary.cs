@@ -4,7 +4,7 @@ namespace Collections;
 
 public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
-    private readonly Element<TKey, TValue>[] elements;
+    private Element<TKey, TValue>[] elements;
     private int[] buckets;
 
     public HashTableDictionary(int capacity)
@@ -54,7 +54,14 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Clear()
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < buckets.Length; i++)
+        {
+            buckets[i] = -1;
+        }
+
+        var initialSize = buckets.Length * 2;
+        elements = new Element<TKey, TValue>[initialSize];
+        Count = 0;
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
