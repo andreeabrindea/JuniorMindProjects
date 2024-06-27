@@ -126,4 +126,26 @@ public class HashTableDictionaryFacts
         Assert.Equal("z", dictionary[2]);
         Assert.Equal("b", dictionary[3]);
     }
+
+    [Fact]
+    public void ContainsExistingElement()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        KeyValuePair<int, string> item = new KeyValuePair<int, string>(2, "a");
+        Assert.True(dictionary.Contains(item));
+    }
+    
+    [Fact]
+    public void ContainsNonExistingElement()
+    {
+        HashTableDictionary<int, string> dictionary = new(5);
+        dictionary.Add(2, "a");
+        dictionary.Add(3, "b");
+        dictionary.Add(4, "c");
+        KeyValuePair<int, string> item = new KeyValuePair<int, string>(2, "b");
+        Assert.False(dictionary.Contains(item));
+    }
 }

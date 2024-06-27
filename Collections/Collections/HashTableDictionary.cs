@@ -80,7 +80,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
     {
-        throw new NotImplementedException();
+        return TryGetValue(item.Key, out var value) && item.Value.Equals(value);
     }
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
