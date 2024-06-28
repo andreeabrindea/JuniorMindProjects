@@ -27,9 +27,9 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public int Count { get; set; }
 
-    public int FreeIndex { get; private set; }
-
     public bool IsReadOnly => false;
+
+    internal int FreeIndex { get; private set; }
 
     public TValue this[TKey key]
     {
