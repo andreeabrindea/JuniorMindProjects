@@ -288,6 +288,37 @@ public class HashTableDictionaryFacts
         Assert.Equal(new KeyValuePair<int, string>(4, "c"), array[2]);
         Assert.Equal(new KeyValuePair<int, string>(2, "a"), array[3]);
         Assert.Equal(new KeyValuePair<int, string>(3, "b"), array[4]);
+    }
 
+    [Fact]
+    public void GetValues()
+    {
+        HashTableDictionary<int, string> dictionary = new(5)
+        {
+            { 2, "a" },
+            { 3, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" }
+        };
+
+        var values = dictionary.Values;
+        Assert.Equal(new List<string>(){"a", "b", "c", "d","e"}, values);
+    }
+    
+    [Fact]
+    public void GetKeys()
+    {
+        HashTableDictionary<int, string> dictionary = new(5)
+        {
+            { 2, "a" },
+            { 3, "b" },
+            { 4, "c" },
+            { 5, "d" },
+            { 6, "e" }
+        };
+
+        var keys = dictionary.Keys;
+        Assert.Equal(new List<int>(){2, 3, 4, 5, 6}, keys);
     }
 }

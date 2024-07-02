@@ -11,47 +11,68 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         Count = 0;
         buckets = new int[capacity];
-        for (int i = 0; i < capacity; i++)
-        {
-            buckets[i] = -1;
-        }
-
+        Array.Fill(buckets, -1);
         int initialNumberOfElements = capacity * 2;
         elements = new Element<TKey, TValue>[initialNumberOfElements];
         FreeIndex = -1;
     }
 
-    public ICollection<TKey> Keys { get; }
+    public ICollection<TKey> Keys
+    {
+        get
+        {
+            List<TKey> keys = new List<TKey>();
+            foreach (var element in elements)
+            {
+                if (element != null)
+                {
+                    keys.Add(element.Key);
+                }
+            }
 
-    public ICollection<TValue> Values { get; }
+            return keys;
+        }
+    }
+
+    public ICollection<TValue> Values
+    {
+        get
+        {
+            List<TValue> values = new List<TValue>();
+            foreach (var element in elements)
+            {
+                if (element != null)
+                {
+                    values.Add(element.Value);
+                }
+            }
+
+            return values;
+        }
+    }
 
     public int Count { get; set; }
 
     public bool IsReadOnly => false;
 
-    internal int FreeIndex { get; private set; }
+    private int FreeIndex { get;  set; }
 
     public TValue this[TKey key]
     {
         get
         {
             ArgumentNullException.ThrowIfNull(key);
-            TryGetValue(key, out var value);
-            if (!value.Equals(default))
+            if (!TryGetValue(key, out var value))
             {
-                return value;
+                throw new KeyNotFoundException();
             }
 
-            throw new KeyNotFoundException();
+            return value;
         }
 
         set
         {
             ArgumentNullException.ThrowIfNull(key);
-            if (IsReadOnly)
-            {
-                throw new NotSupportedException();
-            }
 
             int bucketIndex = GetBucketIndex(key);
             bool found = false;
@@ -91,11 +112,6 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Add(TKey key, TValue value)
     {
-        if (IsReadOnly)
-        {
-            throw new NotSupportedException();
-        }
-
         if (ContainsKey(key))
         {
             return;
@@ -104,7 +120,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         CheckResizeArray();
 
         int bucketIndex = GetBucketIndex(key);
-        int nextFreeIndex = GetNextFreeIndex();
+        int nextFreeIndex = PopNextFreeIndex();
 
         elements[nextFreeIndex] = new Element<TKey, TValue>(key, value);
 
@@ -116,11 +132,6 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
     public void Clear()
     {
-        if (IsReadOnly)
-        {
-            throw new NotSupportedException();
-        }
-
         for (int i = 0; i < buckets.Length; i++)
         {
             buckets[i] = -1;
@@ -193,7 +204,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         }
         else
         {
-            int previousElementIndex = GetPreviousElementIndex(item, indexOfElementToBeRemoved);
+            int previousElementIndex = GetElementByNextProperty(item, indexOfElementToBeRemoved);
             if (previousElementIndex != -1)
             {
                 elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
@@ -241,12 +252,12 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return -1;
     }
 
-    private int GetPreviousElementIndex(KeyValuePair<TKey, TValue> item, int itemIndex)
+    private int GetElementByNextProperty(KeyValuePair<TKey, TValue> item, int nextElementIndex)
     {
         int bucketIndex = GetBucketIndex(item.Key);
         for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
         {
-            if (elements[i].Next.Equals(itemIndex))
+            if (elements[i].Next.Equals(nextElementIndex))
             {
                 return i;
             }
@@ -255,7 +266,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return -1;
     }
 
-    private int GetNextFreeIndex()
+    private int PopNextFreeIndex()
     {
         if (FreeIndex == -1)
         {
