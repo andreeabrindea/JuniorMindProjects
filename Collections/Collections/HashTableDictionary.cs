@@ -191,7 +191,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         }
 
         int bucketIndex = GetBucketIndex(item.Key);
-        int indexOfElementToBeRemoved = GetIndexOfElement(item);
+        int indexOfElementToBeRemoved = GetIndexOfElement(item, out var previousIndex);
 
         if (indexOfElementToBeRemoved == -1)
         {
@@ -204,7 +204,8 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         }
         else
         {
-            int previousElementIndex = GetElementByNextProperty(item, indexOfElementToBeRemoved);
+            int previousElementIndex = previousIndex;
+            Console.WriteLine("previous " + previousElementIndex);
             if (previousElementIndex != -1)
             {
                 elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
@@ -226,6 +227,26 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return Remove(new KeyValuePair<TKey, TValue>(key, value));
     }
 
+    private int GetIndexOfElement(KeyValuePair<TKey, TValue> item, out int previousElementIndex)
+    {
+        int bucketIndex = GetBucketIndex(item.Key);
+        int index = -1;
+        int previousIndex = -1;
+        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+        {
+            if (elements[i].KeyValue().Equals(item))
+            {
+                index = i;
+                break;
+            }
+
+            previousIndex = i;
+        }
+
+        previousElementIndex = previousIndex;
+        return index;
+    }
+
     private int GetBucketIndex(TKey key)
     {
         if (key.GetHashCode() == 0)
@@ -236,34 +257,6 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return buckets.Length >= Math.Abs(key.GetHashCode())
             ? buckets.Length % Math.Abs(key.GetHashCode())
             : Math.Abs(key.GetHashCode()) % buckets.Length;
-    }
-
-    private int GetIndexOfElement(KeyValuePair<TKey, TValue> item)
-    {
-        int bucketIndex = GetBucketIndex(item.Key);
-        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
-        {
-            if (elements[i].KeyValue().Equals(item))
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private int GetElementByNextProperty(KeyValuePair<TKey, TValue> item, int nextElementIndex)
-    {
-        int bucketIndex = GetBucketIndex(item.Key);
-        for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
-        {
-            if (elements[i].Next.Equals(nextElementIndex))
-            {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private int PopNextFreeIndex()
