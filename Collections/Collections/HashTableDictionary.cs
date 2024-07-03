@@ -230,21 +230,18 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     private int GetIndexOfElement(KeyValuePair<TKey, TValue> item, out int previousElementIndex)
     {
         int bucketIndex = GetBucketIndex(item.Key);
-        int index = -1;
-        int previousIndex = -1;
+        previousElementIndex = -1;
         for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
         {
             if (elements[i].KeyValue().Equals(item))
             {
-                index = i;
-                break;
+                return i;
             }
 
-            previousIndex = i;
+            previousElementIndex = i;
         }
 
-        previousElementIndex = previousIndex;
-        return index;
+        return -1;
     }
 
     private int GetBucketIndex(TKey key)
