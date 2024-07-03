@@ -285,9 +285,9 @@ public class HashTableDictionaryFacts
         dictionary.CopyTo(array, 0);
         Assert.Equal(new KeyValuePair<int, string>(5, "d"), array[0]);
         Assert.Equal(new KeyValuePair<int, string>(6, "e"), array[1]);
-        Assert.Equal(new KeyValuePair<int, string>(4, "c"), array[2]);
-        Assert.Equal(new KeyValuePair<int, string>(2, "a"), array[3]);
-        Assert.Equal(new KeyValuePair<int, string>(3, "b"), array[4]);
+        Assert.Equal(new KeyValuePair<int, string>(2, "a"), array[2]);
+        Assert.Equal(new KeyValuePair<int, string>(3, "b"), array[3]);
+        Assert.Equal(new KeyValuePair<int, string>(4, "c"), array[4]);
     }
 
     [Fact]

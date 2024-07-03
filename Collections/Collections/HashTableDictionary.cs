@@ -76,18 +76,14 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         set
         {
             ArgumentNullException.ThrowIfNull(key);
-
-            int bucketIndex = GetBucketIndex(key);
-            for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
+            int index = GetIndexOfElement(new KeyValuePair<TKey, TValue>(key, this[key]), out _);
+            if (index != -1)
             {
-                if (elements[i].Key.Equals(key))
-                {
-                    elements[i].Value = value;
-                    return;
-                }
+                elements[index].Value = value;
+                return;
             }
 
-            throw new KeyNotFoundException();
+            Add(key, value);
         }
     }
 
@@ -118,7 +114,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
         int bucketIndex = GetBucketIndex(key);
         int nextFreeIndex = PopNextFreeIndex();
-
+        Count++;
         elements[nextFreeIndex] = new Element<TKey, TValue>(key, value);
 
         elements[nextFreeIndex].Next = buckets[bucketIndex];
@@ -233,30 +229,17 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         return -1;
     }
 
-    private int GetBucketIndex(TKey key)
-    {
-        if (key.GetHashCode() == 0)
-        {
-            return 0;
-        }
-
-        var absoluteValue = Math.Abs(key.GetHashCode());
-
-        return buckets.Length >= absoluteValue
-            ? buckets.Length % absoluteValue
-            : absoluteValue % buckets.Length;
-    }
+    private int GetBucketIndex(TKey key) => Math.Abs(key.GetHashCode()) % buckets.Length;
 
     private int PopNextFreeIndex()
     {
         if (freeIndex == -1)
         {
-            return Count++;
+            return Count;
         }
 
         var nextFreeIndex = freeIndex;
         freeIndex = elements[freeIndex].Next;
-        Count++;
         return nextFreeIndex;
     }
 
