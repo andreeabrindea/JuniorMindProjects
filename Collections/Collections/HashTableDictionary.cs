@@ -6,6 +6,7 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
     private readonly int[] buckets;
     private Element<TKey, TValue>[] elements;
+    private int freeIndex;
 
     public HashTableDictionary(int capacity)
     {
@@ -14,19 +15,21 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         Array.Fill(buckets, -1);
         int initialNumberOfElements = capacity * 2;
         elements = new Element<TKey, TValue>[initialNumberOfElements];
-        FreeIndex = -1;
+        freeIndex = -1;
     }
 
     public ICollection<TKey> Keys
     {
         get
         {
-            List<TKey> keys = new List<TKey>();
+            TKey[] keys = new TKey[Count];
+            int index = 0;
             foreach (var element in elements)
             {
                 if (element != null)
                 {
-                    keys.Add(element.Key);
+                    keys[index] = element.Key;
+                    index++;
                 }
             }
 
@@ -38,12 +41,14 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         get
         {
-            List<TValue> values = new List<TValue>();
+            TValue[] values = new TValue[Count];
+            int index = 0;
             foreach (var element in elements)
             {
                 if (element != null)
                 {
-                    values.Add(element.Value);
+                    values[index] = element.Value;
+                    index++;
                 }
             }
 
@@ -54,8 +59,6 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     public int Count { get; set; }
 
     public bool IsReadOnly => false;
-
-    private int FreeIndex { get;  set; }
 
     public TValue this[TKey key]
     {
@@ -75,19 +78,13 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
             ArgumentNullException.ThrowIfNull(key);
 
             int bucketIndex = GetBucketIndex(key);
-            bool found = false;
             for (int i = buckets[bucketIndex]; i != -1; i = elements[i].Next)
             {
                 if (elements[i].Key.Equals(key))
                 {
                     elements[i].Value = value;
-                    found = true;
+                    return;
                 }
-            }
-
-            if (found)
-            {
-                return;
             }
 
             throw new KeyNotFoundException();
@@ -205,27 +202,19 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
         else
         {
             int previousElementIndex = previousIndex;
-            Console.WriteLine("previous " + previousElementIndex);
-            if (previousElementIndex != -1)
-            {
-                elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
-            }
+            elements[previousElementIndex].Next = elements[indexOfElementToBeRemoved].Next;
         }
 
         elements[indexOfElementToBeRemoved].Key = default;
         elements[indexOfElementToBeRemoved].Value = default;
-        elements[indexOfElementToBeRemoved].Next = FreeIndex;
-        FreeIndex = indexOfElementToBeRemoved;
+        elements[indexOfElementToBeRemoved].Next = freeIndex;
+        freeIndex = indexOfElementToBeRemoved;
 
         Count--;
         return true;
     }
 
-    public bool Remove(TKey key)
-    {
-        TryGetValue(key, out var value);
-        return Remove(new KeyValuePair<TKey, TValue>(key, value));
-    }
+    public bool Remove(TKey key) => ContainsKey(key) && Remove(new KeyValuePair<TKey, TValue>(key, this[key]));
 
     private int GetIndexOfElement(KeyValuePair<TKey, TValue> item, out int previousElementIndex)
     {
@@ -251,20 +240,23 @@ public class HashTableDictionary<TKey, TValue> : IDictionary<TKey, TValue>
             return 0;
         }
 
-        return buckets.Length >= Math.Abs(key.GetHashCode())
-            ? buckets.Length % Math.Abs(key.GetHashCode())
-            : Math.Abs(key.GetHashCode()) % buckets.Length;
+        var absoluteValue = Math.Abs(key.GetHashCode());
+
+        return buckets.Length >= absoluteValue
+            ? buckets.Length % absoluteValue
+            : absoluteValue % buckets.Length;
     }
 
     private int PopNextFreeIndex()
     {
-        if (FreeIndex == -1)
+        if (freeIndex == -1)
         {
             return Count++;
         }
 
-        var nextFreeIndex = FreeIndex;
-        FreeIndex = elements[FreeIndex].Next;
+        var nextFreeIndex = freeIndex;
+        freeIndex = elements[freeIndex].Next;
+        Count++;
         return nextFreeIndex;
     }
 
