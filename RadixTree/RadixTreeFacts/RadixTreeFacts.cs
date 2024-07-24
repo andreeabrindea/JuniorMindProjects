@@ -1,11 +1,13 @@
 using Xunit;
-namespace RadixTreeTests;
+namespace RadixTree.Tests;
 
 public class RadixTreeFacts
 {
     [Fact]
-    public void Test1()
+    public void InsertWord()
     {
-
+        RadixTree tree = new();
+        tree.Add("hello");
+        Assert.Equal(new RadixTree { "hello" }, tree);
     }
 }
