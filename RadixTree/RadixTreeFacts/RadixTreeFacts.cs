@@ -44,4 +44,22 @@ public class RadixTreeFacts
         tree.Add("here");
         Assert.False(tree.Search("he"));
     }
+
+    [Fact]
+    public void DeleteExistingNode()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        tree.Delete("hello");
+        Assert.False(tree.Search("hello"));
+    }
+
+    [Fact]
+    public void DeleteNonExistingNode()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        tree.Delete("he");
+        Assert.False(tree.Search("he"));
+    }
 }

@@ -5,7 +5,7 @@ public class Node {
 
     internal Dictionary<char, Edge> Edges { get; }
 
-    internal Node(bool isLeaf)
+    public Node(bool isLeaf)
     {
         this.IsLeaf = isLeaf;
         this.Edges = new Dictionary<char, Edge>();
@@ -20,5 +20,10 @@ public class Node {
     {
         Edges.TryGetValue(transitionChar, out Edge edge);
         return edge;
+    }
+
+    internal int NoOfEdges()
+    {
+        return Edges.Count;
     }
 }

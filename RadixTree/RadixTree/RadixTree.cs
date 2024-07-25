@@ -90,6 +90,10 @@ public class RadixTree : IEnumerable<string>
         return currentNode.IsLeaf;
     }
 
+    public void Delete(String word) {
+        Delete(root, word);
+    }
+
     public IEnumerator<string> GetEnumerator()
     {
         return this.GetWords(this.root, string.Empty).GetEnumerator();
@@ -98,6 +102,48 @@ public class RadixTree : IEnumerable<string>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return this.GetEnumerator();
+    }
+
+    private Node Delete(Node currentNode, string word)
+    {
+        if (word.Length == 0)
+        {
+            if (currentNode.Edges.Count == 0 && currentNode != root)
+            {
+                return null;
+            }
+
+            currentNode.IsLeaf = false;
+            return currentNode;
+        }
+
+        char prefix = word[0];
+        Edge edge = currentNode.GetEdgeStringValue(prefix);
+
+        if (edge == null || !word.StartsWith(edge.Value))
+        {
+            return currentNode;
+        }
+
+        Node deleted = Delete(edge.Next, word[edge.Value.Length..]);
+        if (deleted == null)
+        {
+            currentNode.Edges.Remove(prefix);
+            if (currentNode.NoOfEdges() == 0 && !currentNode.IsLeaf && currentNode != root)
+            {
+                return null;
+            }
+        }
+        else if (deleted.NoOfEdges() == 1 && !deleted.IsLeaf)
+        {
+            currentNode.Edges.Remove(prefix);
+            foreach (Edge afterDeleted in deleted.Edges.Values)
+            {
+                currentNode.AddEdge(edge.Value + afterDeleted.Value, afterDeleted.Next);
+            }
+        }
+
+        return currentNode;
     }
 
     private IEnumerable<string> GetWords(Node node, string prefix)
