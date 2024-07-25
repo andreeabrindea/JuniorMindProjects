@@ -3,7 +3,7 @@ using RadixTree;
 public class Node {
     internal bool IsLeaf { get; set; }
 
-    internal Dictionary<char, Edge> Edges { get; private set; }
+    internal Dictionary<char, Edge> Edges { get; }
 
     internal Node(bool isLeaf)
     {
@@ -16,7 +16,7 @@ public class Node {
         Edges[label[0]] = new Edge(label, next);
     }
 
-    public Edge GetTransition(char transitionChar)
+    public Edge GetEdgeStringValue(char transitionChar)
     {
         Edges.TryGetValue(transitionChar, out Edge edge);
         return edge;

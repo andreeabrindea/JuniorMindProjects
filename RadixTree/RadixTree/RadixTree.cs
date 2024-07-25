@@ -4,42 +4,43 @@ namespace RadixTree;
 
 public class RadixTree : IEnumerable<string>
 {
-    private Node root;
+    private readonly Node root;
 
     public RadixTree()
     {
-        root = new Node(false);
+        this.root = new Node(false);
     }
 
-    public void Add(String word) {
-        Node current = root;
-        int currIndex = 0;
+    public void Add(string word)
+    {
+        Node currentNode = this.root;
+        int currentIndex = 0;
 
-        while (currIndex < word.Length)
+        while (currentIndex < word.Length)
         {
-            char transitionChar = word[currIndex];
-            Edge currentEdge = current.GetTransition(transitionChar);
-            string currStr = word.Substring(currIndex);
+            char prefix = word[currentIndex];
+            Edge currentEdge = currentNode.GetEdgeStringValue(prefix);
+            string remainingSubstring = word[currentIndex..];
 
             if (currentEdge == null)
             {
-                current.Edges[transitionChar] = new Edge(currStr);
+                currentNode.Edges[prefix] = new Edge(remainingSubstring);
                 break;
             }
 
-            int splitIndex = GetFirstMismatchLetter(currStr, currentEdge.Label);
-            if (splitIndex == -1)
+            int mismatchLetterIndex = this.GetFirstMismatchLetterIndex(remainingSubstring, currentEdge.Value);
+            if (mismatchLetterIndex == -1)
             {
-                if (currStr.Length == currentEdge.Label.Length)
+                if (remainingSubstring.Length == currentEdge.Value.Length)
                 {
                     currentEdge.Next.IsLeaf = true;
                     break;
                 }
 
-                if (currStr.Length < currentEdge.Label.Length)
+                if (remainingSubstring.Length < currentEdge.Value.Length)
                 {
-                    string suffix = currentEdge.Label.Substring(currStr.Length);
-                    currentEdge.Label = currStr;
+                    string suffix = currentEdge.Value.Substring(remainingSubstring.Length);
+                    currentEdge.Value = remainingSubstring;
                     Node newNext = new Node(true);
                     Node afterNewNext = currentEdge.Next;
                     currentEdge.Next = newNext;
@@ -47,30 +48,30 @@ public class RadixTree : IEnumerable<string>
                     break;
                 }
 
-                splitIndex = currentEdge.Label.Length;
+                mismatchLetterIndex = currentEdge.Value.Length;
             }
             else
             {
-                string suffix = currentEdge.Label.Substring(splitIndex);
-                currentEdge.Label = currentEdge.Label.Substring(0, splitIndex);
+                string suffix = currentEdge.Value.Substring(mismatchLetterIndex);
+                currentEdge.Value = currentEdge.Value[..mismatchLetterIndex];
                 Node prevNext = currentEdge.Next;
                 currentEdge.Next = new Node(false);
                 currentEdge.Next.AddEdge(suffix, prevNext);
             }
 
-            current = currentEdge.Next;
-            currIndex += splitIndex;
+            currentNode = currentEdge.Next;
+            currentIndex += mismatchLetterIndex;
         }
     }
 
     public IEnumerator<string> GetEnumerator()
     {
-        return GetWords(root, string.Empty).GetEnumerator();
+        return this.GetWords(this.root, string.Empty).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return GetEnumerator();
+        return this.GetEnumerator();
     }
 
     private IEnumerable<string> GetWords(Node node, string prefix)
@@ -82,15 +83,14 @@ public class RadixTree : IEnumerable<string>
 
         foreach (var edge in node.Edges.Values)
         {
-            foreach (var word in GetWords(edge.Next, prefix + edge.Label))
+            foreach (var word in this.GetWords(edge.Next, prefix + edge.Value))
             {
                 yield return word;
             }
         }
     }
 
-
-    private int GetFirstMismatchLetter(string word, string edgeWord)
+    private int GetFirstMismatchLetterIndex(string word, string edgeWord)
     {
         int length = Math.Min(word.Length, edgeWord.Length);
         for (int i = 1; i < length; i++)
@@ -103,5 +103,4 @@ public class RadixTree : IEnumerable<string>
 
         return -1;
     }
-
 }

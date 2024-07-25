@@ -2,19 +2,19 @@ namespace RadixTree;
 
 public class Edge
 {
-    internal string Label { get; set; }
+    internal string Value { get; set; }
 
     internal Node Next { get; set; }
 
-    internal Edge(string label)
+    internal Edge(string value)
     {
-        this.Label = label;
+        this.Value = value;
         this.Next = new Node(true);
     }
 
-    internal Edge(string label, Node next)
+    internal Edge(string value, Node next)
     {
-        this.Label = label;
+        this.Value = value;
         this.Next = next;
     }
 }
