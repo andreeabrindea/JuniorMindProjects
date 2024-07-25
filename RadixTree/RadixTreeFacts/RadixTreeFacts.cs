@@ -19,4 +19,29 @@ public class RadixTreeFacts
         tree.Add("he");
         Assert.Equal(new RadixTree { "hello", "he" }, tree);
     }
+
+    [Fact]
+    public void SearchForExistingWord()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        Assert.True(tree.Search("hello"));
+    }
+
+    [Fact]
+    public void SearchForNonExistingWord()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        Assert.False(tree.Search("abc"));
+    }
+
+    [Fact]
+    public void SearchForExistingPrefix()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        tree.Add("here");
+        Assert.False(tree.Search("he"));
+    }
 }

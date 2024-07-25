@@ -64,6 +64,32 @@ public class RadixTree : IEnumerable<string>
         }
     }
 
+    public bool Search(string word)
+    {
+        Node currentNode = root;
+        int currentIndex = 0;
+        while (currentIndex < word.Length)
+        {
+            char prefix = word[currentIndex];
+            Edge edge = currentNode.GetEdgeStringValue(prefix);
+            if (edge == null)
+            {
+                return false;
+            }
+
+            string remainingSubstring = word[currentIndex..];
+            if (!remainingSubstring.StartsWith(edge.Value))
+            {
+                return false;
+            }
+
+            currentIndex += edge.Value.Length;
+            currentNode = edge.Next;
+        }
+
+        return currentNode.IsLeaf;
+    }
+
     public IEnumerator<string> GetEnumerator()
     {
         return this.GetWords(this.root, string.Empty).GetEnumerator();
