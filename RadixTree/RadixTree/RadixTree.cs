@@ -90,7 +90,7 @@ public class RadixTree : IEnumerable<string>
         return currentNode.IsLeaf;
     }
 
-    public void Delete(String word) {
+    public void Delete(string word) {
         Delete(root, word);
     }
 
