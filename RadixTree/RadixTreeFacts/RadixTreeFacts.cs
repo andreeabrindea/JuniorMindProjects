@@ -1,5 +1,6 @@
+namespace RadixTreeStructure.Facts;
+
 using Xunit;
-namespace RadixTree.Facts;
 
 public class RadixTreeFacts
 {
@@ -19,6 +20,20 @@ public class RadixTreeFacts
         tree.Add("he");
         Assert.Equal(new RadixTree { "hello", "he" }, tree);
     }
+
+    [Fact]
+    public void InsertSeveralWordsWithSamePrefix()
+    {
+        RadixTree tree = new();
+        tree.Add("hello");
+        tree.Add("he");
+        tree.Add("help");
+        tree.Add("hell");
+        tree.Add("apple");
+        tree.Add("app");
+        Assert.Equal(new RadixTree { "hel", "hello", "help", "apple" }, tree);
+    }
+
 
     [Fact]
     public void SearchForExistingWord()
@@ -42,7 +57,7 @@ public class RadixTreeFacts
         RadixTree tree = new();
         tree.Add("hello");
         tree.Add("here");
-        Assert.False(tree.Search("he"));
+        Assert.True(tree.Search("he"));
     }
 
     [Fact]

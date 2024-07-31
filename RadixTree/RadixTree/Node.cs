@@ -1,29 +1,21 @@
-using RadixTree;
-
-public class Node {
-    internal bool IsLeaf { get; set; }
-
-    internal Dictionary<char, Edge> Edges { get; }
-
-    internal Node(bool isLeaf)
+namespace RadixTreeStructure
+{
+    public class Node
     {
-        this.IsLeaf = isLeaf;
-        this.Edges = new Dictionary<char, Edge>();
-    }
+        public Node()
+        {
+            Label = "";
+            ChildrenNodes = new List<Node>();
+        }
 
-    internal void AddEdge(string label, Node next)
-    {
-        Edges[label[0]] = new Edge(label, next);
-    }
+        public Node(string value)
+        {
+            Label = value;
+            ChildrenNodes = new List<Node>();
+        }
 
-    internal Edge GetEdgeStringValue(char transitionChar)
-    {
-        Edges.TryGetValue(transitionChar, out Edge edge);
-        return edge;
-    }
+        internal string Label { get; set; }
 
-    internal int NoOfEdges()
-    {
-        return Edges.Count;
+        internal List<Node> ChildrenNodes { get; }
     }
 }

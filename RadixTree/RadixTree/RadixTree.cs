@@ -1,178 +1,267 @@
 ﻿using System.Collections;
 
-namespace RadixTree;
-
-public class RadixTree : IEnumerable<string>
+namespace RadixTreeStructure
 {
-    private readonly Node root;
-
-    public RadixTree()
+    public class RadixTree : IEnumerable<string>
     {
-        this.root = new Node(false);
-    }
+        private readonly Node root;
 
-    public void Add(string word)
-    {
-        Node currentNode = this.root;
-        int currentIndex = 0;
-
-        while (currentIndex < word.Length)
+        public RadixTree()
         {
-            char prefix = word[currentIndex];
-            Edge currentEdge = currentNode.GetEdgeStringValue(prefix);
-            string remainingSubstring = word[currentIndex..];
-
-            if (currentEdge == null)
-            {
-                currentNode.Edges[prefix] = new Edge(remainingSubstring);
-                break;
-            }
-
-            int mismatchLetterIndex = this.GetFirstMismatchLetterIndex(remainingSubstring, currentEdge.Value);
-            if (mismatchLetterIndex == -1)
-            {
-                if (remainingSubstring.Length == currentEdge.Value.Length)
-                {
-                    currentEdge.Next.IsLeaf = true;
-                    break;
-                }
-
-                if (remainingSubstring.Length < currentEdge.Value.Length)
-                {
-                    string suffix = currentEdge.Value.Substring(remainingSubstring.Length);
-                    currentEdge.Value = remainingSubstring;
-                    Node newNext = new Node(true);
-                    Node afterNewNext = currentEdge.Next;
-                    currentEdge.Next = newNext;
-                    newNext.AddEdge(suffix, afterNewNext);
-                    break;
-                }
-
-                mismatchLetterIndex = currentEdge.Value.Length;
-            }
-            else
-            {
-                string suffix = currentEdge.Value.Substring(mismatchLetterIndex);
-                currentEdge.Value = currentEdge.Value[..mismatchLetterIndex];
-                Node prevNext = currentEdge.Next;
-                currentEdge.Next = new Node(false);
-                currentEdge.Next.AddEdge(suffix, prevNext);
-            }
-
-            currentNode = currentEdge.Next;
-            currentIndex += mismatchLetterIndex;
+            root = new Node(string.Empty);
         }
-    }
 
-    public bool Search(string word)
-    {
-        Node currentNode = root;
-        int currentIndex = 0;
-        while (currentIndex < word.Length)
+        public IEnumerator<string> GetEnumerator()
         {
-            char prefix = word[currentIndex];
-            Edge edge = currentNode.GetEdgeStringValue(prefix);
-            if (edge == null)
+            return this.Traverse(root).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public void Add(string word)
+        {
+            this.Insert(word, root);
+        }
+
+        public void Delete(string label)
+        {
+            this.Delete(label, root);
+        }
+
+        public bool Search(string word)
+        {
+            return this.Search(word, root);
+        }
+
+        private void Insert(string wordPart, Node currentNode)
+        {
+            var matches = this.GetNumberOfMatchingConsecutiveCharacters(wordPart, currentNode);
+
+            if (this.CanProcessCurrentNode(matches, wordPart, currentNode))
             {
+                bool inserted = false;
+                var newWordPart = wordPart.Substring(matches, wordPart.Length - matches);
+                foreach (var child in currentNode.ChildrenNodes)
+                {
+                    if (child.Label.StartsWith(newWordPart[0]))
+                    {
+                        inserted = true;
+                        Insert(newWordPart, child);
+                    }
+                }
+
+                if (!inserted)
+                {
+                    currentNode.ChildrenNodes.Add(new Node(newWordPart));
+                }
+            }
+            else if (matches < wordPart.Length)
+            {
+                string commonRoot = wordPart[..matches];
+                string branchPreviousLabel = currentNode.Label[matches..];
+                string branchNewLabel = wordPart[matches..];
+
+                currentNode.Label = commonRoot;
+
+                var newNodePreviousLabel = new Node(branchPreviousLabel);
+                newNodePreviousLabel.ChildrenNodes.AddRange(currentNode.ChildrenNodes);
+
+                currentNode.ChildrenNodes.Clear();
+                currentNode.ChildrenNodes.Add(newNodePreviousLabel);
+
+                var newNodeNewLabel = new Node(branchNewLabel);
+                currentNode.ChildrenNodes.Add(newNodeNewLabel);
+            }
+            else if (matches > currentNode.Label.Length)
+            {
+                string newNodeLabel = currentNode.Label.Substring(currentNode.Label.Length, wordPart.Length);
+                var newNode = new Node(newNodeLabel);
+                currentNode.ChildrenNodes.Add(newNode);
+            }
+        }
+
+        private bool CanProcessCurrentNode(int matches, string wordPart, Node currentNode)
+        {
+            if (matches == 0 || currentNode == root)
+            {
+                return true;
+            }
+
+            return matches > 0 && matches < wordPart.Length && matches >= currentNode.Label.Length;
+        }
+
+        private int GetNumberOfMatchingConsecutiveCharacters(string word, Node currentNode)
+        {
+            int minLength = currentNode.Label.Length >= word.Length ? word.Length : currentNode.Label.Length;
+
+            int matches = 0;
+            if (minLength <= 0)
+            {
+                return matches;
+            }
+
+            for (int i = 0; i < minLength; i++)
+            {
+                if (word[i] == currentNode.Label[i])
+                {
+                    matches++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return matches;
+        }
+
+        private bool Search(string wordPart, Node currentNode)
+        {
+            var matches = GetNumberOfMatchingConsecutiveCharacters(wordPart, currentNode);
+
+            if (CanProcessCurrentNode(matches, wordPart, currentNode))
+            {
+                var newLabel = wordPart[matches..];
+                foreach (var child in currentNode.ChildrenNodes)
+                {
+                    if (child.Label.StartsWith(newLabel[0]))
+                    {
+                        return this.Search(newLabel, child);
+                    }
+                }
+
                 return false;
             }
 
-            string remainingSubstring = word[currentIndex..];
-            if (!remainingSubstring.StartsWith(edge.Value))
+            return matches == currentNode.Label.Length;
+        }
+
+        private string FindSuccessor(string word)
+        {
+            return this.FindSuccessor(word, root, string.Empty);
+        }
+
+        private string FindSuccessor(string wordPart, Node currentNode, string carry)
+        {
+            var matches = GetNumberOfMatchingConsecutiveCharacters(wordPart, currentNode);
+
+            if (CanProcessCurrentNode(matches, wordPart, currentNode))
             {
-                return false;
+                var newLabel = wordPart.Substring(matches, wordPart.Length - matches);
+                foreach (var child in currentNode.ChildrenNodes)
+                {
+                    if (child.Label.StartsWith(newLabel[0]))
+                    {
+                        return this.FindSuccessor(newLabel, child, carry + currentNode.Label);
+                    }
+                }
+
+                return currentNode.Label;
             }
 
-            currentIndex += edge.Value.Length;
-            currentNode = edge.Next;
-        }
-
-        return currentNode.IsLeaf;
-    }
-
-    public void Delete(string word) {
-        Delete(root, word);
-    }
-
-    public IEnumerator<string> GetEnumerator()
-    {
-        return this.GetWords(this.root, string.Empty).GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return this.GetEnumerator();
-    }
-
-    private Node Delete(Node currentNode, string word)
-    {
-        if (word.Length == 0)
-        {
-            if (currentNode.Edges.Count == 0 && currentNode != root)
+            if (matches < currentNode.Label.Length)
             {
-                return null;
+                return carry + currentNode.Label;
             }
 
-            currentNode.IsLeaf = false;
-            return currentNode;
-        }
-
-        char prefix = word[0];
-        Edge edge = currentNode.GetEdgeStringValue(prefix);
-
-        if (edge == null || !word.StartsWith(edge.Value))
-        {
-            return currentNode;
-        }
-
-        Node deleted = Delete(edge.Next, word[edge.Value.Length..]);
-        if (deleted == null)
-        {
-            currentNode.Edges.Remove(prefix);
-            if (currentNode.NoOfEdges() == 0 && !currentNode.IsLeaf && currentNode != root)
+            if (matches == currentNode.Label.Length)
             {
-                return null;
+                carry += currentNode.Label;
+
+                int min = int.MaxValue;
+                int index = -1;
+                for (int i = 0; i < currentNode.ChildrenNodes.Count; i++)
+                {
+                    if (currentNode.ChildrenNodes[i].Label.Length < min)
+                    {
+                        min = currentNode.ChildrenNodes[i].Label.Length;
+                        index = i;
+                    }
+                }
+
+                if (index > -1)
+                {
+                    return carry + currentNode.ChildrenNodes[index].Label;
+                }
+
+                return carry;
             }
+
+            return string.Empty;
         }
-        else if (deleted.NoOfEdges() == 1 && !deleted.IsLeaf)
+
+        private string FindPredecessor(string word)
         {
-            currentNode.Edges.Remove(prefix);
-            foreach (Edge afterDeleted in deleted.Edges.Values)
+            return this.FindPredecessor(word, root, string.Empty);
+        }
+
+        private string FindPredecessor(string wordPart, Node currentNode, string carry)
+        {
+            var matches = this.GetNumberOfMatchingConsecutiveCharacters(wordPart, currentNode);
+
+            if (CanProcessCurrentNode(matches, wordPart, currentNode))
             {
-                currentNode.AddEdge(edge.Value + afterDeleted.Value, afterDeleted.Next);
+                var newLabel = wordPart.Substring(matches, wordPart.Length - matches);
+                foreach (var child in currentNode.ChildrenNodes)
+                {
+                    if (child.Label.StartsWith(newLabel[0].ToString()))
+                    {
+                        return this.FindPredecessor(newLabel, child, carry + currentNode.Label);
+                    }
+                }
+
+                return carry + currentNode.Label;
             }
-        }
 
-        return currentNode;
-    }
-
-    private IEnumerable<string> GetWords(Node node, string prefix)
-    {
-        if (node.IsLeaf)
-        {
-            yield return prefix;
-        }
-
-        foreach (var edge in node.Edges.Values)
-        {
-            foreach (var word in this.GetWords(edge.Next, prefix + edge.Value))
+            if (matches == currentNode.Label.Length)
             {
-                yield return word;
+                return carry + currentNode.Label;
             }
-        }
-    }
 
-    private int GetFirstMismatchLetterIndex(string word, string edgeWord)
-    {
-        int length = Math.Min(word.Length, edgeWord.Length);
-        for (int i = 1; i < length; i++)
+            return string.Empty;
+        }
+
+        private void Delete(string wordPart, Node currentNode)
         {
-            if (word[i] != edgeWord[i])
+            var matches = this.GetNumberOfMatchingConsecutiveCharacters(wordPart, currentNode);
+            if (!CanProcessCurrentNode(matches, wordPart, currentNode))
             {
-                return i;
+                return;
+            }
+
+            var newLabel = wordPart[matches..];
+            foreach (var child in currentNode.ChildrenNodes)
+            {
+                if (child.Label.StartsWith(newLabel[0]))
+                {
+                    if (newLabel == child.Label && child.ChildrenNodes.Count == 0)
+                    {
+                            currentNode.ChildrenNodes.Remove(child);
+                            return;
+                    }
+
+                    this.Delete(newLabel, child);
+                }
             }
         }
 
-        return -1;
+        private IEnumerable<string> Traverse(Node node)
+        {
+            if (node != root)
+            {
+                yield return node.Label;
+            }
+
+            foreach (var child in node.ChildrenNodes)
+            {
+                foreach (var word in Traverse(child))
+                {
+                    yield return node.Label + word;
+                }
+            }
+        }
     }
 }
