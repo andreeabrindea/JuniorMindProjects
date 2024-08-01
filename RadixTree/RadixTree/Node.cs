@@ -2,20 +2,39 @@ namespace RadixTreeStructure
 {
     public class Node
     {
-        public Node()
+        public Node(bool isLeaf)
         {
-            Label = "";
-            ChildrenNodes = new List<Node>();
+            this.IsLeaf = isLeaf;
+            this.Edges = new List<Edge>();
         }
 
-        public Node(string value)
+        internal bool IsLeaf { get; set; }
+
+        internal List<Edge> Edges { get; }
+
+        public Edge GetEdgeStartingWith(string transitionString, out string edgeValue)
         {
-            Label = value;
-            ChildrenNodes = new List<Node>();
+            foreach (var edge in Edges)
+            {
+                if (edge.Value.StartsWith(transitionString))
+                {
+                    edgeValue = edge.Value;
+                    return edge;
+                }
+            }
+
+            edgeValue = string.Empty;
+            return null;
         }
 
-        internal string Label { get; set; }
+        public void AddEdge(string label, Node next)
+        {
+            Edges.Add(new Edge(label, next));
+        }
 
-        internal List<Node> ChildrenNodes { get; }
+        internal int NoOfEdges()
+        {
+            return Edges.Count;
+        }
     }
 }
