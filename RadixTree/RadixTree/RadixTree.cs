@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 
 namespace RadixTreeStructure
 {
@@ -15,17 +13,7 @@ namespace RadixTreeStructure
 
         public void Add(string word)
         {
-            throw NotImplementedException();
-        }
-
-        public bool Search(string word)
-        {
-            throw NotImplementedException();
-        }
-
-        public void Delete(string word)
-        {
-            throw NotImplementedException();
+            this.Add(root, word);
         }
 
         public IEnumerator<string> GetEnumerator()
@@ -38,9 +26,45 @@ namespace RadixTreeStructure
             return this.GetEnumerator();
         }
 
-        private Node Delete(Node currentNode, string word)
+        private void Add(Node node, string word)
         {
-            throw NotImplementedException();
+            if (node == null)
+            {
+                return;
+            }
+
+            var queue = new Queue<Node>();
+            queue.Enqueue(node);
+
+            while (queue.Count > 0)
+            {
+                var currentNode = queue.Dequeue();
+                foreach (var edge in currentNode.Edges)
+                {
+                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                    if (mismatchIndex > 0 && edge.Value.Length > mismatchIndex)
+                    {
+                        currentNode.AddEdge(edge.Value[..mismatchIndex], edge.Next);
+                        currentNode.AddEdge(edge.Value[mismatchIndex..], new Node(true));
+                        edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                        currentNode.Edges.Remove(edge);
+                        return;
+                    }
+
+                    if (mismatchIndex > 0)
+                    {
+                        currentNode.AddEdge(word[mismatchIndex..], new Node(true));
+                        return;
+                    }
+
+                    if (edge.Next != null)
+                    {
+                        queue.Enqueue(edge.Next);
+                    }
+                }
+            }
+
+            root.AddEdge(word, new Node(true));
         }
 
         private IEnumerable<string> GetWords(Node node, string prefix)
@@ -70,7 +94,7 @@ namespace RadixTreeStructure
                 }
             }
 
-            return -1;
+            return length;
         }
     }
 }
