@@ -22,7 +22,7 @@ namespace RadixTreeStructure.Facts
         }
 
         [Fact]
-        public void InsertMultipleWordsWithSamePrefix2()
+        public void InsertMultipleWordsWithSamePrefixThatShouldSplit()
         {
             RadixTree tree = new();
             tree.Add("water");
@@ -56,22 +56,22 @@ namespace RadixTreeStructure.Facts
             Assert.True(tree.Search("he"));
         }
 
-        // [Fact]
-        // public void DeleteExistingNode()
-        // {
-        //     RadixTree tree = new();
-        //     tree.Add("hello");
-        //     tree.Delete("hello");
-        //     Assert.False(tree.Search("hello"));
-        // }
-        //
-        // [Fact]
-        // public void DeleteNonExistingNode()
-        // {
-        //     RadixTree tree = new();
-        //     tree.Add("hello");
-        //     tree.Delete("he");
-        //     Assert.False(tree.Search("he"));
-        // }
+        [Fact]
+        public void DeleteExistingNode()
+        {
+            RadixTree tree = new();
+            tree.Add("hello");
+            tree.Remove("hello");
+            Assert.False(tree.Search("hello"));
+        }
+
+        [Fact]
+        public void DeleteNonExistingNode()
+        {
+            RadixTree tree = new();
+            tree.Add("hello");
+            tree.Remove("he");
+            Assert.False(tree.Search("he"));
+        }
     }
 }
