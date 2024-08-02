@@ -103,7 +103,7 @@ namespace RadixTreeStructure
                 foreach (var edge in node.Edges)
                 {
                     int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (mismatchIndex == edge.Value.Length)
+                    if (mismatchIndex == edge.Value.Length && mismatchIndex == word.Length)
                     {
                         node.Edges.Remove(edge);
                         return true;
