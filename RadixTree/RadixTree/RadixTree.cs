@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Xml;
 
 namespace RadixTreeStructure
 {
@@ -11,58 +12,15 @@ namespace RadixTreeStructure
             this.root = new Node(false);
         }
 
-        public void Add(string word) => this.Add(root, word);
-
-        public bool Search(string word)
+        public void Add(string word)
         {
             if (root == null)
-            {
-                return false;
-            }
-
-            var queue = new Queue<Node>();
-            queue.Enqueue(root);
-
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-                foreach (var edge in node.Edges)
-                {
-                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (mismatchIndex > 0)
-                    {
-                        word = word[mismatchIndex..];
-                    }
-
-                    if (edge.Next != null)
-                    {
-                        queue.Enqueue(edge.Next);
-                    }
-                }
-            }
-
-            return word == string.Empty;
-        }
-
-        public IEnumerator<string> GetEnumerator()
-        {
-            return this.GetWords(this.root, string.Empty).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        private void Add(Node node, string word)
-        {
-            if (node == null)
             {
                 return;
             }
 
             var queue = new Queue<Node>();
-            queue.Enqueue(node);
+            queue.Enqueue(root);
 
             while (queue.Count > 0)
             {
@@ -74,6 +32,7 @@ namespace RadixTreeStructure
                     {
                         currentNode.AddEdge(edge.Value[..mismatchIndex], edge.Next);
                         currentNode.AddEdge(edge.Value[mismatchIndex..], new Node(true));
+                        currentNode.IsLeaf = false;
                         edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
                         currentNode.Edges.Remove(edge);
                         return;
@@ -93,6 +52,89 @@ namespace RadixTreeStructure
             }
 
             root.AddEdge(word, new Node(true));
+        }
+
+        public bool Search(string word)
+        {
+            if (root == null)
+            {
+                return false;
+            }
+
+            var queue = new Queue<Node>();
+            queue.Enqueue(root);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                foreach (var edge in node.Edges)
+                {
+                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                    if (mismatchIndex == edge.Value.Length && edge.Value.Length == word.Length)
+                    {
+                        return true;
+                    }
+
+                    word = word[mismatchIndex..];
+
+                    if (edge.Next != null)
+                    {
+                        queue.Enqueue(edge.Next);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool Remove(string word)
+        {
+            if (!Search(word))
+            {
+                return false;
+            }
+
+            var queue = new Queue<Node>();
+            queue.Enqueue(root);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                foreach (var edge in node.Edges)
+                {
+                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                    if (mismatchIndex == edge.Value.Length)
+                    {
+                        node.Edges.Remove(edge);
+                        return true;
+                    }
+
+                    if (mismatchIndex > 0 && node.IsLeaf)
+                    {
+                        node.Edges.Remove(edge);
+                        return true;
+                    }
+
+                    word = word[mismatchIndex..];
+
+                    if (edge.Next != null)
+                    {
+                        queue.Enqueue(edge.Next);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            return this.GetWords(this.root, string.Empty).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         private IEnumerable<string> GetWords(Node node, string prefix)

@@ -12,14 +12,9 @@ namespace RadixTreeStructure
 
         internal List<Edge> Edges { get; }
 
-        public void AddEdge(string label, Node next)
+        internal void AddEdge(string label, Node next)
         {
             Edges.Add(new Edge(label, next));
-        }
-
-        internal int NoOfEdges()
-        {
-            return Edges.Count;
         }
     }
 }
