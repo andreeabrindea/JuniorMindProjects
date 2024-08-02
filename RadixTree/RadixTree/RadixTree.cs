@@ -11,9 +11,37 @@ namespace RadixTreeStructure
             this.root = new Node(false);
         }
 
-        public void Add(string word)
+        public void Add(string word) => this.Add(root, word);
+
+        public bool Search(string word)
         {
-            this.Add(root, word);
+            if (root == null)
+            {
+                return false;
+            }
+
+            var queue = new Queue<Node>();
+            queue.Enqueue(root);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                foreach (var edge in node.Edges)
+                {
+                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                    if (mismatchIndex > 0)
+                    {
+                        word = word[mismatchIndex..];
+                    }
+
+                    if (edge.Next != null)
+                    {
+                        queue.Enqueue(edge.Next);
+                    }
+                }
+            }
+
+            return word == string.Empty;
         }
 
         public IEnumerator<string> GetEnumerator()
