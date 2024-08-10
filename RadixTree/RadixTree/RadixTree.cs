@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Xml;
 
 namespace RadixTreeStructure
 {
@@ -14,40 +13,22 @@ namespace RadixTreeStructure
 
         public void Add(string word)
         {
-            if (root == null)
+            foreach (var edge in root.Edges)
             {
-                return;
-            }
-
-            var queue = new Queue<Node>();
-            queue.Enqueue(root);
-
-            while (queue.Count > 0)
-            {
-                var currentNode = queue.Dequeue();
-                foreach (var edge in currentNode.Edges)
+                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                if (mismatchIndex > 0 && mismatchIndex == edge.Value.Length)
                 {
-                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (mismatchIndex > 0 && edge.Value.Length > mismatchIndex)
-                    {
-                        currentNode.AddEdge(edge.Value[..mismatchIndex], edge.Next);
-                        currentNode.AddEdge(edge.Value[mismatchIndex..], new Node(true));
-                        currentNode.IsLeaf = false;
-                        edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
-                        currentNode.Edges.Remove(edge);
-                        return;
-                    }
+                    root.AddEdge(word[mismatchIndex..], new Node(true));
+                    return;
+                }
 
-                    if (mismatchIndex > 0)
-                    {
-                        currentNode.AddEdge(word[mismatchIndex..], new Node(true));
-                        return;
-                    }
-
-                    if (edge.Next != null)
-                    {
-                        queue.Enqueue(edge.Next);
-                    }
+                if (mismatchIndex > 0 && mismatchIndex == word.Length)
+                {
+                  root.AddEdge(edge.Value[..mismatchIndex], edge.Next ?? new Node(true));
+                  root.AddEdge(edge.Value[mismatchIndex..], new Node(true));
+                  edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                  root.Edges.Remove(edge);
+                  return;
                 }
             }
 
