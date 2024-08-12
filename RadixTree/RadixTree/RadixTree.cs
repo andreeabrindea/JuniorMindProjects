@@ -13,22 +13,32 @@ namespace RadixTreeStructure
 
         public void Add(string word)
         {
+            if (root.Edges.Count == 0)
+            {
+                root.AddEdge(word, new Node(true));
+                return;
+            }
+
             foreach (var edge in root.Edges)
             {
                 int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (mismatchIndex > 0 && mismatchIndex == edge.Value.Length)
+                if (edge.Value.Length > mismatchIndex)
                 {
-                    root.AddEdge(word[mismatchIndex..], new Node(true));
+                    string commonPrefix = edge.Value[..mismatchIndex];
+                    string suffixEdge = edge.Value[mismatchIndex..];
+                    edge.Value = commonPrefix;
+                    root.AddEdge(suffixEdge, new Node(true));
+
+                    Node newNode = new(false);
+                    edge.Next = newNode;
+                    newNode.AddEdge(word[mismatchIndex..], new Node(true));
                     return;
                 }
 
-                if (mismatchIndex > 0 && mismatchIndex == word.Length)
+                if (word.Length - mismatchIndex > 0)
                 {
-                  root.AddEdge(edge.Value[..mismatchIndex], edge.Next ?? new Node(true));
-                  root.AddEdge(edge.Value[mismatchIndex..], new Node(true));
-                  edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
-                  root.Edges.Remove(edge);
-                  return;
+                    edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                    return;
                 }
             }
 
