@@ -2,7 +2,7 @@
 
 namespace RadixTreeStructure
 {
-    public class RadixTree : IEnumerable<string>
+    public class RadixTree<T> : IEnumerable<T>
     {
         private readonly Node root;
 
@@ -11,131 +11,101 @@ namespace RadixTreeStructure
             this.root = new Node(false);
         }
 
-        public void Add(string word)
+        public void Add(string word) => Add(root, word);
+
+        public bool Search(string word) => Search(root, word);
+
+        public bool Remove(string word) => Remove(root, word);
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return (IEnumerator<T>)this.GetWords(this.root, string.Empty).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        private void Add(Node node, string word)
         {
             if (Search(word))
             {
                 return;
             }
 
-            var queue = new Queue<Node>();
-            queue.Enqueue(root);
-            while (queue.Count > 0)
+            foreach (var edge in node.Edges)
             {
-                var node = queue.Dequeue();
-                foreach (var edge in node.Edges)
+                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                if (edge.Value.Length > mismatchIndex)
                 {
-                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (edge.Value.Length > mismatchIndex)
-                    {
-                        string commonPrefix = edge.Value[..mismatchIndex];
-                        string suffixEdge = edge.Value[mismatchIndex..];
-                        edge.Value = commonPrefix;
-                        node.AddEdge(suffixEdge, new Node(true));
+                    string commonPrefix = edge.Value[..mismatchIndex];
+                    string suffixEdge = edge.Value[mismatchIndex..];
+                    edge.Value = commonPrefix;
+                    node.AddEdge(suffixEdge, new Node(true));
 
-                        Node newNode = new(false);
-                        edge.Next = newNode;
-                        newNode.AddEdge(word[mismatchIndex..], new Node(true));
-                        return;
-                    }
-
-                    if (word.Length - mismatchIndex > 0)
-                    {
-                        edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
-                        return;
-                    }
-
-                    if (edge.Next != null)
-                    {
-                        queue.Enqueue(edge.Next);
-                    }
+                    Node newNode = new(false);
+                    edge.Next = newNode;
+                    newNode.AddEdge(word[mismatchIndex..], new Node(true));
+                    return;
                 }
+
+                if (word.Length - mismatchIndex > 0)
+                {
+                    edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                    return;
+                }
+
+                Add(edge.Next, word);
             }
 
             root.AddEdge(word, new Node(true));
         }
 
-        public bool Search(string word)
+        private bool Search(Node node, string word)
         {
-            if (root == null)
+            foreach (var edge in node.Edges)
             {
-                return false;
-            }
-
-            var queue = new Queue<Node>();
-            queue.Enqueue(root);
-
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-                foreach (var edge in node.Edges)
+                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                if (mismatchIndex == edge.Value.Length && edge.Value.Length == word.Length)
                 {
-                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (mismatchIndex == edge.Value.Length && edge.Value.Length == word.Length)
-                    {
-                        return true;
-                    }
-
-                    word = word[mismatchIndex..];
-
-                    if (edge.Next != null)
-                    {
-                        queue.Enqueue(edge.Next);
-                    }
+                    return true;
                 }
+
+                word = word[mismatchIndex..];
+                Search(edge.Next, word);
             }
 
             return false;
         }
 
-        public bool Remove(string word)
+        private bool Remove(Node node, string word)
         {
             if (!Search(word))
             {
                 return false;
             }
 
-            var queue = new Queue<Node>();
-            queue.Enqueue(root);
-
-            while (queue.Count > 0)
+            foreach (var edge in node.Edges)
             {
-                var node = queue.Dequeue();
-                foreach (var edge in node.Edges)
+                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                if (mismatchIndex == edge.Value.Length && mismatchIndex == word.Length)
                 {
-                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                    if (mismatchIndex == edge.Value.Length && mismatchIndex == word.Length)
-                    {
-                        node.Edges.Remove(edge);
-                        return true;
-                    }
-
-                    if (mismatchIndex > 0 && node.IsLeaf)
-                    {
-                        node.Edges.Remove(edge);
-                        return true;
-                    }
-
-                    word = word[mismatchIndex..];
-
-                    if (edge.Next != null)
-                    {
-                        queue.Enqueue(edge.Next);
-                    }
+                    node.Edges.Remove(edge);
+                    return true;
                 }
+
+                if (mismatchIndex > 0 && node.IsLeaf)
+                {
+                    node.Edges.Remove(edge);
+                    return true;
+                }
+
+                word = word[mismatchIndex..];
+                Remove(edge.Next, word);
             }
 
             return false;
-        }
-
-        public IEnumerator<string> GetEnumerator()
-        {
-            return this.GetWords(this.root, string.Empty).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
 
         private IEnumerable<string> GetWords(Node node, string prefix)

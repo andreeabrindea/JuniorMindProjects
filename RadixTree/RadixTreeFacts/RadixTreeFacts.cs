@@ -7,34 +7,34 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void InsertWord()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
-            Assert.Equal(new RadixTree { "hello" }, tree);
+            Assert.Equal(new RadixTree<string> { "hello" }, tree);
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefix()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             tree.Add("he");
-            Assert.Equal(new RadixTree { "hello", "he" }, tree);
+            Assert.Equal(new RadixTree<string> { "hello", "he" }, tree);
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefixThatShouldSplit()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("water");
             tree.Add("waste");
             tree.Add("w");
-            Assert.Equal(new RadixTree { "water", "waste", "w" }, tree);
+            Assert.Equal(new RadixTree<string> { "water", "waste", "w" }, tree);
         }
 
         [Fact]
         public void SearchForExistingWord()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             Assert.True(tree.Search("hello"));
         }
@@ -42,7 +42,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void SearchForNonExistingWord()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             Assert.False(tree.Search("abc"));
         }
@@ -50,7 +50,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void SearchForExistingPrefix()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             tree.Add("here");
             Assert.True(tree.Search("he"));
@@ -59,7 +59,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void DeleteExistingNode()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             tree.Remove("hello");
             Assert.False(tree.Search("hello"));
@@ -68,7 +68,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void DeleteNonExistingNode()
         {
-            RadixTree tree = new();
+            RadixTree<string> tree = new();
             tree.Add("hello");
             tree.Remove("he");
             Assert.False(tree.Search("he"));
