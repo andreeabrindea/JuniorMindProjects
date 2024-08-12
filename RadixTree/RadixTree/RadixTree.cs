@@ -13,32 +13,42 @@ namespace RadixTreeStructure
 
         public void Add(string word)
         {
-            if (root.Edges.Count == 0)
+            if (Search(word))
             {
-                root.AddEdge(word, new Node(true));
                 return;
             }
 
-            foreach (var edge in root.Edges)
+            var queue = new Queue<Node>();
+            queue.Enqueue(root);
+            while (queue.Count > 0)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (edge.Value.Length > mismatchIndex)
+                var node = queue.Dequeue();
+                foreach (var edge in node.Edges)
                 {
-                    string commonPrefix = edge.Value[..mismatchIndex];
-                    string suffixEdge = edge.Value[mismatchIndex..];
-                    edge.Value = commonPrefix;
-                    root.AddEdge(suffixEdge, new Node(true));
+                    int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                    if (edge.Value.Length > mismatchIndex)
+                    {
+                        string commonPrefix = edge.Value[..mismatchIndex];
+                        string suffixEdge = edge.Value[mismatchIndex..];
+                        edge.Value = commonPrefix;
+                        node.AddEdge(suffixEdge, new Node(true));
 
-                    Node newNode = new(false);
-                    edge.Next = newNode;
-                    newNode.AddEdge(word[mismatchIndex..], new Node(true));
-                    return;
-                }
+                        Node newNode = new(false);
+                        edge.Next = newNode;
+                        newNode.AddEdge(word[mismatchIndex..], new Node(true));
+                        return;
+                    }
 
-                if (word.Length - mismatchIndex > 0)
-                {
-                    edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
-                    return;
+                    if (word.Length - mismatchIndex > 0)
+                    {
+                        edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                        return;
+                    }
+
+                    if (edge.Next != null)
+                    {
+                        queue.Enqueue(edge.Next);
+                    }
                 }
             }
 
