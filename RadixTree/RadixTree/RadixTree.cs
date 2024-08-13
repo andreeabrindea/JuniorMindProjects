@@ -11,11 +11,11 @@ namespace RadixTreeStructure
             this.root = new Node(false);
         }
 
-        public void Add(string word) => Add(root, word);
+        public void Add(T item) => Add(root, item?.ToString() ?? throw new InvalidOperationException());
 
-        public bool Search(string word) => Search(root, word);
+        public bool Search(T item) => Search(root, item?.ToString() ?? throw new InvalidOperationException());
 
-        public bool Remove(string word) => Remove(root, word);
+        public bool Remove(T item) => Remove(root, item?.ToString() ?? throw new InvalidOperationException());
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -29,7 +29,7 @@ namespace RadixTreeStructure
 
         private void Add(Node node, string word)
         {
-            if (Search(word))
+            if (Search(node, word))
             {
                 return;
             }
@@ -81,7 +81,7 @@ namespace RadixTreeStructure
 
         private bool Remove(Node node, string word)
         {
-            if (!Search(word))
+            if (!Search(node, word))
             {
                 return false;
             }
