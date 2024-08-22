@@ -8,11 +8,11 @@ public class Node<T>
 
     public Node(int degree, bool isLeaf)
     {
-        this.Degree = degree;
-        this.KeyCount = 0;
-        this.ChildrenCount = 0;
-        this.keys = new T[degree];
-        this.children = new Node<T>[degree + 1];
+        Degree = degree;
+        KeyCount = 0;
+        ChildrenCount = 0;
+        keys = new T[degree];
+        children = new Node<T>[degree + 1];
         IsLeaf = isLeaf;
     }
 
@@ -27,6 +27,10 @@ public class Node<T>
     internal Node<T>[] Children => children;
 
     internal T[] Keys => keys;
+
+    internal T LargestKey() => keys[KeyCount];
+
+    internal T SmallestKey() => keys[0];
 
     internal void AddKey(T item)
     {
@@ -54,34 +58,6 @@ public class Node<T>
         {
             throw new InvalidOperationException("The node attained the maximum number of children.");
         }
-    }
-
-    internal T LargestKey()
-    {
-        T max = keys[0];
-        for (int i = 1; i <= KeyCount; i++)
-        {
-            if (keys[i].CompareTo(max) > 0)
-            {
-                max = keys[i];
-            }
-        }
-
-        return max;
-    }
-
-    internal T SmallestKey()
-    {
-        T min = keys[0];
-        for (int i = 1; i <= KeyCount; i++)
-        {
-            if (keys[i].CompareTo(min) < 0)
-            {
-                min = keys[i];
-            }
-        }
-
-        return min;
     }
 
     private void SortKeys()
