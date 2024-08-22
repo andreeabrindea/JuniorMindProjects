@@ -7,10 +7,13 @@ public class BTreeCollection<T> : IEnumerable<T>
 {
     private readonly Node<T> root;
 
+    private readonly int degree;
+
     public BTreeCollection(int degree = 3)
     {
         Count = 0;
-        this.root = new Node<T>(degree, true);
+        this.degree = degree;
+        this.root = new Node<T>(this.degree, true);
     }
 
     public int Count { get; set; }
@@ -29,14 +32,53 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public void Add(T item)
     {
-        if (Count > 0)
+        Node<T> node = root;
+        if (Count == 0)
         {
+            node.AddKey(item);
+            Count++;
             return;
         }
 
-        root.AddKey(item);
-        root.IsLeaf = false;
-        Count++;
+        if (node.KeyCount == node.ChildrenCount + 1)
+        {
+            node.AddKey(item);
+            Count++;
+        }
+        else
+        {
+            Node<T> newNode = new(degree, true);
+            newNode.AddKey(item);
+            node.AddChild(newNode);
+        }
+    }
+
+    public bool Search(Node<T> node, T item)
+    {
+        if (node.Keys.Contains(item))
+        {
+            return true;
+        }
+
+        if (item.CompareTo(node.LargestKey()) > 0)
+        {
+            Search(node.Children[node.ChildrenCount], item);
+        }
+
+        if (item.CompareTo(node.SmallestKey()) < 0)
+        {
+            Search(node.Children[0], item);
+        }
+
+        for (int i = 1; i < node.KeyCount; i++)
+        {
+            if (node.Keys[i - 1].CompareTo(item) < 0 && node.Keys[i].CompareTo(item) > 0)
+            {
+                Search(node.Children[i], item);
+            }
+        }
+
+        return false;
     }
 
     public void Clear()
