@@ -23,7 +23,7 @@ public class Node<T>
 
     internal void AddKey(T item)
     {
-        if (KeyCount <= Degree)
+        if (KeyCount < Degree)
         {
             keys[KeyCount] = item;
             KeyCount++;
