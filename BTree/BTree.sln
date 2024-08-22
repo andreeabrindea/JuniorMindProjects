@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTree", "BTree\BTree.csproj", "{8E6E4D6B-2825-4BD0-852F-B7D0AC739D8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTreeFacts", "BTreeFacts\BTreeFacts.csproj", "{EC45795C-631C-4A38-A8EF-DFAC73114C8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{8E6E4D6B-2825-4BD0-852F-B7D0AC739D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E6E4D6B-2825-4BD0-852F-B7D0AC739D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E6E4D6B-2825-4BD0-852F-B7D0AC739D8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC45795C-631C-4A38-A8EF-DFAC73114C8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC45795C-631C-4A38-A8EF-DFAC73114C8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC45795C-631C-4A38-A8EF-DFAC73114C8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC45795C-631C-4A38-A8EF-DFAC73114C8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
