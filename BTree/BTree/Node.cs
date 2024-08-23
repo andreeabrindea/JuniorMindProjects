@@ -42,7 +42,7 @@ public class Node<T>
         }
         else
         {
-            throw new InvalidOperationException("The node attained the maximum number of keys.");
+            Split(item);
         }
     }
 
@@ -52,7 +52,6 @@ public class Node<T>
         {
             children[ChildrenCount] = node;
             ChildrenCount++;
-            node.SortKeys();
         }
         else
         {
@@ -60,13 +59,53 @@ public class Node<T>
         }
     }
 
+    internal void Split(T item)
+    {
+        int middle = (KeyCount + 1) / 2;
+        T middleKey = keys[middle];
+        RemoveKey(middleKey);
+        AddKey(item);
+        Node<T> leftNode = new(Degree, true);
+        for (int i = 0; i < middle; i++)
+        {
+            leftNode.AddKey(keys[i]);
+        }
+
+        Node<T> rightNode = new(Degree, true);
+        for (int i = middle; i < KeyCount; i++)
+        {
+            rightNode.AddKey(keys[i]);
+        }
+
+        KeyCount = 1;
+        keys[0] = middleKey;
+        Array.Fill(keys, default, 1, Degree - 1);
+
+        IsLeaf = false;
+        AddChild(leftNode);
+        AddChild(rightNode);
+    }
+
+    internal void RemoveKey(T item)
+    {
+        for (int i = 1; i < KeyCount; i++)
+        {
+            if (keys[i - 1].Equals(item))
+            {
+                keys[i - 1] = keys[i];
+            }
+        }
+
+        KeyCount--;
+    }
+
     private void SortKeys()
     {
-        for (int i = 0; i < keys.Length; ++i)
+        for (int i = 0; i < KeyCount; ++i)
         {
             bool swapped = false;
 
-            for (int j = 0; j < keys.Length - i - 1; ++j)
+            for (int j = 0; j < KeyCount - i - 1; ++j)
             {
                 if (keys[j].CompareTo(keys[j + 1]) > 0)
                 {
