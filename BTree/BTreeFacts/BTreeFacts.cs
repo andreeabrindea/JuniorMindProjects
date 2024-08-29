@@ -7,8 +7,13 @@ public class BTreeFacts
     {
         BTreeCollection<int> btree = new();
         btree.Add(2);
-        Assert.True(btree.Search(2));
-        Assert.False(btree.Search(3));
+        
+        Assert.True(btree.Contains(2));
+        Node<int> node = btree.Search(2); 
+        Assert.Equal(1, node.KeyCount);
+        
+        Assert.False(btree.Contains(3));
+        Assert.Null(btree.Search(3));
     }
 
     [Fact]
@@ -20,12 +25,12 @@ public class BTreeFacts
         btree.Add(23);
         btree.Add(73);
         btree.Add(97);
-        Assert.True(btree.Search(7));
-        Assert.True(btree.Search(59));
-        Assert.True(btree.Search(23));
-        Assert.True(btree.Search(73));
-        Assert.True(btree.Search(97));
-        Assert.False(btree.Search(66));
+        Assert.True(btree.Contains(7));
+        Assert.True(btree.Contains(59));
+        Assert.True(btree.Contains(23));
+        Assert.True(btree.Contains(73));
+        Assert.True(btree.Contains(97));
+        Assert.False(btree.Contains(66));
 
     }
 }

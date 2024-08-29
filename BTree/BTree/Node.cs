@@ -16,7 +16,7 @@ public class Node<T>
         IsLeaf = isLeaf;
     }
 
-    internal int KeyCount { get; private set; }
+    public int KeyCount { get; private set; }
 
     internal int Degree { get; }
 

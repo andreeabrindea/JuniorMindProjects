@@ -27,7 +27,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         return GetEnumerator();
     }
 
-    public bool Search(T item) => Search(root, item);
+    public Node<T> Search(T item) => Search(root, item);
 
     public void Add(T item)
     {
@@ -41,10 +41,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         throw new NotImplementedException();
     }
 
-    public bool Contains(T item)
-    {
-        throw new NotImplementedException();
-    }
+    public bool Contains(T item) => Search(item) != null;
 
     public void CopyTo(T[] array, int arrayIndex)
     {
@@ -56,16 +53,16 @@ public class BTreeCollection<T> : IEnumerable<T>
         throw new NotImplementedException();
     }
 
-    private bool Search(Node<T> node, T item)
+    private Node<T> Search(Node<T> node, T item)
     {
         if (node.Keys.Contains(item))
         {
-            return true;
+            return node;
         }
 
         if (node.IsLeaf)
         {
-            return false;
+            return null;
         }
 
         if (item.CompareTo(node.SmallestKey()) < 0)
@@ -86,6 +83,6 @@ public class BTreeCollection<T> : IEnumerable<T>
             }
         }
 
-        return false;
+        return null;
     }
 }
