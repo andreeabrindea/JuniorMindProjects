@@ -15,7 +15,7 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public int Count { get; set; }
 
-    public bool IsReadOnly { get; }
+    public bool IsReadOnly => false;
 
     public IEnumerator<T> GetEnumerator()
     {
