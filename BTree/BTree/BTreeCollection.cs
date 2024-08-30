@@ -29,46 +29,14 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public Node<T> Search(T item) => Search(root, item);
 
-    public void Add(T item) => Add(root, item, root);
-
-    public void Add(Node<T> node, T item,  Node<T> parent)
+    public void Add(T item)
     {
-        if (node.ChildrenCount == 0)
+        if (Contains(item))
         {
-            if (!node.IsFull)
-            {
-                node.AddKey(item);
-                return;
-            }
-
-            node.Split(item);
-            if (node != root)
-            {
-                parent.AddChild(node);
-                return;
-            }
-
-            root = node;
             return;
         }
 
-        if (item.CompareTo(node.SmallestKey()) < 0)
-        {
-            Add(node.Children[0], item, node);
-        }
-
-        if (item.CompareTo(node.LargestKey()) > 0)
-        {
-            Add(node.Children[node.ChildrenCount - 1], item, node);
-        }
-
-        for (int i = 1; i < node.KeyCount; i++)
-        {
-            if (node.Keys[i - 1].CompareTo(item) < 0 && node.Keys[i].CompareTo(item) > 0)
-            {
-                Add(node.Children[i], item, node);
-            }
-        }
+        Add(root, item, root);
     }
 
     public void Clear()
@@ -119,5 +87,62 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
 
         return null;
+    }
+
+    private void Add(Node<T> node, T item,  Node<T> parent)
+    {
+        if (node.ChildrenCount == 0)
+        {
+            Count++;
+            if (!node.IsFull)
+            {
+                node.AddKey(item);
+                return;
+            }
+
+            node.Split(item);
+            if (node != root)
+            {
+                MergeNodeWithParent(node, parent);
+                return;
+            }
+
+            root = node;
+            return;
+        }
+
+        if (item.CompareTo(node.SmallestKey()) < 0)
+        {
+            Add(node.Children[0], item, node);
+            return;
+        }
+
+        if (item.CompareTo(node.LargestKey()) > 0)
+        {
+            Add(node.Children[node.ChildrenCount - 1], item, node);
+            return;
+        }
+
+        for (int i = 1; i < node.KeyCount; i++)
+        {
+            if (node.Keys[i - 1].CompareTo(item) < 0 && node.Keys[i].CompareTo(item) > 0)
+            {
+                Add(node.Children[i], item, node);
+                return;
+            }
+        }
+    }
+
+    private void MergeNodeWithParent(Node<T> node, Node<T> parent)
+    {
+        for (int i = 0; i < node.KeyCount; i++)
+        {
+            parent.AddKey(node.Keys[i]);
+        }
+
+        for (int i = 0; i < node.ChildrenCount; i++)
+        {
+            parent.AddChild(node.Children[i]);
+        }
     }
 }
