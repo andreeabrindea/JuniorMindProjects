@@ -25,6 +25,10 @@ public class BTreeFacts
         btree.Add(23);
         btree.Add(73);
         btree.Add(97);
+        btree.Add(5);
+        btree.Add(2);
+        btree.Add(12);
+        btree.Add(67);
         Assert.True(btree.Contains(7));
         Assert.True(btree.Contains(59));
         Assert.True(btree.Contains(23));
