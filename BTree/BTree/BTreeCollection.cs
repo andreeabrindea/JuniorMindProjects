@@ -5,7 +5,7 @@ namespace BTree;
 public class BTreeCollection<T> : IEnumerable<T>
     where T : IComparable<T>
 {
-    private readonly Node<T> root;
+    private Node<T> root;
 
     public BTreeCollection(int degree = 3)
     {
@@ -29,11 +29,46 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public Node<T> Search(T item) => Search(root, item);
 
-    public void Add(T item)
+    public void Add(T item) => Add(root, item, root);
+
+    public void Add(Node<T> node, T item,  Node<T> parent)
     {
-        Node<T> node = root;
-        node.AddKey(item);
-        Count++;
+        if (node.ChildrenCount == 0)
+        {
+            if (!node.IsFull)
+            {
+                node.AddKey(item);
+                return;
+            }
+
+            node.Split(item);
+            if (node != root)
+            {
+                parent.AddChild(node);
+                return;
+            }
+
+            root = node;
+            return;
+        }
+
+        if (item.CompareTo(node.SmallestKey()) < 0)
+        {
+            Add(node.Children[0], item, node);
+        }
+
+        if (item.CompareTo(node.LargestKey()) > 0)
+        {
+            Add(node.Children[node.ChildrenCount - 1], item, node);
+        }
+
+        for (int i = 1; i < node.KeyCount; i++)
+        {
+            if (node.Keys[i - 1].CompareTo(item) < 0 && node.Keys[i].CompareTo(item) > 0)
+            {
+                Add(node.Children[i], item, node);
+            }
+        }
     }
 
     public void Clear()

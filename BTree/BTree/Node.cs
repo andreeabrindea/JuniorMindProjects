@@ -18,6 +18,8 @@ public class Node<T>
 
     public int KeyCount { get; private set; }
 
+    internal bool IsFull => Degree == KeyCount;
+
     internal int Degree { get; }
 
     internal bool IsLeaf { get; set; }
@@ -34,29 +36,15 @@ public class Node<T>
 
     internal void AddKey(T item)
     {
-        if (KeyCount < Degree)
-        {
-            keys[KeyCount] = item;
-            KeyCount++;
-            SortKeys();
-        }
-        else
-        {
-            Split(item);
-        }
+        keys[KeyCount] = item;
+        KeyCount++;
+        SortKeys();
     }
 
     internal void AddChild(Node<T> node)
     {
-        if (ChildrenCount < Degree + 1)
-        {
-            children[ChildrenCount] = node;
-            ChildrenCount++;
-        }
-        else
-        {
-            throw new InvalidOperationException("The node attained the maximum number of children.");
-        }
+        children[ChildrenCount] = node;
+        ChildrenCount++;
     }
 
     internal void Split(T item)
