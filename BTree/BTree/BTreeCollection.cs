@@ -61,6 +61,11 @@ public class BTreeCollection<T> : IEnumerable<T>
             throw new ArgumentException("not enough space to copy", nameof(array));
         }
 
+        if (Count == 0)
+        {
+            return;
+        }
+
         foreach (var key in this)
         {
             array[arrayIndex] = key;
