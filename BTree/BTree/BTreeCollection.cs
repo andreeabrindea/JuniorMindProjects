@@ -38,7 +38,11 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public void Clear()
     {
-        throw new NotImplementedException();
+        Count = 0;
+        for (int i = 0; i < root.ChildrenCount; i++)
+        {
+            root.RemoveChild(root.Children[i]);
+        }
     }
 
     public bool Contains(T item) => Search(item) != null;
