@@ -14,6 +14,7 @@ public class BTreeFacts
         
         Assert.False(btree.Contains(3));
         Assert.Null(btree.Search(3));
+        Assert.Equal(new BTreeCollection<int>{2}, btree);
     }
 
     [Fact]
@@ -35,6 +36,5 @@ public class BTreeFacts
         Assert.True(btree.Contains(73));
         Assert.True(btree.Contains(97));
         Assert.False(btree.Contains(66));
-
     }
 }

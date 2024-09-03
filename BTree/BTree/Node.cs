@@ -27,7 +27,7 @@ public class Node<T>
 
     internal List<T> Keys { get; set; }
 
-    internal T LargestKey() => Keys[KeyCount];
+    internal T LargestKey() => Keys[KeyCount - 1];
 
     internal T SmallestKey() => Keys[0];
 
@@ -42,11 +42,12 @@ public class Node<T>
     {
         Children.Add(node);
         ChildrenCount++;
+        SortChildren();
     }
 
     internal void Split(T item)
     {
-        int middle = (KeyCount + 1) / 2;
+        int middle = KeyCount / 2;
         T middleKey = Keys[middle];
         RemoveKey(middleKey);
         AddKey(item);
@@ -62,30 +63,30 @@ public class Node<T>
             rightNode.AddKey(Keys[i]);
         }
 
-        KeyCount = 1;
-        Keys[0] = middleKey;
-        for (int i = 1; i < Keys.Count; i++)
-        {
-            Keys.RemoveAt(i);
-        }
-
+        Clear();
+        AddKey(middleKey);
         IsLeaf = false;
         ChildrenCount = 0;
         AddChild(leftNode);
         AddChild(rightNode);
     }
 
+    internal void RemoveChild(Node<T> node)
+    {
+        Children.Remove(node);
+        ChildrenCount--;
+    }
+
     private void RemoveKey(T item)
     {
-        for (int i = 1; i < KeyCount; i++)
-        {
-            if (Keys[i - 1].Equals(item))
-            {
-                Keys[i - 1] = Keys[i];
-            }
-        }
-
+        Keys.Remove(item);
         KeyCount--;
+    }
+
+    private void Clear()
+    {
+        Keys.Clear();
+        KeyCount = 0;
     }
 
     private void SortKeys()
@@ -99,6 +100,29 @@ public class Node<T>
                 if (Keys[j].CompareTo(Keys[j + 1]) > 0)
                 {
                     (Keys[j], Keys[j + 1]) = (Keys[j + 1], Keys[j]);
+
+                    swapped = true;
+                }
+            }
+
+            if (!swapped)
+            {
+                break;
+            }
+        }
+    }
+
+    private void SortChildren()
+    {
+        for (int i = 0; i < ChildrenCount; ++i)
+        {
+            bool swapped = false;
+
+            for (int j = 0; j < ChildrenCount - i - 1; ++j)
+            {
+                if (Children[j].Keys[0].CompareTo(Children[j + 1].Keys[0]) > 0)
+                {
+                    (Children[j], Children[j + 1]) = (Children[j + 1], Children[j]);
 
                     swapped = true;
                 }

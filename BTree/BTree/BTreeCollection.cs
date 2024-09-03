@@ -5,7 +5,7 @@ namespace BTree;
 public class BTreeCollection<T> : IEnumerable<T>
     where T : IComparable<T>
 {
-    private Node<T> root;
+    private readonly Node<T> root;
 
     public BTreeCollection(int degree = 3)
     {
@@ -17,10 +17,7 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public bool IsReadOnly => false;
 
-    public IEnumerator<T> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerator<T> GetEnumerator() => GetKeys(root).GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -80,7 +77,7 @@ public class BTreeCollection<T> : IEnumerable<T>
 
         for (int i = 1; i < node.KeyCount; i++)
         {
-            if (node.Keys[i - 1].CompareTo(item) < 0 && node.Keys[i].CompareTo(item) > 0)
+            if (item.CompareTo(node.Keys[i - 1]) > 0 && item.CompareTo(node.Keys[i]) < 0)
             {
                 return Search(node.Children[i], item);
             }
@@ -107,7 +104,6 @@ public class BTreeCollection<T> : IEnumerable<T>
                 return;
             }
 
-            root = node;
             return;
         }
 
@@ -143,6 +139,32 @@ public class BTreeCollection<T> : IEnumerable<T>
         for (int i = 0; i < node.ChildrenCount; i++)
         {
             parent.AddChild(node.Children[i]);
+        }
+
+        parent.RemoveChild(node);
+    }
+
+    private IEnumerable<T> GetKeys(Node<T> node)
+    {
+        if (node == null)
+        {
+            yield break;
+        }
+
+        for (int i = 0; i < node.KeyCount; i++)
+        {
+            yield return node.Keys[i];
+        }
+
+        if (!node.IsLeaf)
+        {
+            for (int i = 0; i < node.ChildrenCount; i++)
+            {
+                foreach (var key in GetKeys(node.Children[i]))
+                {
+                    yield return key;
+                }
+            }
         }
     }
 }
