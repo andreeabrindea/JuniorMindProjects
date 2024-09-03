@@ -45,7 +45,23 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public void CopyTo(T[] array, int arrayIndex)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(array);
+
+        if (arrayIndex < 0 || arrayIndex > array.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        }
+
+        if (array.Length - arrayIndex > Count)
+        {
+            throw new ArgumentException("not enough space to copy", nameof(array));
+        }
+
+        foreach (var key in this)
+        {
+            array[arrayIndex] = key;
+            arrayIndex++;
+        }
     }
 
     public bool Remove(T item)
