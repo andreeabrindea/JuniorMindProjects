@@ -64,4 +64,25 @@ public class BTreeFacts
         Assert.Equal(73, array[7]);
         Assert.Equal(97, array[8]);
     }
+
+    [Fact]
+    public void ClearBTree()
+    {
+        BTreeCollection<int> btree = new(4);
+        btree.Add(59);
+        btree.Add(7);
+        btree.Add(23);
+        btree.Add(73);
+        btree.Add(97);
+        btree.Add(5);
+        btree.Add(2);
+        btree.Add(12);
+        btree.Add(67);
+        btree.Clear();
+        Assert.Equal(0, btree.Count);
+        int[] array = new int[btree.Count];
+        int arrayIndex = 0;
+        btree.CopyTo(array, arrayIndex);
+        Assert.Throws<IndexOutOfRangeException>(() => array[0]);
+    }
 }
