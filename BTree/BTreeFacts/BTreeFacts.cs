@@ -37,4 +37,31 @@ public class BTreeFacts
         Assert.True(btree.Contains(97));
         Assert.False(btree.Contains(66));
     }
+
+    [Fact]
+    public void CopyBTreeToArray()
+    {
+        BTreeCollection<int> btree = new(4);
+        btree.Add(59);
+        btree.Add(7);
+        btree.Add(23);
+        btree.Add(73);
+        btree.Add(97);
+        btree.Add(5);
+        btree.Add(2);
+        btree.Add(12);
+        btree.Add(67);
+        int[] array = new int[btree.Count];
+        int arrayIndex = 0;
+        btree.CopyTo(array, arrayIndex);
+        Assert.Equal(7, array[0]);
+        Assert.Equal(59, array[1]);
+        Assert.Equal(2, array[2]);
+        Assert.Equal(5, array[3]);
+        Assert.Equal(12, array[4]);
+        Assert.Equal(23, array[5]);
+        Assert.Equal(67, array[6]);
+        Assert.Equal(73, array[7]);
+        Assert.Equal(97, array[8]);
+    }
 }
