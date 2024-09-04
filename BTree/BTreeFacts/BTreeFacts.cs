@@ -85,4 +85,22 @@ public class BTreeFacts
         btree.CopyTo(array, arrayIndex);
         Assert.Throws<IndexOutOfRangeException>(() => array[0]);
     }
+
+    [Fact]
+    public void DeleteAKeyFromANodeWithSufficientNoOfKeys()
+    {
+        BTreeCollection<int> btree = new(4);
+        btree.Add(59);
+        btree.Add(7);
+        btree.Add(23);
+        btree.Add(73);
+        btree.Add(97);
+        btree.Add(5);
+        btree.Add(2);
+        btree.Add(12);
+        btree.Add(67);
+
+        btree.Remove(97);
+        Assert.False(btree.Contains(97));
+    }
 }
