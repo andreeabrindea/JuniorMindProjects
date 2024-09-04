@@ -31,6 +31,12 @@ public class Node<T>
 
     internal T SmallestKey() => Keys[0];
 
+    internal bool HasTooFewKeys()
+    {
+        int minimumNoOfKeys = Degree / 2;
+        return KeyCount < minimumNoOfKeys;
+    }
+
     internal void AddKey(T item)
     {
         Keys.Add(item);
@@ -77,7 +83,7 @@ public class Node<T>
         ChildrenCount--;
     }
 
-    private void RemoveKey(T item)
+    internal void RemoveKey(T item)
     {
         Keys.Remove(item);
         KeyCount--;

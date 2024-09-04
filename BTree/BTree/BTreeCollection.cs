@@ -75,7 +75,14 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public bool Remove(T item)
     {
-        throw new NotImplementedException();
+        if (!Contains(item))
+        {
+            return false;
+        }
+
+        Node<T> node = Search(item);
+        node.RemoveKey(item);
+        return !node.HasTooFewKeys();
     }
 
     private Node<T> Search(Node<T> node, T item)
