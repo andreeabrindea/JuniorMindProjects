@@ -81,8 +81,14 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
 
         Node<T> node = Search(item);
-        node.RemoveKey(item);
-        return !node.HasTooFewKeys();
+        int minimumNoOfKeys = (node.KeyCount - 1) / 2;
+        if ((node.KeyCount >= minimumNoOfKeys) && node.IsLeaf)
+        {
+            node.RemoveKey(item);
+            return true;
+        }
+
+        return Remove(root, item, root);
     }
 
     private Node<T> Search(Node<T> node, T item)
@@ -198,5 +204,69 @@ public class BTreeCollection<T> : IEnumerable<T>
                 }
             }
         }
+    }
+
+    private bool Remove(Node<T> node, T item, Node<T> parent)
+    {
+        if (node.Keys.Contains(item) && node.IsLeaf)
+        {
+            MergeNodeWithParent(node, parent);
+        }
+
+        if (item.CompareTo(node.SmallestKey()) < 0)
+        {
+            return Remove(node.Children[0], item, node);
+        }
+
+        if (item.CompareTo(node.LargestKey()) > 0)
+        {
+            return Remove(node.Children[node.ChildrenCount - 1], item, node);
+        }
+
+        for (int i = 1; i < node.KeyCount; i++)
+        {
+            if (item.CompareTo(node.Keys[i - 1]) > 0 && item.CompareTo(node.Keys[i]) < 0)
+            {
+                return Remove(node.Children[i], item, node);
+            }
+        }
+
+        return false;
+    }
+
+    private void MergeNodeWithSibling(Node<T> node, Node<T> parent)
+    {
+        var sibling = FindTheSiblingWithSufficientKeys(node, parent, out string origin);
+        if (sibling == null)
+        {
+            return;
+        }
+
+        // TODO: switch sibling with parent
+        var nodeToMoveToParent = origin == "right" ? sibling.SmallestKey() : sibling.LargestKey();
+    }
+
+    private Node<T> FindTheSiblingWithSufficientKeys(Node<T> node, Node<T> parent, out string origin)
+    {
+        int indexOfNode = parent.FindPositionOfNodeInParent(node);
+        if (parent.ChildrenCount > indexOfNode + 1)
+        {
+            var rightSibling = parent.Children[indexOfNode + 1];
+            if (!rightSibling.HasTooFewKeys())
+            {
+                origin = "right";
+                return rightSibling;
+            }
+        }
+
+        if (indexOfNode < 1)
+        {
+            origin = "none";
+            return null;
+        }
+
+        var leftSibling = parent.Children[indexOfNode - 1];
+        origin = "left";
+        return !leftSibling.HasTooFewKeys() ? leftSibling : null;
     }
 }

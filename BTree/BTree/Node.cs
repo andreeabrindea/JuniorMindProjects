@@ -89,6 +89,19 @@ public class Node<T>
         KeyCount--;
     }
 
+    internal int FindPositionOfNodeInParent(Node<T> node)
+    {
+        for (int i = 0; i < ChildrenCount; i++)
+        {
+            if (Children[i].Equals(node))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     private void Clear()
     {
         Keys.Clear();
