@@ -8,7 +8,7 @@ public class Node<T>
         Degree = degree;
         KeyCount = 0;
         ChildrenCount = 0;
-        Keys = new(degree);
+        Keys = new(degree + 1);
         Children = new(degree + 1);
         IsLeaf = isLeaf;
     }
@@ -53,10 +53,10 @@ public class Node<T>
 
     internal void Split(T item)
     {
+        AddKey(item);
         int middle = KeyCount / 2;
         T middleKey = Keys[middle];
         RemoveKey(middleKey);
-        AddKey(item);
         Node<T> leftNode = new(Degree, true);
         for (int i = 0; i < middle; i++)
         {
