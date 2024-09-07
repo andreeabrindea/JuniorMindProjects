@@ -210,7 +210,7 @@ public class BTreeCollection<T> : IEnumerable<T>
     {
         if (node.Keys.Contains(item) && node.IsLeaf)
         {
-            MergeNodeWithParent(node, parent);
+            return SwitchSiblingWithSeparator(node, parent);
         }
 
         if (item.CompareTo(node.SmallestKey()) < 0)
@@ -234,21 +234,26 @@ public class BTreeCollection<T> : IEnumerable<T>
         return false;
     }
 
-    private void MergeNodeWithSibling(Node<T> node, Node<T> parent)
-    {
-        var sibling = FindTheSiblingWithSufficientKeys(node, parent, out string origin);
-        if (sibling == null)
-        {
-            return;
-        }
-
-        // TODO: switch sibling with parent
-        var nodeToMoveToParent = origin == "right" ? sibling.SmallestKey() : sibling.LargestKey();
-    }
-
-    private Node<T> FindTheSiblingWithSufficientKeys(Node<T> node, Node<T> parent, out string origin)
+    private bool SwitchSiblingWithSeparator(Node<T> node, Node<T> parent)
     {
         int indexOfNode = parent.FindPositionOfNodeInParent(node);
+        var sibling = FindTheSiblingWithSufficientKeys(indexOfNode, node, parent, out string origin);
+        if (sibling == null)
+        {
+            return false;
+        }
+
+        var keyFromSibling = origin == "right" ? sibling.SmallestKey() : sibling.LargestKey();
+        var separatorKey = origin == "right" ? parent.Keys[indexOfNode - 1] : parent.Keys[indexOfNode];
+        parent.RemoveKey(separatorKey);
+        parent.AddKey(keyFromSibling);
+        sibling.RemoveKey(keyFromSibling);
+        sibling.AddKey(separatorKey);
+        return true;
+    }
+
+    private Node<T> FindTheSiblingWithSufficientKeys(int indexOfNode, Node<T> node, Node<T> parent, out string origin)
+    {
         if (parent.ChildrenCount > indexOfNode + 1)
         {
             var rightSibling = parent.Children[indexOfNode + 1];
