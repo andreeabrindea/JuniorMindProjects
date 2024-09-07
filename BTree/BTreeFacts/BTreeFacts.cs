@@ -87,7 +87,7 @@ public class BTreeFacts
     }
 
     [Fact]
-    public void DeleteAKeyFromANodeWithSufficientNoOfKeys()
+    public void RemoveAKeyFromANodeWithSufficientNoOfKeys()
     {
         BTreeCollection<int> btree = new(4);
         btree.Add(59);
@@ -100,7 +100,29 @@ public class BTreeFacts
         btree.Add(12);
         btree.Add(67);
 
-        btree.Remove(97);
+        Assert.True(btree.Remove(97));
         Assert.False(btree.Contains(97));
+    }
+
+    [Fact]
+    public void RemoveAKeyFromANodeWithInsufficientNoOfKeys()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(9);
+        btree.Add(15);
+        btree.Add(20);
+        btree.Add(6);
+        btree.Add(8);
+        btree.Add(10);
+        btree.Add(12);
+        btree.Add(14);
+        btree.Add(16);
+        btree.Add(18);
+        btree.Add(21);
+        btree.Add(22);
+        btree.Add(24);
+        
+        Assert.True(btree.Remove(16));
+        Assert.False(btree.Contains(16));
     }
 }
