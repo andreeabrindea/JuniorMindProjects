@@ -237,7 +237,7 @@ public class BTreeCollection<T> : IEnumerable<T>
     private bool SwitchSiblingWithSeparator(Node<T> node, Node<T> parent)
     {
         int indexOfNode = parent.FindPositionOfNodeInParent(node);
-        var sibling = FindTheSiblingWithSufficientKeys(indexOfNode, node, parent, out string origin);
+        var sibling = FindTheSiblingWithSufficientKeys(indexOfNode, parent, out string origin);
         if (sibling == null)
         {
             return false;
@@ -252,7 +252,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         return true;
     }
 
-    private Node<T> FindTheSiblingWithSufficientKeys(int indexOfNode, Node<T> node, Node<T> parent, out string origin)
+    private Node<T> FindTheSiblingWithSufficientKeys(int indexOfNode, Node<T> parent, out string origin)
     {
         if (parent.ChildrenCount > indexOfNode + 1)
         {
