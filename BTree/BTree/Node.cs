@@ -56,7 +56,6 @@ public class Node<T>
         AddKey(item);
         int middle = KeyCount / 2;
         T middleKey = Keys[middle];
-        RemoveKey(middleKey);
         Node<T> leftNode = new(Degree, true);
         for (int i = 0; i < middle; i++)
         {
@@ -64,7 +63,7 @@ public class Node<T>
         }
 
         Node<T> rightNode = new(Degree, true);
-        for (int i = middle; i < KeyCount; i++)
+        for (int i = middle + 1; i < KeyCount; i++)
         {
             rightNode.AddKey(Keys[i]);
         }
