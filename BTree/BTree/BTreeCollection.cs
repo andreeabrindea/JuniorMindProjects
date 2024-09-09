@@ -81,14 +81,14 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
 
         Node<T> node = Search(item);
-        int minimumNoOfKeys = (node.KeyCount - 1) / 2;
-        if ((node.KeyCount >= minimumNoOfKeys) && node.IsLeaf)
+        int minimumNoOfKeys = node.Degree / 2;
+        if ((node.KeyCount - 1 >= minimumNoOfKeys) && node.IsLeaf)
         {
             node.RemoveKey(item);
             return true;
         }
 
-        return Remove(root, item, root);
+        return RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(root, item, root);
     }
 
     private Node<T> Search(Node<T> node, T item)
@@ -206,7 +206,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
     }
 
-    private bool Remove(Node<T> node, T item, Node<T> parent)
+    private bool RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(Node<T> node, T item, Node<T> parent)
     {
         if (node.Keys.Contains(item) && node.IsLeaf)
         {
@@ -215,19 +215,19 @@ public class BTreeCollection<T> : IEnumerable<T>
 
         if (item.CompareTo(node.SmallestKey()) < 0)
         {
-            return Remove(node.Children[0], item, node);
+            return RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(node.Children[0], item, node);
         }
 
         if (item.CompareTo(node.LargestKey()) > 0)
         {
-            return Remove(node.Children[node.ChildrenCount - 1], item, node);
+            return RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(node.Children[node.ChildrenCount - 1], item, node);
         }
 
         for (int i = 1; i < node.KeyCount; i++)
         {
             if (item.CompareTo(node.Keys[i - 1]) > 0 && item.CompareTo(node.Keys[i]) < 0)
             {
-                return Remove(node.Children[i], item, node);
+                return RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(node.Children[i], item, node);
             }
         }
 
