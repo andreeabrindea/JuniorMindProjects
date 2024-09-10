@@ -68,7 +68,7 @@ public class Node<T>
             rightNode.AddKey(Keys[i]);
         }
 
-        Clear();
+        ClearKeys();
         AddKey(middleKey);
         IsLeaf = false;
         ChildrenCount = 0;
@@ -101,10 +101,16 @@ public class Node<T>
         return -1;
     }
 
-    private void Clear()
+    internal void ClearKeys()
     {
         Keys.Clear();
         KeyCount = 0;
+    }
+
+    internal void ClearChildren()
+    {
+        Children.Clear();
+        ChildrenCount = 0;
     }
 
     private void SortKeys()

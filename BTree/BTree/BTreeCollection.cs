@@ -61,18 +61,6 @@ public class BTreeCollection<T> : IEnumerable<T>
         return null;
     }
 
-    public void NonRecursiveAdd(T item)
-    {
-        if (NonRecursiveContains(item))
-        {
-            return;
-        }
-
-        AddUsingStack(item);
-    }
-
-    public bool NonRecursiveContains(T item) => NonRecursiveSearch(item) != null;
-
     public void Add(T item)
     {
         if (Contains(item))
@@ -83,16 +71,26 @@ public class BTreeCollection<T> : IEnumerable<T>
         Add(root, item, root);
     }
 
+    public void NonRecursiveAdd(T item)
+    {
+        if (NonRecursiveContains(item))
+        {
+            return;
+        }
+
+        AddUsingStack(item);
+    }
+
     public void Clear()
     {
         Count = 0;
-        for (int i = 0; i < root.ChildrenCount; i++)
-        {
-            root.RemoveChild(root.Children[i]);
-        }
+        root.ClearKeys();
+        root.ClearChildren();
     }
 
     public bool Contains(T item) => Search(item) != null;
+
+    public bool NonRecursiveContains(T item) => NonRecursiveSearch(item) != null;
 
     public void CopyTo(T[] array, int arrayIndex)
     {
