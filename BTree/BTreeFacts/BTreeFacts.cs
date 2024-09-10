@@ -125,4 +125,170 @@ public class BTreeFacts
         Assert.True(btree.Remove(16));
         Assert.False(btree.Contains(16));
     }
+       [Fact]
+    public void AddDuplicateKeys()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(10);
+        btree.Add(10);
+        Assert.Equal(1, btree.Count); // Ensure no duplicate is added
+        Assert.True(btree.Contains(10));
+    }
+
+    [Fact]
+    public void RemoveNonExistentKey()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(5);
+        btree.Add(15);
+        Assert.False(btree.Remove(10));
+    }
+
+    [Fact]
+    public void RemoveRootKey()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(5);
+        Assert.True(btree.Remove(5)); 
+        Assert.Equal(0, btree.Count);
+        Assert.False(btree.Contains(5));
+    }
+
+    [Fact]
+    public void RemoveFromSingleLeafNode()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(5);
+        btree.Add(3);
+        btree.Add(7);
+
+        Assert.True(btree.Remove(3));
+        Assert.False(btree.Contains(3));
+    }
+
+    [Fact]
+    public void SearchNonExistentKey()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(1);
+        btree.Add(5);
+        btree.Add(10);
+        Assert.Null(btree.Search(2));
+    }
+
+    [Fact]
+    public void AddMultipleKeysWithDegreeTwo()
+    {
+        BTreeCollection<int> btree = new(2);
+        btree.Add(30);
+        btree.Add(10);
+        btree.Add(20);
+        btree.Add(40);
+
+        Assert.True(btree.Contains(30));
+        Assert.True(btree.Contains(10));
+        Assert.True(btree.Contains(20));
+        Assert.True(btree.Contains(40));
+        Assert.Equal(4, btree.Count);
+    }
+
+    [Fact]
+    public void HandleMultipleNodeSplits()
+    {
+        BTreeCollection<int> btree = new(3);
+        btree.Add(10);
+        btree.Add(20);
+        btree.Add(5);
+        btree.Add(6);
+        btree.Add(12);
+        btree.Add(30);
+        btree.Add(7);
+        btree.Add(17);
+
+        Assert.True(btree.Contains(17));
+        Assert.True(btree.Contains(10));
+        Assert.True(btree.Contains(6)); 
+        Assert.Equal(8, btree.Count);
+    }
+    
+
+    [Fact]
+    public void RemoveRootWithSingleChild()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(10);
+        btree.Add(5);
+        Assert.True(btree.Remove(10));
+        Assert.False(btree.Contains(10));
+        Assert.True(btree.Contains(5));
+    }
+
+    [Fact]
+    public void CopyEmptyTreeToArray()
+    {
+        BTreeCollection<int> btree = new();
+        int[] array = new int[btree.Count];
+        btree.CopyTo(array, 0);
+        Assert.Empty(array);
+    }
+
+    [Fact]
+    public void ClearEmptyTree()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Clear();
+        Assert.Equal(0, btree.Count);
+    }
+
+    [Fact]
+    public void RemoveKeyFromInternalNode()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(10);
+        btree.Add(20);
+        btree.Add(5);
+        btree.Add(7);
+        btree.Add(15);
+        btree.Add(25);
+
+        Assert.True(btree.Remove(20)); 
+        Assert.False(btree.Contains(20));
+        Assert.True(btree.Contains(15));
+    }
+
+    [Fact]
+    public void RemoveAllKeysAndVerifyTreeEmpty()
+    {
+        BTreeCollection<int> btree = new();
+        btree.Add(10);
+        btree.Add(20);
+        btree.Add(30);
+
+        Assert.True(btree.Remove(10));
+        Assert.True(btree.Remove(20));
+        Assert.True(btree.Remove(30));
+
+        Assert.Equal(0, btree.Count);
+        Assert.False(btree.Contains(10));
+        Assert.False(btree.Contains(20));
+        Assert.False(btree.Contains(30));
+    }
+
+    [Fact]
+    public void RemoveRoot()
+    {
+        BTreeCollection<int> btree = new(3);
+        btree.Add(10);
+        btree.Add(20);
+        btree.Add(5);
+        btree.Add(30);
+        btree.Add(40);
+
+        Assert.True(btree.Remove(20));
+        Assert.False(btree.Contains(20));
+        Assert.True(btree.Contains(5));
+        Assert.True(btree.Contains(10));
+        Assert.True(btree.Contains(30));
+        Assert.True(btree.Contains(40));
+    }
 }
