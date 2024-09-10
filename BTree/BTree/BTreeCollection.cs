@@ -61,6 +61,16 @@ public class BTreeCollection<T> : IEnumerable<T>
         return null;
     }
 
+    public void NonRecursiveAdd(T item)
+    {
+        if (NonRecursiveContains(item))
+        {
+            return;
+        }
+
+        AddUsingStack(item);
+    }
+
     public bool NonRecursiveContains(T item) => NonRecursiveSearch(item) != null;
 
     public void Add(T item)
@@ -207,6 +217,53 @@ public class BTreeCollection<T> : IEnumerable<T>
             {
                 Add(node.Children[i], item, node);
                 return;
+            }
+        }
+    }
+
+    private void AddUsingStack(T item)
+    {
+        Stack<(Node<T>, Node<T>)> stack = new();
+        stack.Push((root, null));
+        while (stack.Count > 0)
+        {
+            var (node, parent) = stack.Pop();
+
+            if (node.ChildrenCount == 0)
+            {
+                Count++;
+                if (!node.IsFull)
+                {
+                    node.AddKey(item);
+                    return;
+                }
+
+                node.Split(item);
+                if (node != root)
+                {
+                    MergeNodeWithParent(node, parent);
+                }
+
+                return;
+            }
+
+            if (node.IsLeaf)
+            {
+                continue;
+            }
+
+            if (item.CompareTo(node.SmallestKey()) < 0)
+            {
+                stack.Push((node.Children[0], node));
+            }
+            else if (item.CompareTo(node.LargestKey()) > 0)
+            {
+                stack.Push((node.Children[node.ChildrenCount - 1], node));
+            }
+            else
+            {
+                int index = GetIndexOfItemBetweenSeparators(item, node);
+                stack.Push((node.Children[index], node));
             }
         }
     }
