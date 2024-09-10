@@ -26,6 +26,43 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public Node<T> Search(T item) => Search(root, item);
 
+    public Node<T> NonRecursiveSearch(T item)
+    {
+        Stack<Node<T>> stack = new();
+        stack.Push(root);
+        while (stack.Count > 0)
+        {
+            Node<T> node = stack.Pop();
+            if (node.Keys.Contains(item))
+            {
+                return node;
+            }
+
+            if (node.IsLeaf)
+            {
+                continue;
+            }
+
+            if (item.CompareTo(node.SmallestKey()) < 0)
+            {
+                stack.Push(node.Children[0]);
+            }
+            else if (item.CompareTo(node.LargestKey()) > 0)
+            {
+                stack.Push(node.Children[node.ChildrenCount - 1]);
+            }
+            else
+            {
+                int index = GetIndexOfItemBetweenSeparators(item, node);
+                stack.Push(node.Children[index]);
+            }
+        }
+
+        return null;
+    }
+
+    public bool NonRecursiveContains(T item) => NonRecursiveSearch(item) != null;
+
     public void Add(T item)
     {
         if (Contains(item))
@@ -308,5 +345,18 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
 
         MergeNodes(firstChild, node);
+    }
+
+    private int GetIndexOfItemBetweenSeparators(T item, Node<T> node)
+    {
+        for (int i = 1; i < node.KeyCount; i++)
+        {
+            if (item.CompareTo(node.Keys[i - 1]) > 0 && item.CompareTo(node.Keys[i]) < 0)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
