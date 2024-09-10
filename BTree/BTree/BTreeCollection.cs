@@ -339,6 +339,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         if (node.Keys.Contains(item) && node.IsLeaf)
         {
             node.RemoveKey(item);
+            Count--;
             return MergeNodes(node, parent);
         }
 
@@ -373,6 +374,7 @@ public class BTreeCollection<T> : IEnumerable<T>
             if (node.Keys.Contains(item) && node.IsLeaf)
             {
                 node.RemoveKey(item);
+                Count--;
                 return MergeNodes(node, parent);
             }
 
