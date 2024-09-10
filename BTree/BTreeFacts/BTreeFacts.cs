@@ -298,21 +298,59 @@ public class BTreeFacts
     public void NonRecursiveAddSeveralKeys()
     {
         BTreeCollection<int> btree = new(4);
-        btree.NonRecursiveAdd(59);
-        btree.NonRecursiveAdd(7);
-        btree.NonRecursiveAdd(23);
-        btree.NonRecursiveAdd(73);
-        btree.NonRecursiveAdd(97);
-        btree.NonRecursiveAdd(5);
-        btree.NonRecursiveAdd(2);
-        btree.NonRecursiveAdd(12);
-        btree.NonRecursiveAdd(67);
+        btree.AddNonRecursive(59);
+        btree.AddNonRecursive(7);
+        btree.AddNonRecursive(23);
+        btree.AddNonRecursive(73);
+        btree.AddNonRecursive(97);
+        btree.AddNonRecursive(5);
+        btree.AddNonRecursive(2);
+        btree.AddNonRecursive(12);
+        btree.AddNonRecursive(67);
         
-        Assert.True(btree.NonRecursiveContains(7));
-        Assert.True(btree.NonRecursiveContains(59));
-        Assert.True(btree.NonRecursiveContains(23));
-        Assert.True(btree.NonRecursiveContains(73));
-        Assert.True(btree.NonRecursiveContains(97));
-        Assert.False(btree.NonRecursiveContains(66));
+        Assert.True(btree.ContainsNonRecursive(7));
+        Assert.True(btree.ContainsNonRecursive(59));
+        Assert.True(btree.ContainsNonRecursive(23));
+        Assert.True(btree.ContainsNonRecursive(73));
+        Assert.True(btree.ContainsNonRecursive(97));
+        Assert.False(btree.ContainsNonRecursive(66));
     }
+    
+    
+    [Fact]
+    public void RemoveRootNonRecursive()
+    {
+        BTreeCollection<int> btree = new(3);
+        btree.AddNonRecursive(10);
+        btree.AddNonRecursive(20);
+        btree.AddNonRecursive(5);
+        btree.AddNonRecursive(30);
+        btree.AddNonRecursive(40);
+
+        Assert.True(btree.RemoveNonRecursive(20));
+        Assert.False(btree.ContainsNonRecursive(20));
+        Assert.True(btree.ContainsNonRecursive(5));
+        Assert.True(btree.ContainsNonRecursive(10));
+        Assert.True(btree.ContainsNonRecursive(30));
+        Assert.True(btree.ContainsNonRecursive(40));
+    }
+
+    [Fact]
+    public void RemoveAllKeysAndVerifyTreeEmptyNonRecursive()
+    {
+        BTreeCollection<int> btree = new();
+        btree.AddNonRecursive(10);
+        btree.AddNonRecursive(20);
+        btree.AddNonRecursive(30);
+
+        Assert.True(btree.RemoveNonRecursive(10));
+        Assert.True(btree.RemoveNonRecursive(20));
+        Assert.True(btree.RemoveNonRecursive(30));
+
+        Assert.Equal(0, btree.Count);
+        Assert.False(btree.ContainsNonRecursive(10));
+        Assert.False(btree.ContainsNonRecursive(20));
+        Assert.False(btree.ContainsNonRecursive(30));
+    }
+
 }
