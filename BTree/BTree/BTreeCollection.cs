@@ -81,10 +81,10 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
 
         Node<T> node = Search(item);
-        int minimumNoOfKeys = node.Degree / 2;
-        if ((node.KeyCount - 1 >= minimumNoOfKeys) && node.IsLeaf)
+        node.RemoveKey(item);
+
+        if (!node.HasTooFewKeys() && node.IsLeaf)
         {
-            node.RemoveKey(item);
             return true;
         }
 
@@ -210,7 +210,7 @@ public class BTreeCollection<T> : IEnumerable<T>
     {
         if (node.Keys.Contains(item) && node.IsLeaf)
         {
-            return SwitchSiblingWithSeparator(node, parent);
+            return MergeNodes(node, parent);
         }
 
         if (item.CompareTo(node.SmallestKey()) < 0)
@@ -234,13 +234,14 @@ public class BTreeCollection<T> : IEnumerable<T>
         return false;
     }
 
-    private bool SwitchSiblingWithSeparator(Node<T> node, Node<T> parent)
+    private bool MergeNodes(Node<T> node, Node<T> parent)
     {
         int indexOfNode = parent.FindPositionOfNodeInParent(node);
         var sibling = FindTheSiblingWithSufficientKeys(indexOfNode, parent, out string origin);
         if (sibling == null)
         {
-            return false;
+            MergeNodesWhenSiblingsDoNotHaveEnoughKeys(indexOfNode, node, parent);
+            return true;
         }
 
         var keyFromSibling = origin == "right" ? sibling.SmallestKey() : sibling.LargestKey();
@@ -273,5 +274,18 @@ public class BTreeCollection<T> : IEnumerable<T>
         var leftSibling = parent.Children[indexOfNode - 1];
         origin = "left";
         return !leftSibling.HasTooFewKeys() ? leftSibling : null;
+    }
+
+    private void MergeNodesWhenSiblingsDoNotHaveEnoughKeys(int indexOfNode, Node<T> node, Node<T> parent)
+    {
+        var separatorKey = parent.Keys[indexOfNode - 1];
+        var sibling = parent.Children[indexOfNode - 1];
+        for (int i = 0; i < node.KeyCount; i++)
+        {
+            sibling.AddKey(node.Keys[i]);
+        }
+
+        sibling.AddKey(separatorKey);
+        parent.RemoveKey(separatorKey);
     }
 }
