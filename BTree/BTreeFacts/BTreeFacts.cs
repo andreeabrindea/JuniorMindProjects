@@ -36,12 +36,6 @@ public class BTreeFacts
         Assert.True(btree.Contains(73));
         Assert.True(btree.Contains(97));
         Assert.False(btree.Contains(66));
-        Assert.True(btree.NonRecursiveContains(7));
-        Assert.True(btree.NonRecursiveContains(59));
-        Assert.True(btree.NonRecursiveContains(23));
-        Assert.True(btree.NonRecursiveContains(73));
-        Assert.True(btree.NonRecursiveContains(97));
-        Assert.False(btree.NonRecursiveContains(66));
     }
 
     [Fact]
@@ -296,5 +290,29 @@ public class BTreeFacts
         Assert.True(btree.Contains(10));
         Assert.True(btree.Contains(30));
         Assert.True(btree.Contains(40));
+    }
+    
+    
+    
+    [Fact]
+    public void NonRecursiveAddSeveralKeys()
+    {
+        BTreeCollection<int> btree = new(4);
+        btree.NonRecursiveAdd(59);
+        btree.NonRecursiveAdd(7);
+        btree.NonRecursiveAdd(23);
+        btree.NonRecursiveAdd(73);
+        btree.NonRecursiveAdd(97);
+        btree.NonRecursiveAdd(5);
+        btree.NonRecursiveAdd(2);
+        btree.NonRecursiveAdd(12);
+        btree.NonRecursiveAdd(67);
+        
+        Assert.True(btree.NonRecursiveContains(7));
+        Assert.True(btree.NonRecursiveContains(59));
+        Assert.True(btree.NonRecursiveContains(23));
+        Assert.True(btree.NonRecursiveContains(73));
+        Assert.True(btree.NonRecursiveContains(97));
+        Assert.False(btree.NonRecursiveContains(66));
     }
 }
