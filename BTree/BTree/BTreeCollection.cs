@@ -82,9 +82,16 @@ public class BTreeCollection<T> : IEnumerable<T>
 
         Node<T> node = Search(item);
         node.RemoveKey(item);
+        Count--;
 
-        if (!node.HasTooFewKeys() && node.IsLeaf)
+        if (!node.HasTooFewKeys() && node.IsLeaf || Count == 0)
         {
+            return true;
+        }
+
+        if (!node.IsLeaf)
+        {
+            RemoveKeyFromInternalNode(node);
             return true;
         }
 
@@ -278,8 +285,8 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     private void MergeNodesWhenSiblingsDoNotHaveEnoughKeys(int indexOfNode, Node<T> node, Node<T> parent)
     {
-        var separatorKey = parent.Keys[indexOfNode - 1];
-        var sibling = parent.Children[indexOfNode - 1];
+        T separatorKey = parent.Keys[indexOfNode - 1];
+        Node<T> sibling = parent.Children[indexOfNode - 1];
         for (int i = 0; i < node.KeyCount; i++)
         {
             sibling.AddKey(node.Keys[i]);
@@ -287,5 +294,19 @@ public class BTreeCollection<T> : IEnumerable<T>
 
         sibling.AddKey(separatorKey);
         parent.RemoveKey(separatorKey);
+    }
+
+    private void RemoveKeyFromInternalNode(Node<T> node)
+    {
+        Node<T> firstChild = node.Children[0];
+        T biggestKeyFromLeftSubtree = node.Children[0].LargestKey();
+        node.AddKey(biggestKeyFromLeftSubtree);
+        firstChild.RemoveKey(biggestKeyFromLeftSubtree);
+        if (!firstChild.HasTooFewKeys())
+        {
+            return;
+        }
+
+        MergeNodes(firstChild, node);
     }
 }
