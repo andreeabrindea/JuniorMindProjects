@@ -1,15 +1,18 @@
+using System.Collections;
+
 namespace RadixTreeStructure
 {
-    public class Edge
+    public class Edge<T>
+        where T : IEnumerable
     {
-        internal Edge(string value, Node next)
+        internal Edge(T value, Node<T> next)
         {
             this.Value = value;
             this.Next = next;
         }
 
-        internal string Value { get; set; }
+        internal T Value { get; set; }
 
-        internal Node Next { get; set; }
+        internal Node<T> Next { get; set; }
     }
 }

@@ -3,31 +3,53 @@
 namespace RadixTreeStructure
 {
     public class RadixTree<T> : IEnumerable<T>
+        where T : IList, new()
     {
-        private readonly Node root;
+        private readonly Node<T> root;
 
         public RadixTree()
         {
-            this.root = new Node(false);
+            this.root = new Node<T>(false);
         }
 
-        public void Add(T item) => Add(root, item?.ToString() ?? throw new InvalidOperationException());
+        public void Add(T item) => Add(root, item);
 
-        public bool Search(T item) => Search(root, item?.ToString() ?? throw new InvalidOperationException());
+        public bool Search(T item) => Search(root, item);
 
-        public bool Remove(T item) => Remove(root, item?.ToString() ?? throw new InvalidOperationException());
+        public bool Remove(T item) => Remove(root, item);
 
         public IEnumerator<T> GetEnumerator()
         {
-            return (IEnumerator<T>)this.GetWords(this.root, string.Empty).GetEnumerator();
+            return GetWords(this.root, new T()).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
-        private void Add(Node node, string word)
+        private IEnumerable<T> GetWords(Node<T> node, T prefix)
+        {
+            if (node.IsLeaf)
+            {
+                yield return prefix;
+            }
+
+            foreach (var edge in node.Edges)
+            {
+                foreach (var character in edge.Value)
+                {
+                    prefix.Add(character);
+                }
+
+                foreach (var word in this.GetWords(edge.Next, prefix))
+                {
+                    yield return word;
+                }
+            }
+        }
+
+        private void Add(Node<T> node, T word)
         {
             if (Search(node, word))
             {
@@ -37,49 +59,51 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (edge.Value.Length > mismatchIndex)
+                if (edge.Value.Count > mismatchIndex)
                 {
-                    string commonPrefix = edge.Value[..mismatchIndex];
-                    string suffixEdge = edge.Value[mismatchIndex..];
-                    edge.Value = commonPrefix;
-                    node.AddEdge(suffixEdge, new Node(true));
+                    T commonPrefix = Slice(edge.Value, 0, mismatchIndex);
 
-                    Node newNode = new(false);
+                    T suffixEdge = Slice(edge.Value, mismatchIndex, word.Count);
+
+                    edge.Value = commonPrefix;
+                    node.AddEdge(suffixEdge, new Node<T>(true));
+
+                    Node<T> newNode = new(false);
                     edge.Next = newNode;
-                    newNode.AddEdge(word[mismatchIndex..], new Node(true));
+                    newNode.AddEdge(Slice(word, mismatchIndex, word.Count), new Node<T>(true));
                     return;
                 }
 
-                if (word.Length - mismatchIndex > 0)
+                if (word.Count - mismatchIndex > 0)
                 {
-                    edge.Next.AddEdge(word[mismatchIndex..], new Node(true));
+                    edge.Next.AddEdge(Slice(word, mismatchIndex, word.Count), new Node<T>(true));
                     return;
                 }
 
                 Add(edge.Next, word);
             }
 
-            root.AddEdge(word, new Node(true));
+            root.AddEdge(word, new Node<T>(true));
         }
 
-        private bool Search(Node node, string word)
+        private bool Search(Node<T> node, T word)
         {
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (mismatchIndex == edge.Value.Length && edge.Value.Length == word.Length)
+                if (mismatchIndex == edge.Value.Count && edge.Value.Count == word.Count)
                 {
                     return true;
                 }
 
-                word = word[mismatchIndex..];
+                word = Slice(word, mismatchIndex, word.Count);
                 Search(edge.Next, word);
             }
 
             return false;
         }
 
-        private bool Remove(Node node, string word)
+        private bool Remove(Node<T> node, T word)
         {
             if (!Search(node, word))
             {
@@ -89,7 +113,7 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (mismatchIndex == edge.Value.Length && mismatchIndex == word.Length)
+                if (mismatchIndex == edge.Value.Count && mismatchIndex == word.Count)
                 {
                     node.Edges.Remove(edge);
                     return true;
@@ -101,41 +125,36 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                word = word[mismatchIndex..];
+                word = Slice(word, mismatchIndex, word.Count);
                 Remove(edge.Next, word);
             }
 
             return false;
         }
 
-        private IEnumerable<string> GetWords(Node node, string prefix)
+        private int GetFirstMismatchLetterIndex(T word, T edgeWord)
         {
-            if (node.IsLeaf)
-            {
-                yield return prefix;
-            }
-
-            foreach (var edge in node.Edges)
-            {
-                foreach (var word in this.GetWords(edge.Next, prefix + edge.Value))
-                {
-                    yield return word;
-                }
-            }
-        }
-
-        private int GetFirstMismatchLetterIndex(string word, string edgeWord)
-        {
-            int length = Math.Min(word.Length, edgeWord.Length);
+            int length = Math.Min(word.Count, edgeWord.Count);
             for (int i = 0; i < length; i++)
             {
-                if (word[i] != edgeWord[i])
+                if (!word[i].Equals(edgeWord[i]))
                 {
                     return i;
                 }
             }
 
             return length;
+        }
+
+        private T Slice(T source, int start, int end)
+        {
+            var result = new T();
+            for (int i = start; i < end; i++)
+            {
+                result.Add(source[i]);
+            }
+
+            return result;
         }
     }
 }
