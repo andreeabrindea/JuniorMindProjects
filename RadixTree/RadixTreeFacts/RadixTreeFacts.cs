@@ -17,11 +17,11 @@ namespace RadixTreeStructure.Facts
         public void InsertMultipleWordsWithSamePrefix()
         {
             RadixTree<List<char>> tree = new();
-            var fistWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
-            tree.Add(fistWord);
+            var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
+            tree.Add(firstWord);
             var secondWord = new List<char>() { 'h', 'e' };
             tree.Add(secondWord);
-            Assert.Equal(new RadixTree<List<char>> { fistWord, secondWord }, tree);
+            Assert.Equal(new RadixTree<List<char>> { firstWord, secondWord }, tree);
         }
 
         [Fact]
