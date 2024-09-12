@@ -18,6 +18,33 @@ namespace RadixTreeStructure
         internal void AddEdge(T label, Node<T> next)
         {
             Edges.Add(new Edge<T>(label, next));
+            if (!IsLeaf)
+            {
+                return;
+            }
+
+            IsLeaf = false;
+        }
+
+        internal Edge<T> GetEdge(T value)
+        {
+            foreach (var edge in Edges)
+            {
+                if (edge.Value.Equals(value))
+                {
+                    return edge;
+                }
+            }
+
+            return null;
+        }
+
+        internal void CopyEdges(List<Edge<T>> edges)
+        {
+            foreach (var edge in edges)
+            {
+                AddEdge(edge.Value, edge.Next);
+            }
         }
     }
 }
