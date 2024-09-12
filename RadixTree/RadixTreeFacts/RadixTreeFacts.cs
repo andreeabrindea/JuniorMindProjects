@@ -7,32 +7,29 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void InsertWord()
         {
-            RadixTree<List<char>> tree = new RadixTree<List<char>>();
-            List<char> words = new List<char> { 'h', 'e', 'l', 'l', 'o' };
-            tree.Add(words);
-            Assert.Equal(tree, new RadixTree<List<char>> { new List<char> { 'h', 'e', 'l', 'l', 'o' }});
+            RadixTree<string> tree = new RadixTree<string>();
+            tree.Add("hello");
+            Assert.Equal(tree, new RadixTree<string> { "hello" });
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefix()
         {
-            RadixTree<List<char>> tree = new();
-            var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
-            tree.Add(firstWord);
-            var secondWord = new List<char>() { 'h', 'e' };
-            tree.Add(secondWord);
-            Assert.Equal(new RadixTree<List<char>> { firstWord, secondWord }, tree);
+            RadixTree<string> tree = new();
+            tree.Add("hello");
+            tree.Add("he");
+            Assert.Equal(new RadixTree<string> { "hello", "he" }, tree);
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefixThatShouldSplit()
         {
-            RadixTree<List<char>> tree = new();
-            tree.Add(new List<char>() { 'w', 'a', 't', 'e', 'r' });
-            tree.Add(new List<char>() { 'w', 'a', 's', 't', 'e' });
-            tree.Add(new List<char>() { 'w' });
+            RadixTree<string> tree = new();
+            tree.Add("water");
+            tree.Add("waste");
+            tree.Add("w");
 
-            Assert.Equal(new RadixTree<List<char>> { new List<char>() { 'w', 'a', 't', 'e', 'r' }, new List<char>() { 'w', 'a', 's', 't', 'e' }, new List<char>() { 'w' } }, tree);
+            Assert.Equal(new RadixTree<string> { "water", "waste", "w" }, tree);
         }
 
         [Fact]
@@ -46,10 +43,10 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void SearchForNonExistingWord()
         {
-            RadixTree<List<char>> tree = new();
-            var word = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
+            RadixTree<char[]> tree = new();
+            var word = new char[] { 'h', 'e', 'l', 'l', 'o' };
             tree.Add(word);
-            var anotherWord = new List<char>() { 'a', 'b' };
+            var anotherWord = new char[] { 'a', 'b' };
             Assert.False(tree.Search(anotherWord));
         }
 
