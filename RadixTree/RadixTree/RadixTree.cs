@@ -169,16 +169,20 @@ namespace RadixTreeStructure
 
             if (source is Array array)
             {
-                Type elementType = array.GetType().GetElementType();
+                Type? elementType = array.GetType().GetElementType();
                 Array newArray = Array.CreateInstance(elementType, end - start);
                 Array.Copy(array, start, newArray, 0, end - start);
                 return (T)(object)newArray;
             }
 
-            if (typeof(T) == typeof(List<char>))
+            if (source is IList<char> list)
             {
-                List<char> sourceList = (List<char>)(object)source;
-                List<char> result = sourceList.GetRange(start, end - start);
+                List<char> result = new List<char>();
+                for (int i = start; i < end; i++)
+                {
+                    result.Add(list[i]);
+                }
+
                 return (T)(object)result;
             }
 
