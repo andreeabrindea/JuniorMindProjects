@@ -12,26 +12,26 @@ namespace RadixTreeStructure
             this.root = new Node<T>(false);
         }
 
-        public IEnumerator<IEnumerable<T>> GetEnumerator() => GetWords(this.root).GetEnumerator();
+        public IEnumerator<IEnumerable<T>> GetEnumerator() => GetEdges(this.root).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public void Add(IEnumerable<T> item) => Add(root, item);
+        public void Add(IEnumerable<T> enumeration) => Add(root, enumeration);
 
-        public bool Search(IEnumerable<T> item) => Search(root, item);
+        public bool Search(IEnumerable<T> enumeration) => Search(root, enumeration);
 
-        public bool Remove(IEnumerable<T> item) => Remove(root, item);
+        public bool Remove(IEnumerable<T> enumeration) => Remove(root, enumeration);
 
-        private void Add(Node<T> node, IEnumerable<T> word)
+        private void Add(Node<T> node, IEnumerable<T> enumeration)
         {
-            if (Search(node, word))
+            if (Search(node, enumeration))
             {
                 return;
             }
 
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
+                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
                 if (mismatchIndex == 0)
                 {
                     break;
@@ -52,9 +52,9 @@ namespace RadixTreeStructure
                     edge.Next.Edges.Clear();
                     edge.Next.AddEdge(suffixEdge, new Node<T>(true));
 
-                    if (mismatchIndex < Count(word))
+                    if (mismatchIndex < Count(enumeration))
                     {
-                        edge.Next.AddEdge(Slice(word, mismatchIndex, Count(word)), new Node<T>(true));
+                        edge.Next.AddEdge(Slice(enumeration, mismatchIndex, Count(enumeration)), new Node<T>(true));
                     }
 
                     Edge<T> splitEdge = edge.Next.GetEdge(suffixEdge);
@@ -63,46 +63,46 @@ namespace RadixTreeStructure
                     return;
                 }
 
-                if (Count(word) - mismatchIndex > 0)
+                if (Count(enumeration) - mismatchIndex > 0)
                 {
-                    edge.Next.AddEdge(Slice(word, mismatchIndex, Count(word)), new Node<T>(true));
+                    edge.Next.AddEdge(Slice(enumeration, mismatchIndex, Count(enumeration)), new Node<T>(true));
                     return;
                 }
 
-                Add(edge.Next, word);
+                Add(edge.Next, enumeration);
             }
 
-            root.AddEdge(word, new Node<T>(true));
+            root.AddEdge(enumeration, new Node<T>(true));
         }
 
-        private bool Search(Node<T> node, IEnumerable<T> word)
+        private bool Search(Node<T> node, IEnumerable<T> enumeration)
         {
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (mismatchIndex == Count(edge.Value) && Count(edge.Value) == Count(word))
+                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
+                if (mismatchIndex == Count(edge.Value) && Count(edge.Value) == Count(enumeration))
                 {
                     return true;
                 }
 
-                word = Slice(word, mismatchIndex, Count(word));
-                Search(edge.Next, word);
+                enumeration = Slice(enumeration, mismatchIndex, Count(enumeration));
+                Search(edge.Next, enumeration);
             }
 
             return false;
         }
 
-        private bool Remove(Node<T> node, IEnumerable<T> word)
+        private bool Remove(Node<T> node, IEnumerable<T> enumeration)
         {
-            if (!Search(node, word))
+            if (!Search(node, enumeration))
             {
                 return false;
             }
 
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(word, edge.Value);
-                if (mismatchIndex == Count(edge.Value) && mismatchIndex == Count(word))
+                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
+                if (mismatchIndex == Count(edge.Value) && mismatchIndex == Count(enumeration))
                 {
                     node.Edges.Remove(edge);
                     return true;
@@ -114,19 +114,19 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                word = Slice(word, mismatchIndex, Count(word));
-                Remove(edge.Next, word);
+                enumeration = Slice(enumeration, mismatchIndex, Count(enumeration));
+                Remove(edge.Next, enumeration);
             }
 
             return false;
         }
 
-        private int GetFirstMismatchLetterIndex(IEnumerable<T> word, IEnumerable<T> edgeWord)
+        private int GetFirstMismatchLetterIndex(IEnumerable<T> enumeration, IEnumerable<T> edgeWord)
         {
-            int length = Math.Min(Count(word), Count(edgeWord));
+            int length = Math.Min(Count(enumeration), Count(edgeWord));
             for (int i = 0; i < length; i++)
             {
-                if (!GetElementAtIndex(word, i).Equals(GetElementAtIndex(edgeWord, i)))
+                if (!GetElementAtIndex(enumeration, i).Equals(GetElementAtIndex(edgeWord, i)))
                 {
                     return i;
                 }
@@ -164,7 +164,7 @@ namespace RadixTreeStructure
             return default;
         }
 
-        private IEnumerable<IEnumerable<T>> GetWords(Node<T> node)
+        private IEnumerable<IEnumerable<T>> GetEdges(Node<T> node)
         {
             if (node == null)
             {
@@ -174,7 +174,7 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 yield return edge.Value;
-                foreach (var value in GetWords(edge.Next))
+                foreach (var value in GetEdges(edge.Next))
                 {
                     yield return value;
                 }
