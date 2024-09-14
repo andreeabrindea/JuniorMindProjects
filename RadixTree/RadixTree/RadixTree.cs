@@ -31,7 +31,7 @@ namespace RadixTreeStructure
 
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
+                int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
                 if (mismatchIndex == 0)
                 {
                     break;
@@ -79,7 +79,7 @@ namespace RadixTreeStructure
         {
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
+                int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
                 if (mismatchIndex == Count(edge.Value) && Count(edge.Value) == Count(enumeration))
                 {
                     return true;
@@ -101,7 +101,7 @@ namespace RadixTreeStructure
 
             foreach (var edge in node.Edges)
             {
-                int mismatchIndex = GetFirstMismatchLetterIndex(enumeration, edge.Value);
+                int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
                 if (mismatchIndex == Count(edge.Value) && mismatchIndex == Count(enumeration))
                 {
                     node.Edges.Remove(edge);
@@ -121,7 +121,7 @@ namespace RadixTreeStructure
             return false;
         }
 
-        private int GetFirstMismatchLetterIndex(IEnumerable<T> enumeration, IEnumerable<T> edgeWord)
+        private int GetMismatchIndex(IEnumerable<T> enumeration, IEnumerable<T> edgeWord)
         {
             int length = Math.Min(Count(enumeration), Count(edgeWord));
             for (int i = 0; i < length; i++)
