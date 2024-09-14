@@ -1,10 +1,9 @@
 ﻿using System.Collections;
-using System.Security.Cryptography;
 
 namespace RadixTreeStructure
 {
-    public class RadixTree<T> : IEnumerable<T>
-        where T : IEnumerable
+    public class RadixTree<T> : IEnumerable<IEnumerable<T>>
+        where T : struct
     {
         private readonly Node<T> root;
 
@@ -13,40 +12,17 @@ namespace RadixTreeStructure
             this.root = new Node<T>(false);
         }
 
-        public void Add(T item) => Add(root, item);
+        public IEnumerator<IEnumerable<T>> GetEnumerator() => GetWords(this.root).GetEnumerator();
 
-        public bool Search(T item) => Search(root, item);
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public bool Remove(T item) => Remove(root, item);
+        public void Add(IEnumerable<T> item) => Add(root, item);
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return GetWords(this.root).GetEnumerator();
-        }
+        public bool Search(IEnumerable<T> item) => Search(root, item);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public bool Remove(IEnumerable<T> item) => Remove(root, item);
 
-        private IEnumerable<T> GetWords(Node<T> node)
-        {
-            if (node == null)
-            {
-                yield break;
-            }
-
-            foreach (var edge in node.Edges)
-            {
-                yield return edge.Value;
-                foreach (var value in GetWords(edge.Next))
-                {
-                    yield return value;
-                }
-            }
-        }
-
-        private void Add(Node<T> node, T word)
+        private void Add(Node<T> node, IEnumerable<T> word)
         {
             if (Search(node, word))
             {
@@ -63,8 +39,8 @@ namespace RadixTreeStructure
 
                 if (Count(edge.Value) > mismatchIndex)
                 {
-                    T commonPrefix = Slice(edge.Value, 0, mismatchIndex);
-                    T suffixEdge = Slice(edge.Value, mismatchIndex, Count(edge.Value));
+                    var commonPrefix = Slice(edge.Value, 0, mismatchIndex);
+                    var suffixEdge = Slice(edge.Value, mismatchIndex, Count(edge.Value));
                     edge.Value = commonPrefix;
 
                     List<Edge<T>> previousEdges = new List<Edge<T>>();
@@ -99,7 +75,7 @@ namespace RadixTreeStructure
             root.AddEdge(word, new Node<T>(true));
         }
 
-        private bool Search(Node<T> node, T word)
+        private bool Search(Node<T> node, IEnumerable<T> word)
         {
             foreach (var edge in node.Edges)
             {
@@ -116,7 +92,7 @@ namespace RadixTreeStructure
             return false;
         }
 
-        private bool Remove(Node<T> node, T word)
+        private bool Remove(Node<T> node, IEnumerable<T> word)
         {
             if (!Search(node, word))
             {
@@ -145,7 +121,7 @@ namespace RadixTreeStructure
             return false;
         }
 
-        private int GetFirstMismatchLetterIndex(T word, T edgeWord)
+        private int GetFirstMismatchLetterIndex(IEnumerable<T> word, IEnumerable<T> edgeWord)
         {
             int length = Math.Min(Count(word), Count(edgeWord));
             for (int i = 0; i < length; i++)
@@ -159,37 +135,9 @@ namespace RadixTreeStructure
             return length;
         }
 
-        private T Slice(T source, int start, int end)
-        {
-            if (source is string s)
-            {
-                string result = s.Substring(start, end - start);
-                return (T)(object)result;
-            }
+        private IEnumerable<T> Slice(IEnumerable<T> source, int start, int end) => source.Skip(start).Take(end);
 
-            if (source is Array array)
-            {
-                Type? elementType = array.GetType().GetElementType();
-                Array newArray = Array.CreateInstance(elementType, end - start);
-                Array.Copy(array, start, newArray, 0, end - start);
-                return (T)(object)newArray;
-            }
-
-            if (source is IList<char> list)
-            {
-                List<char> result = new List<char>();
-                for (int i = start; i < end; i++)
-                {
-                    result.Add(list[i]);
-                }
-
-                return (T)(object)result;
-            }
-
-            throw new NotSupportedException($"Type {typeof(T)} is not supported for Slice.");
-        }
-
-        private int Count(T source)
+        private int Count(IEnumerable<T> source)
         {
             int index = 0;
             foreach (var item in source)
@@ -200,7 +148,7 @@ namespace RadixTreeStructure
             return index;
         }
 
-        private object GetElementAtIndex(T source, int index)
+        private object GetElementAtIndex(IEnumerable<T> source, int index)
         {
             int i = 0;
             foreach (var item in source)
@@ -214,6 +162,23 @@ namespace RadixTreeStructure
             }
 
             return default;
+        }
+
+        private IEnumerable<IEnumerable<T>> GetWords(Node<T> node)
+        {
+            if (node == null)
+            {
+                yield break;
+            }
+
+            foreach (var edge in node.Edges)
+            {
+                yield return edge.Value;
+                foreach (var value in GetWords(edge.Next))
+                {
+                    yield return value;
+                }
+            }
         }
     }
 }
