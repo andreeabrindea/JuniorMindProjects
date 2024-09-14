@@ -7,35 +7,35 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void InsertWord()
         {
-            RadixTree<string> tree = new RadixTree<string>();
+            RadixTree<char> tree = new RadixTree<char>();
             tree.Add("hello");
-            Assert.Equal(tree, new RadixTree<string> { "hello" });
+            Assert.Equal(tree, new RadixTree<char> { "hello" });
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefix()
         {
-            RadixTree<string> tree = new();
+            RadixTree<char> tree = new();
             tree.Add("hello");
             tree.Add("he");
-            Assert.Equal(new RadixTree<string> { "hello", "he" }, tree);
+            Assert.Equal(new RadixTree<char> { "hello", "he" }, tree);
         }
 
         [Fact]
         public void InsertMultipleWordsWithSamePrefixThatShouldSplit()
         {
-            RadixTree<string> tree = new();
+            RadixTree<char> tree = new();
             tree.Add("water");
             tree.Add("waste");
             tree.Add("w");
 
-            Assert.Equal(new RadixTree<string> { "water", "waste", "w" }, tree);
+            Assert.Equal(new RadixTree<char> { "water", "waste", "w" }, tree);
         }
 
         [Fact]
         public void SearchForExistingWord()
         {
-            RadixTree<List<char>> tree = new();
+            RadixTree<char> tree = new();
             tree.Add(new List<char>() { 'h', 'e', 'l', 'l', 'o' });
             Assert.True(tree.Search(new List<char>() { 'h', 'e', 'l', 'l', 'o' }));
         }
@@ -43,7 +43,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void SearchForNonExistingWord()
         {
-            RadixTree<char[]> tree = new();
+            RadixTree<char> tree = new();
             var word = new char[] { 'h', 'e', 'l', 'l', 'o' };
             tree.Add(word);
             var anotherWord = new char[] { 'a', 'b' };
@@ -53,7 +53,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void SearchForExistingPrefix()
         {
-            RadixTree<List<char>> tree = new();
+            RadixTree<char> tree = new();
             var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
             tree.Add(firstWord);
             var secondWord = new List<char>() { 'h', 'e', 'r', 'e' };
@@ -65,7 +65,7 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void DeleteExistingNode()
         {
-            RadixTree<List<char>> tree = new();
+            RadixTree<char> tree = new();
             var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
             tree.Add(firstWord);
             tree.Remove(firstWord);
@@ -75,12 +75,20 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void DeleteNonExistingNode()
         {
-            RadixTree<List<char>> tree = new();
+            RadixTree<char> tree = new();
             var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
             tree.Add(firstWord);
             var nonExistingWord = new List<char>() { 'h', 'e' };
             tree.Remove(nonExistingWord);
             Assert.False(tree.Search(nonExistingWord));
+        }
+
+        [Fact]
+        public void CreateNewTreeWithIntegers()
+        {
+            RadixTree<char> tree = new();
+            var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
+            tree.Add(firstWord);
         }
     }
 }
