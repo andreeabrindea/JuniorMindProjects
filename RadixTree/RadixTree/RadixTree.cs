@@ -140,7 +140,7 @@ namespace RadixTreeStructure
         private int Count(IEnumerable<T> source)
         {
             int index = 0;
-            foreach (var item in source)
+            foreach (var unused in source)
             {
                 index++;
             }
