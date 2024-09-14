@@ -86,9 +86,13 @@ namespace RadixTreeStructure.Facts
         [Fact]
         public void CreateNewTreeWithIntegers()
         {
-            RadixTree<char> tree = new();
-            var firstWord = new List<char>() { 'h', 'e', 'l', 'l', 'o' };
-            tree.Add(firstWord);
+            RadixTree<int> tree = new();
+            int[] integers = { 1, 2, 3 };
+            tree.Add(integers);
+            Assert.True(tree.Search(integers));
+            int[] anotherSetOfIntegers = { 1, 5, 6 };
+            tree.Add(anotherSetOfIntegers);
+            Assert.Equal(tree, new RadixTree<int> { new[] { 1, 2, 3 }, new[] { 1, 5, 6 } });
         }
     }
 }
