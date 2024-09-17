@@ -1,7 +1,6 @@
 namespace RadixTreeStructure
 {
     public class Node<T>
-        where T : struct
     {
         public Node(bool isLeaf)
         {

@@ -1,7 +1,6 @@
 namespace RadixTreeStructure
 {
     public class Edge<T>
-        where T : struct
     {
         internal Edge(IEnumerable<T> value, Node<T> next)
         {
