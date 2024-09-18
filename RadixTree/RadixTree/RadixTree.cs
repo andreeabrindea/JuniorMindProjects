@@ -3,6 +3,7 @@
 namespace RadixTreeStructure
 {
     public class RadixTree<T> : IEnumerable<IEnumerable<T>>
+    where T : IEquatable<T>
     {
         private readonly Node<T> root;
 
@@ -145,21 +146,7 @@ namespace RadixTreeStructure
 
         private int Count(IEnumerable<T> source) => source.ToArray().Length;
 
-        private object GetElementAtIndex(IEnumerable<T> source, int index)
-        {
-            int i = 0;
-            foreach (var item in source)
-            {
-                if (i == index)
-                {
-                    return item;
-                }
-
-                i++;
-            }
-
-            return default;
-        }
+        private object GetElementAtIndex(IEnumerable<T> source, int index) => source.ElementAt(index);
 
         private IEnumerable<IEnumerable<T>> GetEdges(Node<T> node)
         {
