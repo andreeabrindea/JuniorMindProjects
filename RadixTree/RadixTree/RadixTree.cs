@@ -142,8 +142,16 @@ namespace RadixTreeStructure
             return length;
         }
 
-        private List<T> Slice(List<T> source, int start, int end) =>
-           source.Skip(start).Take(end).ToList();
+        private List<T> Slice(List<T> source, int start, int end)
+        {
+            List<T> result = new List<T>();
+            for (int i = start; i < end; i++)
+            {
+                result.Add(source.ElementAt(i));
+            }
+
+            return result;
+        }
 
         private object GetElementAtIndex(IEnumerable<T> source, int index) => source.ElementAt(index);
 
