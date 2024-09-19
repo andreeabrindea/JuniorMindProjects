@@ -16,13 +16,13 @@ namespace RadixTreeStructure
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public void Add(IEnumerable<T> enumeration) => Add(root, enumeration, enumeration);
+        public void Add(IEnumerable<T> enumeration) => Add(root, enumeration.ToList(), enumeration.ToList());
 
-        public bool Search(IEnumerable<T> enumeration) => Search(root, enumeration);
+        public bool Search(IEnumerable<T> enumeration) => Search(root, enumeration.ToList());
 
-        public bool Remove(IEnumerable<T> enumeration) => Remove(root, enumeration);
+        public bool Remove(IEnumerable<T> enumeration) => Remove(root, enumeration.ToList());
 
-        private void Add(Node<T> node, IEnumerable<T> enumeration, IEnumerable<T> remainingEnumeration)
+        private void Add(Node<T> node, List<T> enumeration, List<T> remainingEnumeration)
         {
             foreach (var edge in node.Edges)
             {
@@ -37,28 +37,28 @@ namespace RadixTreeStructure
                     continue;
                 }
 
-                if (edge.Value.ToList().Count > mismatchIndex)
+                if (edge.Value.Count > mismatchIndex)
                 {
                     SplitEdgeAndAddRemainder(edge, enumeration, mismatchIndex);
                     return;
                 }
 
-                if (enumeration.ToList().Count > mismatchIndex)
+                if (enumeration.Count > mismatchIndex)
                 {
                     AddRemainingEnumeration(edge, enumeration, mismatchIndex);
                     return;
                 }
 
-                Add(edge.Next, enumeration, Slice(remainingEnumeration, mismatchIndex, remainingEnumeration.ToList().Count));
+                Add(edge.Next, enumeration, Slice(remainingEnumeration, mismatchIndex, remainingEnumeration.Count));
             }
 
             root.AddEdge(enumeration, new Node<T>(true));
         }
 
-        private void SplitEdgeAndAddRemainder(Edge<T> edge, IEnumerable<T> enumeration, int mismatchIndex)
+        private void SplitEdgeAndAddRemainder(Edge<T> edge, List<T> enumeration, int mismatchIndex)
         {
             var commonPrefix = Slice(edge.Value, 0, mismatchIndex);
-            var suffixEdge = Slice(edge.Value, mismatchIndex, edge.Value.ToList().Count);
+            var suffixEdge = Slice(edge.Value, mismatchIndex, edge.Value.Count);
             edge.Value = commonPrefix;
 
             List<Edge<T>> previousEdges = new List<Edge<T>>();
@@ -70,36 +70,36 @@ namespace RadixTreeStructure
             edge.Next.Edges.Clear();
             edge.Next.AddEdge(suffixEdge, new Node<T>(true));
 
-            if (mismatchIndex < enumeration.ToList().Count)
+            if (mismatchIndex < enumeration.Count)
             {
-                edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.ToList().Count), new Node<T>(true));
+                edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.Count), new Node<T>(true));
             }
 
             Edge<T> splitEdge = edge.Next.GetEdge(suffixEdge);
             splitEdge.Next.CopyEdges(previousEdges);
         }
 
-        private void AddRemainingEnumeration(Edge<T> edge, IEnumerable<T> enumeration, int mismatchIndex) =>
-            edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.ToList().Count), new Node<T>(true));
+        private void AddRemainingEnumeration(Edge<T> edge, List<T> enumeration, int mismatchIndex) =>
+            edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.Count), new Node<T>(true));
 
-        private bool Search(Node<T> node, IEnumerable<T> enumeration)
+        private bool Search(Node<T> node, List<T> enumeration)
         {
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == edge.Value.ToList().Count && edge.Value.ToList().Count == enumeration.ToList().Count)
+                if (mismatchIndex == edge.Value.Count && edge.Value.Count == enumeration.Count)
                 {
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, enumeration.ToList().Count);
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Search(edge.Next, enumeration);
             }
 
             return false;
         }
 
-        private bool Remove(Node<T> node, IEnumerable<T> enumeration)
+        private bool Remove(Node<T> node, List<T> enumeration)
         {
             if (!Search(node, enumeration))
             {
@@ -109,7 +109,7 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == edge.Value.ToList().Count && mismatchIndex == enumeration.ToList().Count)
+                if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count)
                 {
                     node.Edges.Remove(edge);
                     return true;
@@ -121,16 +121,16 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, enumeration.ToList().Count);
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Remove(edge.Next, enumeration);
             }
 
             return false;
         }
 
-        private int GetMismatchIndex(IEnumerable<T> enumeration, IEnumerable<T> edgeWord)
+        private int GetMismatchIndex(List<T> enumeration, List<T> edgeWord)
         {
-            int length = Math.Min(enumeration.ToList().Count, edgeWord.ToList().Count);
+            int length = Math.Min(enumeration.Count, edgeWord.Count);
             for (int i = 0; i < length; i++)
             {
                 if (!GetElementAtIndex(enumeration, i).Equals(GetElementAtIndex(edgeWord, i)))
@@ -142,7 +142,8 @@ namespace RadixTreeStructure
             return length;
         }
 
-        private IEnumerable<T> Slice(IEnumerable<T> source, int start, int end) => source.Skip(start).Take(end);
+        private List<T> Slice(List<T> source, int start, int end) =>
+           source.Skip(start).Take(end).ToList();
 
         private object GetElementAtIndex(IEnumerable<T> source, int index) => source.ElementAt(index);
 
