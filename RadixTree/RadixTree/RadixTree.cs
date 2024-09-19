@@ -37,19 +37,19 @@ namespace RadixTreeStructure
                     continue;
                 }
 
-                if (Count(edge.Value) > mismatchIndex)
+                if (edge.Value.ToList().Count > mismatchIndex)
                 {
                     SplitEdgeAndAddRemainder(edge, enumeration, mismatchIndex);
                     return;
                 }
 
-                if (Count(enumeration) > mismatchIndex)
+                if (enumeration.ToList().Count > mismatchIndex)
                 {
                     AddRemainingEnumeration(edge, enumeration, mismatchIndex);
                     return;
                 }
 
-                Add(edge.Next, enumeration, Slice(remainingEnumeration, mismatchIndex, Count(remainingEnumeration)));
+                Add(edge.Next, enumeration, Slice(remainingEnumeration, mismatchIndex, remainingEnumeration.ToList().Count));
             }
 
             root.AddEdge(enumeration, new Node<T>(true));
@@ -58,7 +58,7 @@ namespace RadixTreeStructure
         private void SplitEdgeAndAddRemainder(Edge<T> edge, IEnumerable<T> enumeration, int mismatchIndex)
         {
             var commonPrefix = Slice(edge.Value, 0, mismatchIndex);
-            var suffixEdge = Slice(edge.Value, mismatchIndex, Count(edge.Value));
+            var suffixEdge = Slice(edge.Value, mismatchIndex, edge.Value.ToList().Count);
             edge.Value = commonPrefix;
 
             List<Edge<T>> previousEdges = new List<Edge<T>>();
@@ -70,9 +70,9 @@ namespace RadixTreeStructure
             edge.Next.Edges.Clear();
             edge.Next.AddEdge(suffixEdge, new Node<T>(true));
 
-            if (mismatchIndex < Count(enumeration))
+            if (mismatchIndex < enumeration.ToList().Count)
             {
-                edge.Next.AddEdge(Slice(enumeration, mismatchIndex, Count(enumeration)), new Node<T>(true));
+                edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.ToList().Count), new Node<T>(true));
             }
 
             Edge<T> splitEdge = edge.Next.GetEdge(suffixEdge);
@@ -80,19 +80,19 @@ namespace RadixTreeStructure
         }
 
         private void AddRemainingEnumeration(Edge<T> edge, IEnumerable<T> enumeration, int mismatchIndex) =>
-            edge.Next.AddEdge(Slice(enumeration, mismatchIndex, Count(enumeration)), new Node<T>(true));
+            edge.Next.AddEdge(Slice(enumeration, mismatchIndex, enumeration.ToList().Count), new Node<T>(true));
 
         private bool Search(Node<T> node, IEnumerable<T> enumeration)
         {
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == Count(edge.Value) && Count(edge.Value) == Count(enumeration))
+                if (mismatchIndex == edge.Value.ToList().Count && edge.Value.ToList().Count == enumeration.ToList().Count)
                 {
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, Count(enumeration));
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.ToList().Count);
                 Search(edge.Next, enumeration);
             }
 
@@ -109,7 +109,7 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == Count(edge.Value) && mismatchIndex == Count(enumeration))
+                if (mismatchIndex == edge.Value.ToList().Count && mismatchIndex == enumeration.ToList().Count)
                 {
                     node.Edges.Remove(edge);
                     return true;
@@ -121,7 +121,7 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, Count(enumeration));
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.ToList().Count);
                 Remove(edge.Next, enumeration);
             }
 
@@ -130,7 +130,7 @@ namespace RadixTreeStructure
 
         private int GetMismatchIndex(IEnumerable<T> enumeration, IEnumerable<T> edgeWord)
         {
-            int length = Math.Min(Count(enumeration), Count(edgeWord));
+            int length = Math.Min(enumeration.ToList().Count, edgeWord.ToList().Count);
             for (int i = 0; i < length; i++)
             {
                 if (!GetElementAtIndex(enumeration, i).Equals(GetElementAtIndex(edgeWord, i)))
@@ -143,8 +143,6 @@ namespace RadixTreeStructure
         }
 
         private IEnumerable<T> Slice(IEnumerable<T> source, int start, int end) => source.Skip(start).Take(end);
-
-        private int Count(IEnumerable<T> source) => source.ToArray().Length;
 
         private object GetElementAtIndex(IEnumerable<T> source, int index) => source.ElementAt(index);
 
