@@ -12,7 +12,7 @@ namespace RadixTreeStructure
 
         internal List<Edge<T>> Edges { get; }
 
-        internal void AddEdge(IEnumerable<T> label, Node<T> next)
+        internal void AddEdge(List<T> label, Node<T> next)
         {
             Edges.Add(new Edge<T>(label, next));
             if (!IsLeaf)
@@ -23,7 +23,7 @@ namespace RadixTreeStructure
             IsLeaf = false;
         }
 
-        internal Edge<T> GetEdge(IEnumerable<T> value)
+        internal Edge<T> GetEdge(List<T> value)
         {
             foreach (var edge in Edges)
             {
