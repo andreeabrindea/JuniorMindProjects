@@ -133,7 +133,7 @@ namespace RadixTreeStructure
             int length = Math.Min(enumeration.Count, edgeWord.Count);
             for (int i = 0; i < length; i++)
             {
-                if (!GetElementAtIndex(enumeration, i).Equals(GetElementAtIndex(edgeWord, i)))
+                if (!enumeration[i].Equals(edgeWord[i]))
                 {
                     return i;
                 }
@@ -147,13 +147,11 @@ namespace RadixTreeStructure
             List<T> result = new List<T>();
             for (int i = start; i < end; i++)
             {
-                result.Add(source.ElementAt(i));
+                result.Add(source[i]);
             }
 
             return result;
         }
-
-        private object GetElementAtIndex(IEnumerable<T> source, int index) => source.ElementAt(index);
 
         private IEnumerable<IEnumerable<T>> GetEdges(Node<T> node)
         {
