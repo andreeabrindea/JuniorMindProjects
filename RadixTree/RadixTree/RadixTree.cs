@@ -24,6 +24,11 @@ namespace RadixTreeStructure
 
         private void Add(Node<T> node, List<T> enumeration, List<T> remainingEnumeration)
         {
+            if (enumeration.Count == 0)
+            {
+                return;
+            }
+
             foreach (var edge in node.Edges)
             {
                 if (edge.Value.Equals(remainingEnumeration))
@@ -84,6 +89,11 @@ namespace RadixTreeStructure
 
         private bool Search(Node<T> node, List<T> enumeration)
         {
+            if (enumeration.Count == 0)
+            {
+                return false;
+            }
+
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
@@ -101,7 +111,7 @@ namespace RadixTreeStructure
 
         private bool Remove(Node<T> node, List<T> enumeration)
         {
-            if (!Search(node, enumeration))
+            if (enumeration.Count == 0)
             {
                 return false;
             }
@@ -110,12 +120,6 @@ namespace RadixTreeStructure
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
                 if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count)
-                {
-                    node.Edges.Remove(edge);
-                    return true;
-                }
-
-                if (mismatchIndex > 0 && node.IsLeaf)
                 {
                     node.Edges.Remove(edge);
                     return true;
