@@ -102,7 +102,6 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Search(edge.Next, enumeration);
             }
 
@@ -125,7 +124,6 @@ namespace RadixTreeStructure
                     return true;
                 }
 
-                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Remove(edge.Next, enumeration);
             }
 
