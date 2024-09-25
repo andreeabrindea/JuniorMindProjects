@@ -102,6 +102,7 @@ namespace RadixTreeStructure
                     return true;
                 }
 
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Search(edge.Next, enumeration);
             }
 
@@ -118,12 +119,13 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count)
+                if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count && edge.Next.IsLeaf)
                 {
                     node.Edges.Remove(edge);
                     return true;
                 }
 
+                enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Remove(edge.Next, enumeration);
             }
 
