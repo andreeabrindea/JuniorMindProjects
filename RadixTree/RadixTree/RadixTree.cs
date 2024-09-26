@@ -20,7 +20,7 @@ namespace RadixTreeStructure
 
         public bool Search(IEnumerable<T> enumeration) => Search(root, enumeration.ToList());
 
-        public bool Remove(IEnumerable<T> enumeration) => Remove(root, enumeration.ToList());
+        public void Remove(IEnumerable<T> enumeration) => Remove(root, enumeration.ToList());
 
         private void Add(Node<T> node, List<T> enumeration, List<T> remainingEnumeration)
         {
@@ -110,11 +110,11 @@ namespace RadixTreeStructure
             return false;
         }
 
-        private bool Remove(Node<T> node, List<T> enumeration)
+        private void Remove(Node<T> node, List<T> enumeration)
         {
             if (enumeration.Count == 0)
             {
-                return false;
+                return;
             }
 
             foreach (var edge in node.Edges)
@@ -132,14 +132,12 @@ namespace RadixTreeStructure
                         node.Edges.Remove(edge);
                     }
 
-                    return true;
+                    return;
                 }
 
                 enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
                 Remove(edge.Next, enumeration);
             }
-
-            return false;
         }
 
         private int GetMismatchIndex(List<T> enumeration, List<T> edgeWord)
