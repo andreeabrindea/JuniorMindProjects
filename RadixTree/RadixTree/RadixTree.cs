@@ -45,6 +45,7 @@ namespace RadixTreeStructure
                 if (edge.Value.Count > mismatchIndex)
                 {
                     SplitEdgeAndAddRemainder(edge, enumeration, mismatchIndex);
+                    node.IsLeaf = false;
                     return;
                 }
 
@@ -119,9 +120,18 @@ namespace RadixTreeStructure
             foreach (var edge in node.Edges)
             {
                 int mismatchIndex = GetMismatchIndex(enumeration, edge.Value);
-                if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count && edge.Next.IsLeaf)
+                if (mismatchIndex == edge.Value.Count && mismatchIndex == enumeration.Count)
                 {
-                    node.Edges.Remove(edge);
+                    if (edge.Next.IsLeaf)
+                    {
+                        edge.Next.IsLeaf = false;
+                    }
+
+                    if (edge.Next.Edges.Count == 0)
+                    {
+                        node.Edges.Remove(edge);
+                    }
+
                     return true;
                 }
 

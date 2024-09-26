@@ -15,12 +15,6 @@ namespace RadixTreeStructure
         internal void AddEdge(List<T> label, Node<T> next)
         {
             Edges.Add(new Edge<T>(label, next));
-            if (!IsLeaf)
-            {
-                return;
-            }
-
-            IsLeaf = false;
         }
 
         internal Edge<T> GetEdge(List<T> value)
