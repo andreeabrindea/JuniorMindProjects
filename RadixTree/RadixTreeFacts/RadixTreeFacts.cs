@@ -29,7 +29,8 @@ namespace RadixTreeStructure.Facts
             tree.Add("waste");
             tree.Add("w");
 
-            Assert.Equal(new RadixTree<char> { "water", "waste", "w" }, tree);
+            tree.Add("tear");
+            Assert.Equal(new RadixTree<char> { "water", "waste", "w", "tear" }, tree);
         }
 
         [Fact]
@@ -70,6 +71,16 @@ namespace RadixTreeStructure.Facts
             tree.Add(firstWord);
             tree.Remove(firstWord);
             Assert.False(tree.Search(firstWord));
+        }
+
+        [Fact]
+        public void DeleteNonLeafNode()
+        {
+            RadixTree<char> tree = new();
+            tree.Add("abc");
+            tree.Add("abcd");
+            tree.Remove("abc");
+            Assert.True(tree.Search("abc"));
         }
 
         [Fact]
