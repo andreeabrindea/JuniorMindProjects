@@ -104,7 +104,10 @@ namespace RadixTreeStructure
                 }
 
                 enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
-                Search(edge.Next, enumeration);
+                if (Search(edge.Next, enumeration))
+                {
+                    return true;
+                }
             }
 
             return false;
