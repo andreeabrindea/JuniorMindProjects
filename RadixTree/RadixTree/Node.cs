@@ -12,10 +12,11 @@ namespace RadixTreeStructure
 
         internal List<Edge<T>> Edges { get; }
 
-        internal void AddEdge(List<T> label, Node<T> next)
-        {
+        internal void AddEdge(List<T> label, Node<T> next) =>
             Edges.Add(new Edge<T>(label, next));
-        }
+
+        internal void RemoveEdge(Edge<T> edge) =>
+            Edges.Remove(edge);
 
         internal Edge<T> GetEdge(List<T> value)
         {
