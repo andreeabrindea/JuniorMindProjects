@@ -100,7 +100,7 @@ public class BTreeFacts
         btree.Add(12);
         btree.Add(67);
 
-        Assert.True(btree.Remove(97));
+        btree.Remove(97);
         Assert.False(btree.Contains(97));
     }
 
@@ -122,7 +122,7 @@ public class BTreeFacts
         btree.Add(22);
         btree.Add(24);
         
-        Assert.True(btree.Remove(16));
+        btree.Remove(16);
         Assert.False(btree.Contains(16));
     }
        [Fact]
@@ -131,7 +131,7 @@ public class BTreeFacts
         BTreeCollection<int> btree = new();
         btree.Add(10);
         btree.Add(10);
-        Assert.Equal(1, btree.Count); // Ensure no duplicate is added
+        Assert.Equal(1, btree.Count);
         Assert.True(btree.Contains(10));
     }
 
@@ -141,7 +141,7 @@ public class BTreeFacts
         BTreeCollection<int> btree = new();
         btree.Add(5);
         btree.Add(15);
-        Assert.False(btree.Remove(10));
+        btree.Remove(10);
     }
 
     [Fact]
@@ -149,7 +149,7 @@ public class BTreeFacts
     {
         BTreeCollection<int> btree = new();
         btree.Add(5);
-        Assert.True(btree.Remove(5)); 
+        btree.Remove(5); 
         Assert.Equal(0, btree.Count);
         Assert.False(btree.Contains(5));
     }
@@ -162,7 +162,7 @@ public class BTreeFacts
         btree.Add(3);
         btree.Add(7);
 
-        Assert.True(btree.Remove(3));
+        btree.Remove(3);
         Assert.False(btree.Contains(3));
     }
 
@@ -218,7 +218,7 @@ public class BTreeFacts
         BTreeCollection<int> btree = new();
         btree.Add(10);
         btree.Add(5);
-        Assert.True(btree.Remove(10));
+        btree.Remove(10);
         Assert.False(btree.Contains(10));
         Assert.True(btree.Contains(5));
     }
@@ -251,7 +251,7 @@ public class BTreeFacts
         btree.Add(15);
         btree.Add(25);
 
-        Assert.True(btree.Remove(20)); 
+        btree.Remove(20); 
         Assert.False(btree.Contains(20));
         Assert.True(btree.Contains(15));
     }
@@ -264,9 +264,9 @@ public class BTreeFacts
         btree.Add(20);
         btree.Add(30);
 
-        Assert.True(btree.Remove(10));
-        Assert.True(btree.Remove(20));
-        Assert.True(btree.Remove(30));
+        btree.Remove(10);
+        btree.Remove(20);
+        btree.Remove(30);
 
         Assert.Equal(0, btree.Count);
         Assert.False(btree.Contains(10));
@@ -284,7 +284,7 @@ public class BTreeFacts
         btree.Add(30);
         btree.Add(40);
 
-        Assert.True(btree.Remove(20));
+        btree.Remove(20);
         Assert.False(btree.Contains(20));
         Assert.True(btree.Contains(5));
         Assert.True(btree.Contains(10));
@@ -326,8 +326,7 @@ public class BTreeFacts
         btree.AddNonRecursive(5);
         btree.AddNonRecursive(30);
         btree.AddNonRecursive(40);
-
-        Assert.True(btree.RemoveNonRecursive(20));
+        btree.RemoveNonRecursive(20);
         Assert.False(btree.ContainsNonRecursive(20));
         Assert.True(btree.ContainsNonRecursive(5));
         Assert.True(btree.ContainsNonRecursive(10));
@@ -342,11 +341,9 @@ public class BTreeFacts
         btree.AddNonRecursive(10);
         btree.AddNonRecursive(20);
         btree.AddNonRecursive(30);
-
-        Assert.True(btree.RemoveNonRecursive(10));
-        Assert.True(btree.RemoveNonRecursive(20));
-        Assert.True(btree.RemoveNonRecursive(30));
-
+        btree.RemoveNonRecursive(10);
+        btree.RemoveNonRecursive(20);
+        btree.RemoveNonRecursive(30);
         Assert.Equal(0, btree.Count);
         Assert.False(btree.ContainsNonRecursive(10));
         Assert.False(btree.ContainsNonRecursive(20));

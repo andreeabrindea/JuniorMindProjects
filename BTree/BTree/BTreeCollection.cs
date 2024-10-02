@@ -19,14 +19,11 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public IEnumerator<T> GetEnumerator() => GetKeys(root).GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public Node<T> Search(T item) => Search(root, item);
 
-    public Node<T> NonRecursiveSearch(T item)
+    public Node<T> SearchNonRecursive(T item)
     {
         Stack<Node<T>> stack = new();
         stack.Push(root);
@@ -61,24 +58,44 @@ public class BTreeCollection<T> : IEnumerable<T>
         return null;
     }
 
-    public void Add(T item)
-    {
-        if (Contains(item))
-        {
-            return;
-        }
-
-        Add(root, item, null);
-    }
+    public void Add(T item) => Add(root, item, null);
 
     public void AddNonRecursive(T item)
     {
-        if (ContainsNonRecursive(item))
+        Stack<(Node<T>, Node<T>)> stack = new();
+        stack.Push((root, null));
+        while (stack.Count > 0)
         {
-            return;
-        }
+            var (node, parent) = stack.Pop();
+            if (node.Keys.Contains(item))
+            {
+                return;
+            }
 
-        AddUsingStack(item);
+            if (node.ChildrenCount == 0)
+            {
+                AddItemIntoLeafNode(node, item, parent);
+            }
+
+            if (node.IsLeaf)
+            {
+                continue;
+            }
+
+            if (item.CompareTo(node.SmallestKey()) < 0)
+            {
+                stack.Push((node.Children[0], node));
+            }
+            else if (item.CompareTo(node.LargestKey()) > 0)
+            {
+                stack.Push((node.Children[node.ChildrenCount - 1], node));
+            }
+            else
+            {
+                int index = GetIndexOfItemBetweenSeparators(item, node);
+                stack.Push((node.Children[index], node));
+            }
+        }
     }
 
     public void Clear()
@@ -90,7 +107,7 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     public bool Contains(T item) => Search(item) != null;
 
-    public bool ContainsNonRecursive(T item) => NonRecursiveSearch(item) != null;
+    public bool ContainsNonRecursive(T item) => SearchNonRecursive(item) != null;
 
     public void CopyTo(T[] array, int arrayIndex)
     {
@@ -118,20 +135,19 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
     }
 
-    public bool Remove(T item)
+    public void Remove(T item)
     {
-        if (!Contains(item))
-        {
-            return false;
-        }
-
         Node<T> node = Search(item);
+        if (node == null)
+        {
+            return;
+        }
 
         if (!node.HasTooFewKeys() && node.IsLeaf || Count == 0)
         {
             node.RemoveKey(item);
             Count--;
-            return true;
+            return;
         }
 
         if (!node.IsLeaf)
@@ -139,26 +155,25 @@ public class BTreeCollection<T> : IEnumerable<T>
             node.RemoveKey(item);
             Count--;
             RemoveKeyFromInternalNode(node);
-            return true;
+            return;
         }
 
-        return RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(root, item, root);
+        RemoveKeyFromLeafNodeWithInsufficientNoOfKeys(root, item, root);
     }
 
-    public bool RemoveNonRecursive(T item)
+    public void RemoveNonRecursive(T item)
     {
-        if (!ContainsNonRecursive(item))
+        Node<T> node = SearchNonRecursive(item);
+        if (node == null)
         {
-            return false;
+            return;
         }
-
-        Node<T> node = NonRecursiveSearch(item);
 
         if (!node.HasTooFewKeys() && node.IsLeaf || Count == 0)
         {
             node.RemoveKey(item);
             Count--;
-            return true;
+            return;
         }
 
         if (!node.IsLeaf)
@@ -166,10 +181,10 @@ public class BTreeCollection<T> : IEnumerable<T>
             node.RemoveKey(item);
             Count--;
             RemoveKeyFromInternalNode(node);
-            return true;
+            return;
         }
 
-        return RemoveKeyFromLeafNodeWithInsufficientNoOfKeysNonRecursive(item);
+        RemoveKeyFromLeafNodeWithInsufficientNoOfKeysNonRecursive(item);
     }
 
     private Node<T> Search(Node<T> node, T item)
@@ -207,22 +222,14 @@ public class BTreeCollection<T> : IEnumerable<T>
 
     private void Add(Node<T> node, T item,  Node<T> parent)
     {
+        if (node.Keys.Contains(item))
+        {
+            return;
+        }
+
         if (node.ChildrenCount == 0)
         {
-            Count++;
-            if (!node.IsFull)
-            {
-                node.AddKey(item);
-                return;
-            }
-
-            node.Split(item);
-            if (node != root)
-            {
-                MergeNodeWithParent(node, parent);
-                return;
-            }
-
+            AddItemIntoLeafNode(node, item, parent);
             return;
         }
 
@@ -248,51 +255,22 @@ public class BTreeCollection<T> : IEnumerable<T>
         }
     }
 
-    private void AddUsingStack(T item)
+    private void AddItemIntoLeafNode(Node<T> node, T item, Node<T> parent)
     {
-        Stack<(Node<T>, Node<T>)> stack = new();
-        stack.Push((root, null));
-        while (stack.Count > 0)
+        Count++;
+        if (!node.IsFull)
         {
-            var (node, parent) = stack.Pop();
-
-            if (node.ChildrenCount == 0)
-            {
-                Count++;
-                if (!node.IsFull)
-                {
-                    node.AddKey(item);
-                    return;
-                }
-
-                node.Split(item);
-                if (node != root)
-                {
-                    MergeNodeWithParent(node, parent);
-                }
-
-                return;
-            }
-
-            if (node.IsLeaf)
-            {
-                continue;
-            }
-
-            if (item.CompareTo(node.SmallestKey()) < 0)
-            {
-                stack.Push((node.Children[0], node));
-            }
-            else if (item.CompareTo(node.LargestKey()) > 0)
-            {
-                stack.Push((node.Children[node.ChildrenCount - 1], node));
-            }
-            else
-            {
-                int index = GetIndexOfItemBetweenSeparators(item, node);
-                stack.Push((node.Children[index], node));
-            }
+            node.AddKey(item);
+            return;
         }
+
+        node.Split(item);
+        if (node == root)
+        {
+            return;
+        }
+
+        MergeNodeWithParent(node, parent);
     }
 
     private void MergeNodeWithParent(Node<T> node, Node<T> parent)
@@ -364,7 +342,7 @@ public class BTreeCollection<T> : IEnumerable<T>
         return false;
     }
 
-    private bool RemoveKeyFromLeafNodeWithInsufficientNoOfKeysNonRecursive(T item)
+    private void RemoveKeyFromLeafNodeWithInsufficientNoOfKeysNonRecursive(T item)
     {
         Stack<(Node<T>, Node<T>)> stack = new();
         stack.Push((root, null));
@@ -375,7 +353,7 @@ public class BTreeCollection<T> : IEnumerable<T>
             {
                 node.RemoveKey(item);
                 Count--;
-                return MergeNodes(node, parent);
+                MergeNodes(node, parent);
             }
 
             if (node.IsLeaf)
@@ -397,8 +375,6 @@ public class BTreeCollection<T> : IEnumerable<T>
                 stack.Push((node.Children[index], node));
             }
         }
-
-        return true;
     }
 
     private bool MergeNodes(Node<T> node, Node<T> parent)
