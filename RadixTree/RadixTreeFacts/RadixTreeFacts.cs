@@ -27,6 +27,7 @@ namespace RadixTreeStructure.Facts
             RadixTree<char> tree = new();
             tree.Add("water");
             tree.Add("waste");
+            Assert.True(tree.Search("waste"));
             tree.Add("w");
 
             tree.Add("tear");
@@ -104,6 +105,17 @@ namespace RadixTreeStructure.Facts
             int[] anotherSetOfIntegers = { 1, 5, 6 };
             tree.Add(anotherSetOfIntegers);
             Assert.Equal(tree, new RadixTree<int> { new[] { 1, 2, 3 }, new[] { 1, 5, 6 } });
+        }
+
+        [Fact]
+        public void RemoveLeafNodeAndMergeTheNodeLeftToParent()
+        {
+            RadixTree<char> tree = new();
+            tree.Add("wa");
+            tree.Add("wo");
+            tree.Remove("wo");
+            Assert.False(tree.Search("wo"));
+            Assert.True(tree.Search("wa"));
         }
     }
 }
