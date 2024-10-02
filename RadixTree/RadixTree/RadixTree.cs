@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Net.NetworkInformation;
 
 namespace RadixTreeStructure
 {
@@ -20,7 +21,7 @@ namespace RadixTreeStructure
 
         public bool Search(IEnumerable<T> enumeration) => Search(root, enumeration.ToList());
 
-        public void Remove(IEnumerable<T> enumeration) => Remove(root, enumeration.ToList());
+        public void Remove(IEnumerable<T> enumeration) => Remove(root, enumeration.ToList(), root);
 
         private void Add(Node<T> node, List<T> enumeration, List<T> remainingEnumeration)
         {
@@ -113,7 +114,7 @@ namespace RadixTreeStructure
             return false;
         }
 
-        private void Remove(Node<T> node, List<T> enumeration)
+        private void Remove(Node<T> node, List<T> enumeration, Node<T> parentNode)
         {
             if (enumeration.Count == 0)
             {
@@ -133,13 +134,14 @@ namespace RadixTreeStructure
                     if (edge.Next.Edges.Count == 0)
                     {
                         node.Edges.Remove(edge);
+                        MergeNodeWithParent(node, parentNode);
                     }
 
                     return;
                 }
 
                 enumeration = Slice(enumeration, mismatchIndex, enumeration.Count);
-                Remove(edge.Next, enumeration);
+                Remove(edge.Next, enumeration, node);
             }
         }
 
@@ -183,6 +185,33 @@ namespace RadixTreeStructure
                     yield return value;
                 }
             }
+        }
+
+        private void MergeNodeWithParent(Node<T> node, Node<T> parent)
+        {
+            int indexOfPrefix = FindIndexOfPrefix(node, parent);
+            if (node.Edges.Count != 1 || indexOfPrefix < 0)
+            {
+                return;
+            }
+
+            Edge<T> parentEdge = parent.Edges[indexOfPrefix];
+            parentEdge.Value.AddRange(node.Edges[0].Value);
+            node.RemoveEdge(node.Edges[0]);
+            node.IsLeaf = false;
+        }
+
+        private int FindIndexOfPrefix(Node<T> node, Node<T> parent)
+        {
+            for (int i = 0; i < parent.Edges.Count; i++)
+            {
+                if (parent.Edges[i].Next.Equals(node))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 }
