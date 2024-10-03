@@ -98,7 +98,19 @@ public class LinqFacts
     [Fact]
     public void Select_ElementsThatStartWithA()
     {
-        List<string> words = new List<string> {"abc", "def", "ghi"};
+        List<string> words = new List<string> {"abc","def","ghi"};
         Assert.Equal(new List<bool> { true, false, false }, words.Select(s => s.StartsWith("a")));
+    }
+
+    [Fact]
+    public void SelectMany_DoubleEachElement()
+    {
+        List<List<int>> numbers = new List<List<int>>
+        {
+            new() { 1, 2, 3 },
+            new() { 4, 5, 6 },
+            new() { 7, 8, 9 },
+        };
+        Assert.Equal(new List<int> { 2, 4, 6, 8, 10, 12, 14, 16, 18 }, numbers.SelectMany(i => i.Select(x => x * 2)));
     }
 }

@@ -50,4 +50,17 @@ public static class Delegates
             yield return selector(s);
         }
     }
+
+    public static IEnumerable<TResult> SelectMany<TSource, TResult>(
+        this IEnumerable<TSource> source,
+        Func<TSource, IEnumerable<TResult>> selector)
+    {
+        foreach (var s in source)
+        {
+            foreach (var item in selector(s))
+            {
+                yield return item;
+            }
+        }
+    }
 }
