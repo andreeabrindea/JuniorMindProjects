@@ -71,14 +71,14 @@ public class LinqFacts
     public void First_ElementThatStartsWithA_WhenThereIsNoElement()
     {
         List<string> words = new List<string> { "bcd", "cdef", "hello" };
-        Assert.Null(words.First(s => s.StartsWith('a')));
+        Assert.Throws<InvalidOperationException>(() => words.First(s => s.StartsWith('a')));
     }
 
     [Fact]
     public void First_EvenElement_WhenThereIsNoElement()
     {
         List<int> numbers = new List<int> {1, 7, 5, 9, 21, 73};
-        Assert.Equal(0, numbers.First(i => i % 2 == 0));
+        Assert.Throws<InvalidOperationException>(() => numbers.First(i => i % 2 == 0));
     }
 
     [Fact]

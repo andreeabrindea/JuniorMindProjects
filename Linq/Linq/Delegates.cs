@@ -38,6 +38,6 @@ public static class Delegates
             }
         }
 
-        return default;
+        throw new InvalidOperationException();
     }
 }
