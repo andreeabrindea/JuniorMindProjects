@@ -87,4 +87,18 @@ public class LinqFacts
         List<int> numbers = new List<int> {1, 7, 8, 9, 20, 2, 4};
         Assert.Equal(8, numbers.First(i => i % 2 == 0));
     }
+
+    [Fact]
+    public void Select_DoubleTheElements()
+    {
+        List<int> numbers = new List<int> {1, 2, 3};
+        Assert.Equal(new List<int> { 2, 4, 6 }, numbers.Select(i => i * 2));
+    }
+
+    [Fact]
+    public void Select_ElementsThatStartWithA()
+    {
+        List<string> words = new List<string> {"abc", "def", "ghi"};
+        Assert.Equal(new List<bool> { true, false, false }, words.Select(s => s.StartsWith("a")));
+    }
 }

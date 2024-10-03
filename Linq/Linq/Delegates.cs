@@ -40,4 +40,14 @@ public static class Delegates
 
         throw new InvalidOperationException();
     }
+
+    public static IEnumerable<TResult> Select<TSource, TResult>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TResult> selector)
+    {
+        foreach (var s in source)
+        {
+            yield return selector(s);
+        }
+    }
 }
