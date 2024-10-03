@@ -1,6 +1,6 @@
 ﻿namespace Linq;
 
-public static class Linq
+public static class Delegates
 {
     public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
