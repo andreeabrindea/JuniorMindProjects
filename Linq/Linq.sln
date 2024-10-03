@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linq", "Linq\Linq.csproj", "{7026B538-7C22-4729-B78C-F9FE66348C3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqFacts", "LinqFacts\LinqFacts.csproj", "{ED987246-BCC4-4B6B-9043-EDBF89BEF046}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7026B538-7C22-4729-B78C-F9FE66348C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7026B538-7C22-4729-B78C-F9FE66348C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7026B538-7C22-4729-B78C-F9FE66348C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7026B538-7C22-4729-B78C-F9FE66348C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED987246-BCC4-4B6B-9043-EDBF89BEF046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED987246-BCC4-4B6B-9043-EDBF89BEF046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED987246-BCC4-4B6B-9043-EDBF89BEF046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED987246-BCC4-4B6B-9043-EDBF89BEF046}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
