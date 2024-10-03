@@ -14,4 +14,17 @@ public static class Delegates
 
         return true;
     }
+
+    public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    {
+        foreach (var s in source)
+        {
+            if (predicate(s))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
