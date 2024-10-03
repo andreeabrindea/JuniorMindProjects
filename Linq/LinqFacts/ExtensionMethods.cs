@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Linq.Facts;
 
-public class LinqFacts
+public class ExtensionMethods
 {
     [Fact]
     public void All_ListOfIntegerEven_ShouldReturnFalse()
@@ -126,5 +126,19 @@ public class LinqFacts
     {
         List<int> numbers = new() { 1, 3, 5, 7};
         Assert.Equal(new List<int> { }, numbers.Where(i => i % 2 == 0));
+    }
+
+    [Fact]
+    public void ToDictionary_KeyIsDoubleElementSelector()
+    {
+        List<int> numbers = new() { 1, 3, 5};
+        Assert.Equal(new Dictionary<int, int> { { 2, 1 }, { 6, 3 }, { 10, 5 } }, numbers.ToDictionary(i => i * 2, y => y));
+    }
+
+    [Fact]
+    public void ToDictionary_ListIsEmpty()
+    {
+        List<int> numbers = new() { };
+        Assert.Equal(new Dictionary<int, int> { }, numbers.ToDictionary(i => i * 2, y => y + 2));
     }
 }

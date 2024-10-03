@@ -1,6 +1,6 @@
 ﻿namespace Linq;
 
-public static class Delegates
+public static class ExtensionMethods
 {
     public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
@@ -73,5 +73,19 @@ public static class Delegates
                 yield return s;
             }
         }
+    }
+
+    public static Dictionary<TKey, TElement> ToDictionary<TSource, TKey, TElement>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        Func<TSource, TElement> elementSelector)
+    {
+        Dictionary<TKey, TElement> dictionary = new();
+        foreach (var item in source)
+        {
+            dictionary.Add(keySelector(item), elementSelector(item));
+        }
+
+        return dictionary;
     }
 }
