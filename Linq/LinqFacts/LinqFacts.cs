@@ -113,4 +113,18 @@ public class LinqFacts
         };
         Assert.Equal(new List<int> { 2, 4, 6, 8, 10, 12, 14, 16, 18 }, numbers.SelectMany(i => i.Select(x => x * 2)));
     }
+
+    [Fact]
+    public void Where_ElementIsEven()
+    {
+        List<int> numbers = new() { 1, 2, 3, 4, 5, 6, 7, 8 };
+        Assert.Equal(new List<int> { 2, 4, 6, 8 }, numbers.Where(i => i % 2 == 0));
+    }
+
+    [Fact]
+    public void Where_ThereIsNoElementThatRespectsThePredicate()
+    {
+        List<int> numbers = new() { 1, 3, 5, 7};
+        Assert.Equal(new List<int> { }, numbers.Where(i => i % 2 == 0));
+    }
 }

@@ -63,4 +63,15 @@ public static class Delegates
             }
         }
     }
+
+    public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    {
+        foreach (var s in source)
+        {
+            if (predicate(s))
+            {
+                yield return s;
+            }
+        }
+    }
 }
