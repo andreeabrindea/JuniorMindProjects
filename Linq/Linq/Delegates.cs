@@ -27,4 +27,17 @@ public static class Delegates
 
         return false;
     }
+
+    public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    {
+        foreach (var s in source)
+        {
+            if (predicate(s))
+            {
+                return s;
+            }
+        }
+
+        return default;
+    }
 }
