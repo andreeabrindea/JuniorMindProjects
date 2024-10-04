@@ -165,4 +165,20 @@ public class ExtensionMethods
         List<int> evenNumbers = new List<int> { 2, 4, 6, 8 };
         Assert.Equal(new List<int> { }, empty.Zip(evenNumbers, (a, b) => a + b));
     }
+
+    [Fact]
+    public void Aggregate_SumOfTheElements()
+    {
+        List<int> numbers = new() { 1, 2, 3 };
+        int seed = 0;
+        Assert.Equal(6, numbers.Aggregate(seed, (s, a) => s + a));
+    }
+
+    [Fact]
+    public void Aggregate_ListIsEmpty()
+    {
+        List<int> empty = new() { };
+        int seed = 0;
+        Assert.Equal(0, empty.Aggregate(seed, (s, a) => s + a));
+    }
 }

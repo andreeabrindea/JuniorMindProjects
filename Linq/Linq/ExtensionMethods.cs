@@ -100,4 +100,17 @@ public static class ExtensionMethods
             yield return resultSelector(first.ElementAt(i), second.ElementAt(i));
         }
     }
+
+    public static TAccumulate Aggregate<TSource, TAccumulate>(
+        this IEnumerable<TSource> source,
+        TAccumulate seed,
+        Func<TAccumulate, TSource, TAccumulate> func)
+    {
+        foreach (var s in source)
+        {
+            seed = func(seed, s);
+        }
+
+        return seed;
+    }
 }
