@@ -181,4 +181,34 @@ public class ExtensionMethods
         int seed = 0;
         Assert.Equal(0, empty.Aggregate(seed, (s, a) => s + a));
     }
+
+    [Fact]
+    public void Join_ElementsThatAppearInBothLists()
+    {
+        List<int> outer = new() { 2, 4, 6, 12 };
+        List<int> inner = new() { 4, 8, 12 };
+        Assert.Equal(
+            new List<int> { 4, 12 },
+            outer.Join(inner, i => i, i => i, (i, _) => i));
+    }
+
+    [Fact]
+    public void Join_OneListIsEmpty()
+    {
+        List<int> outer = new() { };
+        List<int> inner = new() { 4, 8, 12 };
+        Assert.Equal(
+            new List<int> { },
+            outer.Join(inner, i => i, i => i, (i, _) => i));
+    }
+
+    // TODO: remove comments
+    // [Fact]
+    public void Join_OneFunctionIsNull()
+    {
+        List<int> outer = new() { 2, 5, 6 };
+        List<int> inner = new() { 4, 8, 12 };
+        Assert.Throws<ArgumentNullException>(
+            () => outer.Join(inner, null, i => i, (i, _) => i));
+    }
 }

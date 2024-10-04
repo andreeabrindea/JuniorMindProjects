@@ -113,4 +113,24 @@ public static class ExtensionMethods
 
         return seed;
     }
+
+    public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(
+        this IEnumerable<TOuter> outer,
+        IEnumerable<TInner> inner,
+        Func<TOuter, TKey> outerKeySelector,
+        Func<TInner, TKey> innerKeySelector,
+        Func<TOuter, TInner, TResult> resultSelector)
+    {
+        // TODO: Throw exception for null arguments
+        foreach (var o in outer)
+        {
+            foreach (var i in inner)
+            {
+                if (outerKeySelector(o).Equals(innerKeySelector(i)))
+                {
+                    yield return resultSelector(o, i);
+                }
+            }
+        }
+    }
 }
