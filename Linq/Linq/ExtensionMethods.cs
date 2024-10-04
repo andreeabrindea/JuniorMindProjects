@@ -88,4 +88,16 @@ public static class ExtensionMethods
 
         return dictionary;
     }
+
+    public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(
+        this IEnumerable<TFirst> first,
+        IEnumerable<TSecond> second,
+        Func<TFirst, TSecond, TResult> resultSelector)
+    {
+        int length = Math.Min(first.Count(), second.Count());
+        for (int i = 0; i < length; i++)
+        {
+            yield return resultSelector(first.ElementAt(i), second.ElementAt(i));
+        }
+    }
 }

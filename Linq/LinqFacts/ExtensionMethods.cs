@@ -141,4 +141,28 @@ public class ExtensionMethods
         List<int> numbers = new() { };
         Assert.Equal(new Dictionary<int, int> { }, numbers.ToDictionary(i => i * 2, y => y + 2));
     }
+
+    [Fact]
+    public void Zip_WhenListsHaveTheSameNoOfElements()
+    {
+        List<int> oddNumbers = new List<int> { 1, 3, 5 };
+        List<int> evenNumbers = new List<int> { 2, 4, 6 };
+        Assert.Equal(new List<int> { 3, 7, 11 }, oddNumbers.Zip(evenNumbers, (a, b) => a + b));
+    }
+
+    [Fact]
+    public void Zip_WhenListsHaveDifferentNoOfElements()
+    {
+        List<int> oddNumbers = new List<int> { 1, 3, 5 };
+        List<int> evenNumbers = new List<int> { 2, 4, 6, 8 };
+        Assert.Equal(new List<int> { 3, 7, 11 }, oddNumbers.Zip(evenNumbers, (a, b) => a + b));
+    }
+
+    [Fact]
+    public void Zip_OneListIsEmpty()
+    {
+        List<int> empty = new List<int> { };
+        List<int> evenNumbers = new List<int> { 2, 4, 6, 8 };
+        Assert.Equal(new List<int> { }, empty.Zip(evenNumbers, (a, b) => a + b));
+    }
 }
