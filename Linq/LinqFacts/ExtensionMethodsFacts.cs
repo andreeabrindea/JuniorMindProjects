@@ -118,7 +118,9 @@ public class ExtensionMethodsFacts
             new() { 4, 5, 6 },
             new() { 7, 8, 9 },
         };
-        Assert.Equal(new List<int> { 2, 4, 6, 8, 10, 12, 14, 16, 18 }, numbers.SelectMany(i => i.Select(x => x * 2)));
+        Assert.Equal(
+            new List<int> { 2, 4, 6, 8, 10, 12, 14, 16, 18 },
+            numbers.SelectMany(i => i.Select(x => x * 2)));
     }
 
     [Fact]
@@ -139,7 +141,9 @@ public class ExtensionMethodsFacts
     public void ToDictionary_KeyIsDoubleElementSelector()
     {
         List<int> numbers = new() { 1, 3, 5};
-        Assert.Equal(new Dictionary<int, int> { { 2, 1 }, { 6, 3 }, { 10, 5 } }, numbers.ToDictionary(i => i * 2, y => y));
+        Assert.Equal(
+            new Dictionary<int, int> { { 2, 1 }, { 6, 3 }, { 10, 5 } },
+            numbers.ToDictionary(i => i * 2, y => y));
     }
 
     [Fact]
