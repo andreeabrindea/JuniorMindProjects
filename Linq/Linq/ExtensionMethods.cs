@@ -4,6 +4,8 @@ public static class ExtensionMethods
 {
     public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(predicate);
         foreach (var s in source)
         {
             if (!predicate(s))
@@ -17,6 +19,8 @@ public static class ExtensionMethods
 
     public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -30,6 +34,8 @@ public static class ExtensionMethods
 
     public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -45,6 +51,8 @@ public static class ExtensionMethods
         this IEnumerable<TSource> source,
         Func<TSource, TResult> selector)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(selector);
         foreach (var s in source)
         {
             yield return selector(s);
@@ -55,6 +63,9 @@ public static class ExtensionMethods
         this IEnumerable<TSource> source,
         Func<TSource, IEnumerable<TResult>> selector)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(selector);
+
         foreach (var s in source)
         {
             foreach (var item in selector(s))
@@ -66,6 +77,8 @@ public static class ExtensionMethods
 
     public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -80,6 +93,10 @@ public static class ExtensionMethods
         Func<TSource, TKey> keySelector,
         Func<TSource, TElement> elementSelector)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(keySelector);
+        CheckToThrowException(elementSelector);
+
         Dictionary<TKey, TElement> dictionary = new();
         foreach (var item in source)
         {
@@ -94,6 +111,9 @@ public static class ExtensionMethods
         IEnumerable<TSecond> second,
         Func<TFirst, TSecond, TResult> resultSelector)
     {
+        CheckToThrowException(first);
+        CheckToThrowException(second);
+        CheckToThrowException(resultSelector);
         int length = Math.Min(first.Count(), second.Count());
         for (int i = 0; i < length; i++)
         {
@@ -106,6 +126,9 @@ public static class ExtensionMethods
         TAccumulate seed,
         Func<TAccumulate, TSource, TAccumulate> func)
     {
+        CheckToThrowException(source);
+        CheckToThrowException(func);
+
         foreach (var s in source)
         {
             seed = func(seed, s);
@@ -121,7 +144,9 @@ public static class ExtensionMethods
         Func<TInner, TKey> innerKeySelector,
         Func<TOuter, TInner, TResult> resultSelector)
     {
-        // TODO: Throw exception for null arguments
+        CheckToThrowException(outerKeySelector);
+        CheckToThrowException(innerKeySelector);
+
         foreach (var o in outer)
         {
             foreach (var i in inner)
@@ -132,5 +157,15 @@ public static class ExtensionMethods
                 }
             }
         }
+    }
+
+    private static void CheckToThrowException<T>(T argument)
+    {
+        if (argument != null)
+        {
+            return;
+        }
+
+        throw new ArgumentNullException(nameof(argument));
     }
 }
