@@ -219,6 +219,23 @@ public static class ExtensionMethods
         }
     }
 
+    public static IEnumerable<TSource> Except<TSource>(
+        this IEnumerable<TSource> first,
+        IEnumerable<TSource> second,
+        IEqualityComparer<TSource> comparer)
+    {
+        CheckToThrowException(first);
+        CheckToThrowException(second);
+        CheckToThrowException(comparer);
+        foreach (var item in first)
+        {
+            if (!second.Contains(item))
+            {
+                yield return item;
+            }
+        }
+    }
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
