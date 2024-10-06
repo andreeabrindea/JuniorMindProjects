@@ -275,7 +275,7 @@ public class ExtensionMethodsFacts
     {
         List<int> list = new();
         List<int> list2 = new() { 11, 12, 11, 13, 12, 15, 11, 13, 14, 11 };
-        Assert.Equal(new List<int>() { 11, 12, 13, 15, 14 }, list.Union(list2));
+        Assert.Equal(new List<int>() { 11, 12, 13, 15, 14 }, list.Union(list2, EqualityComparer<int>.Default));
     }
 
     [Fact]
@@ -283,6 +283,46 @@ public class ExtensionMethodsFacts
     {
         List<int> list = null;
         List<int> list2 = new() { 11, 12, 11, 13, 12, 15, 11, 13, 14, 11 };
-        Assert.Throws<ArgumentNullException>(() => list.Union(list2));
+        Assert.Throws<ArgumentNullException>(() => list.Union(list2, EqualityComparer<int>.Default).ToList());
+    }
+
+    [Fact]
+    public void Intersect_ListsOfIntegers()
+    {
+        List<int> first = new() { 1, 2, 3, 4, 5, 6, 1, 4, 5, 6 };
+        List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
+        Assert.Equal(new List<int> { 1, 2, 3 }, first.Intersect(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Intersect_FirstListIsEmpty()
+    {
+        List<int> first = new() { };
+        List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
+        Assert.Equal(new List<int> { }, first.Intersect(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Intersect_ThereAreNoCommonElements()
+    {
+        List<int> first = new() { 12, 34, 56};
+        List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
+        Assert.Equal(new List<int> { }, first.Intersect(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Intersect_FirstListIsNull()
+    {
+        List<int> first = null;
+        List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
+        Assert.Throws<ArgumentNullException>(() => first.Intersect(second, EqualityComparer<int>.Default).ToList());
+    }
+
+    [Fact]
+    public void Intersect_ComparerIsNull()
+    {
+        List<int> first = new() { 1, 2, 4};
+        List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
+        Assert.Throws<ArgumentNullException>(() => first.Intersect(second, null).ToList());
     }
 }
