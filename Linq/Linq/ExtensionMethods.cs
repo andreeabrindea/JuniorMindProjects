@@ -175,6 +175,32 @@ public static class ExtensionMethods
         }
     }
 
+    public static IEnumerable<TSource> Union<TSource>(
+        this IEnumerable<TSource> first,
+        IEnumerable<TSource> second,
+        IEqualityComparer<TSource> comparer)
+    {
+        CheckToThrowException(first);
+        CheckToThrowException(second);
+        CheckToThrowException(comparer);
+        HashSet<TSource> distinctElements = new(comparer);
+        foreach (var item in first)
+        {
+            if (distinctElements.Add(item))
+            {
+                yield return item;
+            }
+        }
+
+        foreach (var item in second)
+        {
+            if (distinctElements.Add(item))
+            {
+                yield return item;
+            }
+        }
+    }
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
