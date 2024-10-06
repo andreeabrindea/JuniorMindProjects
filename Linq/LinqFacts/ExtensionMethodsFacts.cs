@@ -261,4 +261,28 @@ public class ExtensionMethodsFacts
         List<string> list = new() { "hello", "there", "hello", "hi", "there", "hi" };
         Assert.Throws<ArgumentNullException>(() => list.Distinct(null).ToList());
     }
+
+    [Fact]
+    public void Union_ListsOfInteger()
+    {
+        List<int> list = new() { 1, 2, 2, 1, 4, 5, 6, 4, 4, 2, 2, 3, 5 };
+        List<int> list2 = new() { 11, 12, 11, 13, 12, 15, 11, 13, 14, 11 };
+        Assert.Equal(new List<int>() { 1, 2, 4, 5, 6, 3, 11, 12, 13, 15, 14 }, list.Union(list2, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Union_FirstListIsEmpty()
+    {
+        List<int> list = new();
+        List<int> list2 = new() { 11, 12, 11, 13, 12, 15, 11, 13, 14, 11 };
+        Assert.Equal(new List<int>() { 11, 12, 13, 15, 14 }, list.Union(list2));
+    }
+
+    [Fact]
+    public void Union_FistListIsNull()
+    {
+        List<int> list = null;
+        List<int> list2 = new() { 11, 12, 11, 13, 12, 15, 11, 13, 14, 11 };
+        Assert.Throws<ArgumentNullException>(() => list.Union(list2));
+    }
 }
