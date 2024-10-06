@@ -159,6 +159,22 @@ public static class ExtensionMethods
         }
     }
 
+    public static IEnumerable<TSource> Distinct<TSource>(
+        this IEnumerable<TSource> source,
+        IEqualityComparer<TSource> comparer)
+    {
+        CheckToThrowException(source);
+        CheckToThrowException(comparer);
+        HashSet<TSource> distinctElements = new(comparer);
+        foreach (var s in source)
+        {
+            if (distinctElements.Add(s))
+            {
+                yield return s;
+            }
+        }
+    }
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
