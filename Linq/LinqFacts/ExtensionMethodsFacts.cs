@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Linq.Facts;
 
-public class ExtensionMethods
+public class ExtensionMethodsFacts
 {
     [Fact]
     public void All_SourceIsNull_ShouldThrowException()
