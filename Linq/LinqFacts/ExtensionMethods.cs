@@ -5,6 +5,13 @@ namespace Linq.Facts;
 public class ExtensionMethods
 {
     [Fact]
+    public void All_SourceIsNull_ShouldThrowException()
+    {
+        List<int> source = null;
+        Assert.Throws<ArgumentNullException>(() => source.All(i => i % 2 == 0));
+    }
+
+    [Fact]
     public void All_ListOfIntegerEven_ShouldReturnFalse()
     {
         List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6 };
@@ -183,6 +190,22 @@ public class ExtensionMethods
     }
 
     [Fact]
+    public void Aggregate_ListIsNull()
+    {
+        List<int> list = null;
+        int seed = 0;
+        Assert.Throws<ArgumentNullException>(() => list.Aggregate(seed, (s, a) => s + a));
+    }
+
+    [Fact]
+    public void Aggregate_FuncIsNull()
+    {
+        List<int> empty = new() { };
+        int seed = 0;
+        Assert.Throws<ArgumentNullException>(() => empty.Aggregate(seed, null));
+    }
+
+    [Fact]
     public void Join_ElementsThatAppearInBothLists()
     {
         List<int> outer = new() { 2, 4, 6, 12 };
@@ -202,13 +225,12 @@ public class ExtensionMethods
             outer.Join(inner, i => i, i => i, (i, _) => i));
     }
 
-    // TODO: remove comments
-    // [Fact]
+    [Fact]
     public void Join_OneFunctionIsNull()
     {
         List<int> outer = new() { 2, 5, 6 };
         List<int> inner = new() { 4, 8, 12 };
         Assert.Throws<ArgumentNullException>(
-            () => outer.Join(inner, null, i => i, (i, _) => i));
+            () => outer.Join(inner, null, i => i, (i, _) => i).ToList());
     }
 }
