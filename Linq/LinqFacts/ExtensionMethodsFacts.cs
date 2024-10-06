@@ -233,4 +233,32 @@ public class ExtensionMethodsFacts
         Assert.Throws<ArgumentNullException>(
             () => outer.Join(inner, null, i => i, (i, _) => i).ToList());
     }
+
+    [Fact]
+    public void Distinct_RemoveDuplicatesFromListOfIntegers()
+    {
+        List<int> list = new() { 1, 2, 2, 1, 4, 5, 6, 4, 4, 2, 2, 3, 5 };
+        Assert.Equal(new List<int>() { 1, 2, 4, 5, 6, 3 }, list.Distinct(EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Distinct_RemoveDuplicatesFromListOfStrings()
+    {
+        List<string> list = new() { "hello", "there", "hello", "hi", "there", "hi" };
+        Assert.Equal(new List<string>() { "hello", "there", "hi" }, list.Distinct(EqualityComparer<string>.Default));
+    }
+
+    [Fact]
+    public void Distinct_ListIsNull_ShouldThrowException()
+    {
+        List<string> list = null;
+        Assert.Throws<ArgumentNullException>(() => list.Distinct(EqualityComparer<string>.Default).ToList());
+    }
+
+    [Fact]
+    public void Distinct_ComparerIsNull_ShouldThrowException()
+    {
+        List<string> list = new() { "hello", "there", "hello", "hi", "there", "hi" };
+        Assert.Throws<ArgumentNullException>(() => list.Distinct(null).ToList());
+    }
 }
