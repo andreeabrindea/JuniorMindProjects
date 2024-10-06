@@ -329,4 +329,44 @@ public class ExtensionMethodsFacts
         List<int> second = new() { 1, 2, 3, 7, 9, 2, 1 };
         Assert.Throws<ArgumentNullException>(() => first.Intersect(second, null).ToList());
     }
+
+    [Fact]
+    public void Except_ListsOfIntegers()
+    {
+        List<int> first = new() { 1, 2, 3, 4 };
+        List<int> second = new() { 2, 4, 5, 6, 7 };
+        Assert.Equal(new List<int>() { 1, 3 }, first.Except(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Except_ListsAreIdentical()
+    {
+        List<int> first = new() { 1, 2, 3, 4 };
+        List<int> second = new() { 1, 2, 3, 4 };
+        Assert.Equal(new List<int>() { }, first.Except(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Except_FirstListIsEmpty()
+    {
+        List<int> first = new() {  };
+        List<int> second = new() { 2, 4, 5, 6, 7 };
+        Assert.Equal(new List<int>() {  }, first.Except(second, EqualityComparer<int>.Default));
+    }
+
+    [Fact]
+    public void Except_FirstListIsNull()
+    {
+        List<int> first = null;
+        List<int> second = new() { 2, 4, 5, 6, 7 };
+        Assert.Throws<ArgumentNullException>(() => first.Except(second, EqualityComparer<int>.Default).ToList());
+    }
+
+    [Fact]
+    public void Except_ComparerIsNull()
+    {
+        List<int> first = new() { 1, 2, 3};
+        List<int> second = new() { 2, 4, 5, 6, 7 };
+        Assert.Throws<ArgumentNullException>(() => first.Except(second, null).ToList());
+    }
 }
