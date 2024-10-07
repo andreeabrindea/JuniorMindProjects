@@ -114,10 +114,11 @@ public static class ExtensionMethods
         ArgumentNullException.ThrowIfNull(first);
         ArgumentNullException.ThrowIfNull(second);
         ArgumentNullException.ThrowIfNull(resultSelector);
-        int length = Math.Min(first.Count(), second.Count());
-        for (int i = 0; i < length; i++)
+        var firstEnumerator = first.GetEnumerator();
+        var secondEnumerator = second.GetEnumerator();
+        while (firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
         {
-            yield return resultSelector(first.ElementAt(i), second.ElementAt(i));
+            yield return resultSelector(firstEnumerator.Current, secondEnumerator.Current);
         }
     }
 
@@ -129,12 +130,13 @@ public static class ExtensionMethods
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(func);
 
+        var result = seed;
         foreach (var s in source)
         {
-            seed = func(seed, s);
+            result = func(result, s);
         }
 
-        return seed;
+        return result;
     }
 
     public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(
@@ -144,6 +146,8 @@ public static class ExtensionMethods
         Func<TInner, TKey> innerKeySelector,
         Func<TOuter, TInner, TResult> resultSelector)
     {
+        ArgumentNullException.ThrowIfNull(outer);
+        ArgumentNullException.ThrowIfNull(inner);
         ArgumentNullException.ThrowIfNull(outerKeySelector);
         ArgumentNullException.ThrowIfNull(innerKeySelector);
 
@@ -165,13 +169,16 @@ public static class ExtensionMethods
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(comparer);
-        HashSet<TSource> distinctElements = new(comparer);
+        List<TSource> seenElements = new List<TSource>();
         foreach (var s in source)
         {
-            if (distinctElements.Add(s))
+            if (seenElements.Contains(s))
             {
-                yield return s;
+                continue;
             }
+
+            seenElements.Add(s);
+            yield return s;
         }
     }
 
