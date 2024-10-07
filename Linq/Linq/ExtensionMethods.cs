@@ -267,6 +267,17 @@ public static class ExtensionMethods
         }
     }
 
+    public static IOrderedEnumerable<TSource> OrderBy<TSource, TKey>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer)
+    {
+        CheckToThrowException(source);
+        var list = source.ToList();
+        list.Sort((x, y) => comparer.Compare(keySelector(x), keySelector(y)));
+        return new OrderedEnumerable<TSource>(list);
+    }
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
