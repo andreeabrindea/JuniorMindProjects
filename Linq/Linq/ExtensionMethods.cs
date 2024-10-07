@@ -4,8 +4,8 @@ public static class ExtensionMethods
 {
     public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(predicate);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
         foreach (var s in source)
         {
             if (!predicate(s))
@@ -19,8 +19,8 @@ public static class ExtensionMethods
 
     public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(predicate);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -34,8 +34,8 @@ public static class ExtensionMethods
 
     public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(predicate);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -51,8 +51,8 @@ public static class ExtensionMethods
         this IEnumerable<TSource> source,
         Func<TSource, TResult> selector)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(selector);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(selector);
         foreach (var s in source)
         {
             yield return selector(s);
@@ -63,8 +63,8 @@ public static class ExtensionMethods
         this IEnumerable<TSource> source,
         Func<TSource, IEnumerable<TResult>> selector)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(selector);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(selector);
 
         foreach (var s in source)
         {
@@ -77,8 +77,8 @@ public static class ExtensionMethods
 
     public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(predicate);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
         foreach (var s in source)
         {
             if (predicate(s))
@@ -93,9 +93,9 @@ public static class ExtensionMethods
         Func<TSource, TKey> keySelector,
         Func<TSource, TElement> elementSelector)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(keySelector);
-        CheckToThrowException(elementSelector);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(keySelector);
+        ArgumentNullException.ThrowIfNull(elementSelector);
 
         Dictionary<TKey, TElement> dictionary = new();
         foreach (var item in source)
@@ -111,9 +111,9 @@ public static class ExtensionMethods
         IEnumerable<TSecond> second,
         Func<TFirst, TSecond, TResult> resultSelector)
     {
-        CheckToThrowException(first);
-        CheckToThrowException(second);
-        CheckToThrowException(resultSelector);
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        ArgumentNullException.ThrowIfNull(resultSelector);
         int length = Math.Min(first.Count(), second.Count());
         for (int i = 0; i < length; i++)
         {
@@ -126,8 +126,8 @@ public static class ExtensionMethods
         TAccumulate seed,
         Func<TAccumulate, TSource, TAccumulate> func)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(func);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(func);
 
         foreach (var s in source)
         {
@@ -144,8 +144,8 @@ public static class ExtensionMethods
         Func<TInner, TKey> innerKeySelector,
         Func<TOuter, TInner, TResult> resultSelector)
     {
-        CheckToThrowException(outerKeySelector);
-        CheckToThrowException(innerKeySelector);
+        ArgumentNullException.ThrowIfNull(outerKeySelector);
+        ArgumentNullException.ThrowIfNull(innerKeySelector);
 
         foreach (var o in outer)
         {
@@ -163,8 +163,8 @@ public static class ExtensionMethods
         this IEnumerable<TSource> source,
         IEqualityComparer<TSource> comparer)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(comparer);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(comparer);
         HashSet<TSource> distinctElements = new(comparer);
         foreach (var s in source)
         {
@@ -180,9 +180,9 @@ public static class ExtensionMethods
         IEnumerable<TSource> second,
         IEqualityComparer<TSource> comparer)
     {
-        CheckToThrowException(first);
-        CheckToThrowException(second);
-        CheckToThrowException(comparer);
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        ArgumentNullException.ThrowIfNull(comparer);
         HashSet<TSource> distinctElements = new(comparer);
         foreach (var item in first)
         {
@@ -206,9 +206,9 @@ public static class ExtensionMethods
         IEnumerable<TSource> second,
         IEqualityComparer<TSource> comparer)
     {
-        CheckToThrowException(first);
-        CheckToThrowException(second);
-        CheckToThrowException(comparer);
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        ArgumentNullException.ThrowIfNull(comparer);
         HashSet<TSource> distinctElements = new(comparer);
         foreach (var item in first)
         {
@@ -224,9 +224,9 @@ public static class ExtensionMethods
         IEnumerable<TSource> second,
         IEqualityComparer<TSource> comparer)
     {
-        CheckToThrowException(first);
-        CheckToThrowException(second);
-        CheckToThrowException(comparer);
+        ArgumentNullException.ThrowIfNull(first);
+        ArgumentNullException.ThrowIfNull(second);
+        ArgumentNullException.ThrowIfNull(comparer);
         foreach (var item in first)
         {
             if (!second.Contains(item))
@@ -243,10 +243,10 @@ public static class ExtensionMethods
         Func<TKey, IEnumerable<TElement>, TResult> resultSelector,
         IEqualityComparer<TKey> comparer)
     {
-        CheckToThrowException(source);
-        CheckToThrowException(keySelector);
-        CheckToThrowException(elementSelector);
-        CheckToThrowException(resultSelector);
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(keySelector);
+        ArgumentNullException.ThrowIfNull(elementSelector);
+        ArgumentNullException.ThrowIfNull(resultSelector);
 
         Dictionary<TKey, List<TElement>> items = new(comparer);
         foreach (var s in source)
@@ -272,7 +272,7 @@ public static class ExtensionMethods
         Func<TSource, TKey> keySelector,
         IComparer<TKey> comparer)
     {
-        CheckToThrowException(source);
+        ArgumentNullException.ThrowIfNull(source);
         var list = source.ToList();
         list.Sort((x, y) => comparer.Compare(keySelector(x), keySelector(y)));
         return new OrderedEnumerable<TSource>(list);
@@ -282,14 +282,4 @@ public static class ExtensionMethods
         this IOrderedEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
         IComparer<TKey> comparer) => source.CreateOrderedEnumerable(keySelector, comparer, false);
-
-    private static void CheckToThrowException<T>(T argument)
-    {
-        if (argument != null)
-        {
-            return;
-        }
-
-        throw new ArgumentNullException(nameof(argument));
-    }
 }
