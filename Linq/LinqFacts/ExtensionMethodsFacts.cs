@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Xunit;
 
 namespace Linq.Facts;
@@ -368,5 +369,38 @@ public class ExtensionMethodsFacts
         List<int> first = new() { 1, 2, 3};
         List<int> second = new() { 2, 4, 5, 6, 7 };
         Assert.Throws<ArgumentNullException>(() => first.Except(second, null).ToList());
+    }
+
+    [Fact]
+    public void GroupBy_ListIsNull()
+    {
+        List<int> list = null;
+        Assert.Throws<ArgumentNullException>(() => list.GroupBy(i => i, i => i, EqualityComparer<int>.Default).ToList());
+    }
+
+    [Fact]
+    public void GroupBy_NameAndAverageAge()
+    {
+        List<(string Name, int Age)> pets = new List<(string Name, int Age)>()
+        {
+            ("Findus", 9),
+            ("Findus", 5),
+            ("Taco", 3),
+            ("Io", 1),
+            ("Feta", 8),
+            ("Feta", 2),
+            ("Bella", 13),
+        };
+
+        var results = pets.GroupBy(
+            x => x.Name,
+            x => x.Age,
+            (key, ages) => new { Name = key, AverageAge = ages.Average()},
+            EqualityComparer<string>.Default);
+
+        Assert.Equal("Findus", results.ElementAt(0).Name);
+        Assert.Equal(7, results.ElementAt(0).AverageAge);
+        Assert.Equal("Feta", results.ElementAt(3).Name);
+        Assert.Equal(5, results.ElementAt(3).AverageAge);
     }
 }
