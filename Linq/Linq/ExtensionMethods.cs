@@ -236,6 +236,37 @@ public static class ExtensionMethods
         }
     }
 
+    public static IEnumerable<TResult> GroupBy<TSource, TKey, TElement, TResult>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        Func<TSource, TElement> elementSelector,
+        Func<TKey, IEnumerable<TElement>, TResult> resultSelector,
+        IEqualityComparer<TKey> comparer)
+    {
+        CheckToThrowException(source);
+        CheckToThrowException(keySelector);
+        CheckToThrowException(elementSelector);
+        CheckToThrowException(resultSelector);
+
+        Dictionary<TKey, List<TElement>> items = new(comparer);
+        foreach (var s in source)
+        {
+            if (items.ContainsKey(keySelector(s)))
+            {
+                items[keySelector(s)].Add(elementSelector(s));
+            }
+            else
+            {
+                items[keySelector(s)] = new List<TElement>() { elementSelector(s) };
+            }
+        }
+
+        foreach (var i in items)
+        {
+            yield return resultSelector(i.Key, i.Value);
+        }
+    }
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
