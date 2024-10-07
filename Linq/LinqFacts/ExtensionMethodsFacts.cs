@@ -415,7 +415,7 @@ public class ExtensionMethodsFacts
             ("Bella", 13),
         };
 
-        var results = Linq.ExtensionMethods.OrderBy(pets, pet => pet.Age, Comparer<int>.Default);
+        var results = pets.OrderBy(pet => pet.Age, Comparer<int>.Default);
         Assert.Equal("Io", results.ElementAt(0).Name);
     }
 
@@ -434,5 +434,47 @@ public class ExtensionMethodsFacts
         Assert.Equal(
             new OrderedEnumerable<(string, int)>(pets) { },
             pets.OrderBy(pet => pet.Age, Comparer<int>.Default));
+    }
+
+    [Fact]
+    public void ThenBy_Kilograms_FetaShouldBeSecondInsteadOfTaco()
+    {
+        List<(string Name, int Age, double Kgs)> pets = new List<(string Name, int Age, double Kgs)>()
+        {
+            ("Findus", 9, 5.0),
+            ("Taco", 3, 5.5),
+            ("Io", 1, 4.5),
+            ("Feta", 8, 5.0),
+            ("Bella", 13, 8.9),
+        };
+        var results =
+            pets.OrderBy(
+            pet => pet.Age, Comparer<int>.Default).
+                ThenBy(pet => pet.Kgs, Comparer<double>.Default);
+
+        Assert.Equal("Io", results.ElementAt(0).Name);
+        Assert.Equal("Feta", results.ElementAt(1).Name);
+        Assert.Equal("Findus", results.ElementAt(2).Name);
+        Assert.Equal("Taco", results.ElementAt(3).Name);
+        Assert.Equal("Bella", results.ElementAt(4).Name);
+    }
+
+    [Fact]
+    public void ThenBy_ListIsNull()
+    {
+        List<(string Name, int Age, double Kgs)> pets = null;
+        Assert.Throws<ArgumentNullException>(() =>
+            pets.OrderBy(pet => pet.Age, Comparer<int>.Default).
+                ThenBy(pet => pet.Kgs, Comparer<double>.Default));
+    }
+
+    [Fact]
+    public void ThenBy_ListIsEmpty()
+    {
+        List<(string Name, int Age, double Kgs)> pets = new() {  };
+        Assert.Equal(
+            new OrderedEnumerable<(string, int, double)>(pets) { },
+            pets.OrderBy(pet => pet.Age, Comparer<int>.Default).
+                ThenBy(pet => pet.Kgs, Comparer<double>.Default));
     }
 }
