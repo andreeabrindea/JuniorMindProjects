@@ -278,6 +278,11 @@ public static class ExtensionMethods
         return new OrderedEnumerable<TSource>(list);
     }
 
+    public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
+        this IOrderedEnumerable<TSource> source,
+        Func<TSource, TKey> keySelector,
+        IComparer<TKey> comparer) => source.CreateOrderedEnumerable(keySelector, comparer, false);
+
     private static void CheckToThrowException<T>(T argument)
     {
         if (argument != null)
