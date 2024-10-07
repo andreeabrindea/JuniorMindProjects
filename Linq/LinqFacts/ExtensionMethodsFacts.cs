@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Xunit;
 
 namespace Linq.Facts;
@@ -402,5 +401,38 @@ public class ExtensionMethodsFacts
         Assert.Equal(7, results.ElementAt(0).AverageAge);
         Assert.Equal("Feta", results.ElementAt(3).Name);
         Assert.Equal(5, results.ElementAt(3).AverageAge);
+    }
+
+    [Fact]
+    public void OrderBy_AscendingOrderByAge()
+    {
+        List<(string Name, int Age)> pets = new List<(string Name, int Age)>()
+        {
+            ("Findus", 9),
+            ("Taco", 3),
+            ("Io", 1),
+            ("Feta", 8),
+            ("Bella", 13),
+        };
+
+        var results = Linq.ExtensionMethods.OrderBy(pets, pet => pet.Age, Comparer<int>.Default);
+        Assert.Equal("Io", results.ElementAt(0).Name);
+    }
+
+    [Fact]
+    public void OrderBy_ListIsNull()
+    {
+        List<(string Name, int Age)> pets = null;
+        Assert.Throws<ArgumentNullException>(
+            () => pets.OrderBy(pet => pet.Age, Comparer<int>.Default).ToList());
+    }
+
+    [Fact]
+    public void OrderBy_ListIsEmpty()
+    {
+        List<(string Name, int Age)> pets = new() {  };
+        Assert.Equal(
+            new OrderedEnumerable<(string, int)>(pets) { },
+            pets.OrderBy(pet => pet.Age, Comparer<int>.Default));
     }
 }
