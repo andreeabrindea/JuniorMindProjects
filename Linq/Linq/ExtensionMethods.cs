@@ -184,17 +184,7 @@ public static class ExtensionMethods
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(comparer);
-        List<TSource> seenElements = new List<TSource>();
-        foreach (var s in source)
-        {
-            if (seenElements.Contains(s))
-            {
-                continue;
-            }
-
-            seenElements.Add(s);
-            yield return s;
-        }
+        return new HashSet<TSource>(source, comparer);
     }
 
     public static IEnumerable<TSource> Union<TSource>(
