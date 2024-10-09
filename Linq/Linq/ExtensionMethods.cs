@@ -263,13 +263,15 @@ public static class ExtensionMethods
         Dictionary<TKey, List<TElement>> items = new(comparer);
         foreach (var s in source)
         {
-            try
+            var key = keySelector(s);
+            var element = elementSelector(s);
+            if (items.ContainsKey(key))
             {
-                items[keySelector(s)].Add(elementSelector(s));
+                items[key].Add(element);
             }
-            catch (ArgumentException)
+            else
             {
-                items[keySelector(s)] = new List<TElement>() { elementSelector(s) };
+                items[key] = new List<TElement>() { element };
             }
         }
 
