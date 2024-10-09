@@ -151,14 +151,29 @@ public static class ExtensionMethods
         ArgumentNullException.ThrowIfNull(outerKeySelector);
         ArgumentNullException.ThrowIfNull(innerKeySelector);
 
+        Dictionary<TKey, List<TInner>> innerToDictionary = new();
+        foreach (var i in inner)
+        {
+            TKey key = innerKeySelector(i);
+            if (!innerToDictionary.ContainsKey(key))
+            {
+                innerToDictionary[key] = new List<TInner>();
+            }
+
+            innerToDictionary[key].Add(i);
+        }
+
         foreach (var o in outer)
         {
-            foreach (var i in inner)
+            TKey outerKey = outerKeySelector(o);
+            if (!innerToDictionary.ContainsKey(outerKey))
             {
-                if (outerKeySelector(o).Equals(innerKeySelector(i)))
-                {
-                    yield return resultSelector(o, i);
-                }
+                continue;
+            }
+
+            foreach (var i in innerToDictionary[outerKey])
+            {
+                yield return resultSelector(o, i);
             }
         }
     }
