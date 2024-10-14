@@ -24,4 +24,25 @@ public class LinqExcercisesFacts
         string s = "abbrac";
         Assert.Equal('r', LinqExercises.GetFirstCharacterThatDoesNotRepeat(s));
     }
+
+    [Fact]
+    public void GetFirstCharacterThatDoesNotRepeat_EveryCharIsRepeating_ShouldThrowInvalidOperationException()
+    {
+        string s = "abbrra";
+        Assert.Throws<InvalidOperationException>(() => LinqExercises.GetFirstCharacterThatDoesNotRepeat(s));
+    }
+
+    [Fact]
+    public void ConvertsStringToInt_StringIsNumber()
+    {
+        string s = "100";
+        Assert.Equal(100, LinqExercises.ConvertsStringToInt(s));
+    }
+
+    [Fact]
+    public void ConvertsStringToInt_StringIsNotNumber()
+    {
+        string s = "abc";
+        Assert.Throws<FormatException>(() => LinqExercises.ConvertsStringToInt(s));
+    }
 }
