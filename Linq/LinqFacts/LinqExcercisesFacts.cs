@@ -17,4 +17,11 @@ public class LinqExcercisesFacts
         string s = "123456789";
         Assert.Equal((0, 0), LinqExercises.GetNoOfConsonantsAndVowels(s));
     }
+
+    [Fact]
+    public void GetFirstCharacterThatDoesNotRepeat()
+    {
+        string s = "abbrac";
+        Assert.Equal('r', LinqExercises.GetFirstCharacterThatDoesNotRepeat(s));
+    }
 }
