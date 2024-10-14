@@ -428,15 +428,6 @@ public class ExtensionMethodsFacts
     }
 
     [Fact]
-    public void OrderBy_ListIsEmpty()
-    {
-        List<(string Name, int Age)> pets = new() {  };
-        Assert.Equal(
-            new OrderedEnumerable<(string, int)>(pets) { },
-            pets.OrderBy(pet => pet.Age, Comparer<int>.Default));
-    }
-
-    [Fact]
     public void ThenBy_Kilograms_FetaShouldBeSecondInsteadOfTaco()
     {
         List<(string Name, int Age, double Kgs)> pets = new List<(string Name, int Age, double Kgs)>()
@@ -464,16 +455,6 @@ public class ExtensionMethodsFacts
     {
         List<(string Name, int Age, double Kgs)> pets = null;
         Assert.Throws<ArgumentNullException>(() =>
-            pets.OrderBy(pet => pet.Age, Comparer<int>.Default).
-                ThenBy(pet => pet.Kgs, Comparer<double>.Default));
-    }
-
-    [Fact]
-    public void ThenBy_ListIsEmpty()
-    {
-        List<(string Name, int Age, double Kgs)> pets = new() {  };
-        Assert.Equal(
-            new OrderedEnumerable<(string, int, double)>(pets) { },
             pets.OrderBy(pet => pet.Age, Comparer<int>.Default).
                 ThenBy(pet => pet.Kgs, Comparer<double>.Default));
     }

@@ -287,13 +287,12 @@ public static class ExtensionMethods
         IComparer<TKey> comparer)
     {
         ArgumentNullException.ThrowIfNull(source);
-        var list = source.ToList();
-        list.Sort((x, y) => comparer.Compare(keySelector(x), keySelector(y)));
-        return new OrderedEnumerable<TSource>(list);
+        ArgumentNullException.ThrowIfNull(keySelector);
+        return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer, false);
     }
 
     public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
         this IOrderedEnumerable<TSource> source,
         Func<TSource, TKey> keySelector,
-        IComparer<TKey> comparer) => source.CreateOrderedEnumerable(keySelector, comparer, false);
+        IComparer<TKey> comparer) => source.CreateOrderedEnumerable(keySelector, comparer ?? Comparer<TKey>.Default, false);
 }
