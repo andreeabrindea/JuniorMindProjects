@@ -32,11 +32,6 @@ public class LinqExercises
             sign = -1;
         }
 
-        if (char.IsDigit(s[0]) || s[0] != '+')
-        {
-            throw new FormatException("The string cannot be a valid number");
-        }
-
         return sign;
     }
 }
