@@ -45,5 +45,25 @@ public class LinqExcercisesFacts
         string s = "abc";
         Assert.Throws<FormatException>(() => s.ConvertStringToInt());
     }
+
+    [Fact]
+    public void GetCharacterWithMaximumNoOfOccurrences_InputHasADominantCharacter_ShouldReturnDominantCharacter()
+    {
+        string s = "aaabbcdefgh";
+        Assert.Equal('a', s.GetCharacterWithMaximumNoOfOccurrences());
+    }
+
+    [Fact]
+    public void GetCharacterWithMaximumNoOfOccurrences_InputDoesNotHaveADominantCharacter_ShouldReturnFirstCharacter()
+    {
+        string s = "abc";
+        Assert.Equal('a', s.GetCharacterWithMaximumNoOfOccurrences());
+    }
+
+    [Fact]
+    public void GetCharacterWithMaximumNoOfOccurrences_InputIsEmpty_ShouldThrowException()
+    {
+        string s = "";
+        Assert.Throws<NullReferenceException>(() => s.GetCharacterWithMaximumNoOfOccurrences());
     }
 }
