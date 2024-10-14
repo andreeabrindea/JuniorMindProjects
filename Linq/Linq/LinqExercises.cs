@@ -1,15 +1,15 @@
 namespace Linq;
 
-public class LinqExercises
+public static class LinqExercises
 {
-    public static (int, int) GetNoOfConsonantsAndVowels(string s) =>
+    public static (int, int) GetNoOfConsonantsAndVowels(this string s) =>
         (s.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
             s.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
 
-    public static char GetFirstCharacterThatDoesNotRepeat(string s) =>
+    public static char GetFirstCharacterThatDoesNotRepeat(this string s) =>
         s.ToLookup(p => p).First(p => p.Count() == 1).Key;
 
-    public static int ConvertStringToInt(string s)
+    public static int ConvertStringToInt(this string s)
     {
         const int ten = 10;
         var result = s.Aggregate(0, (accumulate, character) =>
