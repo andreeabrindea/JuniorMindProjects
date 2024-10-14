@@ -24,7 +24,10 @@ public static class LinqExercises
         return GetSign(s) * result;
     }
 
-    private static int GetSign(string s)
+    public static int GetCharacterWithMaximumNoOfOccurrences(this string s) =>
+        s.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
+
+    private static int GetSign(this string s)
     {
         int sign = 1;
         if (s[0] == '-')
