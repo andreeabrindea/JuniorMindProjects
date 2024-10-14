@@ -9,7 +9,7 @@ public class LinqExercises
     public static char GetFirstCharacterThatDoesNotRepeat(string s) =>
         s.ToLookup(p => p).First(p => p.Count() == 1).Key;
 
-    public static int ConvertsStringToInt(string s)
+    public static int ConvertStringToInt(string s)
     {
         const int ten = 10;
         var result = s.Aggregate(0, (accumulate, character) =>

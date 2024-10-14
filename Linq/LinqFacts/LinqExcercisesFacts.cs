@@ -36,13 +36,13 @@ public class LinqExcercisesFacts
     public void ConvertsStringToInt_StringIsNumber()
     {
         string s = "100";
-        Assert.Equal(100, LinqExercises.ConvertsStringToInt(s));
+        Assert.Equal(100, LinqExercises.ConvertStringToInt(s));
     }
 
     [Fact]
     public void ConvertsStringToInt_StringIsNotNumber()
     {
         string s = "abc";
-        Assert.Throws<FormatException>(() => LinqExercises.ConvertsStringToInt(s));
+        Assert.Throws<FormatException>(() => LinqExercises.ConvertStringToInt(s));
     }
 }
