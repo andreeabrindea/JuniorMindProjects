@@ -2,29 +2,30 @@ using System.Collections;
 
 namespace Linq;
 
-public class OrderedEnumerable<TSource, TKey> : IOrderedEnumerable<TSource>
+public class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
 {
     private readonly List<TSource> source;
 
-    public OrderedEnumerable(IEnumerable<TSource> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer, bool descending)
+    public OrderedEnumerable(IEnumerable<TSource> source, Comparison<TSource> comparison)
     {
         this.source = source.ToList();
-        if (descending)
-        {
-            SortComparers.Add((x, y) => comparer.Compare(keySelector(y), keySelector(x)));
-        }
-        else
-        {
-            SortComparers.Add((x, y) => comparer.Compare(keySelector(x), keySelector(y)));
-        }
+        SortComparers.Add(comparison);
     }
 
-    public List<Func<TSource, TSource, int>> SortComparers { get; } = new();
+    private List<Comparison<TSource>> SortComparers { get; } = new();
 
     public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(
         Func<TSource, TKey> keySelector, IComparer<TKey>? comparer, bool descending)
     {
-        var newOrderedEnumerable = new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer, descending);
+        comparer ??= Comparer<TKey>.Default;
+        Comparison<TSource> comparison = (x, y) =>
+        {
+            var keyX = keySelector(x);
+            var keyY = keySelector(y);
+            return descending ? comparer.Compare(keyY, keyX) : comparer.Compare(keyX, keyY);
+        };
+
+        var newOrderedEnumerable = new OrderedEnumerable<TSource>(source, comparison);
         newOrderedEnumerable.SortComparers.AddRange(SortComparers);
         return newOrderedEnumerable;
     }

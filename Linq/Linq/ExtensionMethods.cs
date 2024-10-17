@@ -288,7 +288,16 @@ public static class ExtensionMethods
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(keySelector);
-        return new OrderedEnumerable<TSource, TKey>(source, keySelector, comparer, false);
+        comparer ??= Comparer<TKey>.Default;
+
+        Comparison<TSource> comparison = (x, y) =>
+        {
+            var keyX = keySelector(x);
+            var keyY = keySelector(y);
+            return comparer.Compare(keyX, keyY);
+        };
+
+        return new OrderedEnumerable<TSource>(source, comparison);
     }
 
     public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(
