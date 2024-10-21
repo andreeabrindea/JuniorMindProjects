@@ -297,7 +297,7 @@ public static class ExtensionMethods
             return comparer.Compare(keyX, keyY);
         };
 
-        return new OrderedEnumerable<TSource>(source, comparison);
+        return new OrderedEnumerable<TSource>(source, Comparer<TSource>.Create(comparison));
     }
 
     public static IOrderedEnumerable<TSource> ThenBy<TSource, TKey>(

@@ -5,47 +5,37 @@ namespace Linq;
 public class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
 {
     private readonly List<TSource> source;
+    private readonly IComparer<TSource> comparer;
 
-    public OrderedEnumerable(IEnumerable<TSource> source, Comparison<TSource> comparison)
+    public OrderedEnumerable(IEnumerable<TSource> source, IComparer<TSource> comparer)
     {
         this.source = source.ToList();
-        SortComparers.Add(comparison);
+        this.comparer = comparer;
     }
-
-    private List<Comparison<TSource>> SortComparers { get; } = new();
 
     public IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey>(
         Func<TSource, TKey> keySelector, IComparer<TKey>? comparer, bool descending)
     {
         comparer ??= Comparer<TKey>.Default;
-        Comparison<TSource> comparison = (x, y) =>
+        var secondaryComparer = Comparer<TSource>.Create((x, y) =>
         {
+            int result = this.comparer.Compare(x, y);
+            if (result != 0)
+            {
+                return result;
+            }
+
             var keyX = keySelector(x);
             var keyY = keySelector(y);
             return descending ? comparer.Compare(keyY, keyX) : comparer.Compare(keyX, keyY);
-        };
+        });
 
-        var newOrderedEnumerable = new OrderedEnumerable<TSource>(source, comparison);
-        newOrderedEnumerable.SortComparers.AddRange(SortComparers);
-        return newOrderedEnumerable;
+        return new OrderedEnumerable<TSource>(source, secondaryComparer);
     }
 
     public IEnumerator<TSource> GetEnumerator()
     {
-        source.Sort((x, y) =>
-        {
-            foreach (var comparer in SortComparers)
-            {
-                var result = comparer(x, y);
-                if (result != 0)
-                {
-                    return result;
-                }
-            }
-
-            return 0;
-        });
-
+        source.Sort(comparer.Compare);
         foreach (var s in source)
         {
             yield return s;
