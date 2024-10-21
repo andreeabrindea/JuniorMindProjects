@@ -433,7 +433,7 @@ public class ExtensionMethodsFacts
         List<(string Name, int Age, double Kgs)> pets = new List<(string Name, int Age, double Kgs)>()
         {
             ("Findus", 9, 5.0),
-            ("Taco", 3, 5.5),
+            ("Taco", 8, 5.5),
             ("Io", 1, 4.5),
             ("Feta", 8, 5.0),
             ("Bella", 13, 8.9),
@@ -445,8 +445,8 @@ public class ExtensionMethodsFacts
 
         Assert.Equal("Io", results.ElementAt(0).Name);
         Assert.Equal("Feta", results.ElementAt(1).Name);
-        Assert.Equal("Findus", results.ElementAt(2).Name);
-        Assert.Equal("Taco", results.ElementAt(3).Name);
+        Assert.Equal("Taco", results.ElementAt(2).Name);
+        Assert.Equal("Findus", results.ElementAt(3).Name);
         Assert.Equal("Bella", results.ElementAt(4).Name);
     }
 
