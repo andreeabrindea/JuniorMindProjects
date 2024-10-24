@@ -27,5 +27,13 @@ public static class LinqExercises
     public static int GetCharacterWithMaximumNoOfOccurrences(this string s) =>
         s.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
 
+    public static IEnumerable<string> GetPalindromes(this string input) =>
+        Enumerable
+            .Range(1, input.Length)
+            .SelectMany(length => Enumerable.Range(0, input.Length - length + 1)
+                .Select(a => input.Substring(a, length)))
+            .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
+            .Distinct();
+
     private static int GetSign(this string s) => s[0] == '-' ? -1 : 1;
 }
