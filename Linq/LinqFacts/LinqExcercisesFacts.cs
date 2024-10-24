@@ -66,4 +66,18 @@ public class LinqExcercisesFacts
         string s = "";
         Assert.Throws<NullReferenceException>(() => s.GetCharacterWithMaximumNoOfOccurrences());
     }
+
+    [Fact]
+    public void GetPalindromes_NonEmptyString()
+    {
+        string s = "aabaac";
+        Assert.True(s.GetPalindromes().SequenceEqual(new List<string>() { "aa", "aba", "aabaa" }));
+    }
+
+    [Fact]
+    public void GetPalindromes_EmptyInput()
+    {
+        string s = string.Empty;
+        Assert.True(s.GetPalindromes().SequenceEqual(new List<string>() { }));
+    }
 }
