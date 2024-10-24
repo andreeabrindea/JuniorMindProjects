@@ -2,7 +2,7 @@ namespace Linq;
 
 public static class LinqExercises
 {
-    public static (int, int) GetNoOfConsonantsAndVowels(this string s) =>
+    public static (int consonants, int vowels) GetNoOfConsonantsAndVowels(this string s) =>
         (s.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
             s.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
 
@@ -14,7 +14,7 @@ public static class LinqExercises
         const int ten = 10;
         var result = s.Aggregate(0, (accumulate, character) =>
         {
-            if (character < '0' || character > '9')
+            if (character is < '0' or > '9')
             {
                 throw new FormatException(nameof(s));
             }
@@ -27,14 +27,5 @@ public static class LinqExercises
     public static int GetCharacterWithMaximumNoOfOccurrences(this string s) =>
         s.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
 
-    private static int GetSign(this string s)
-    {
-        int sign = 1;
-        if (s[0] == '-')
-        {
-            sign = -1;
-        }
-
-        return sign;
-    }
+    private static int GetSign(this string s) => s[0] == '-' ? -1 : 1;
 }
