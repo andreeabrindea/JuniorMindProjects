@@ -2,12 +2,12 @@ namespace Linq;
 
 public static class LinqExercises
 {
-    public static (int consonants, int vowels) GetNoOfConsonantsAndVowels(this string s) =>
-        (s.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
-            s.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
+    public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input) =>
+        (input.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
+            input.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
 
-    public static char GetFirstCharacterThatDoesNotRepeat(this string s) =>
-        s.ToLookup(p => p).First(p => p.Count() == 1).Key;
+    public static char GetFirstCharacterThatDoesNotRepeat(this string input) =>
+        input.ToLookup(p => p).First(p => p.Count() == 1).Key;
 
     public static int ConvertStringToInt(this string s)
     {
@@ -30,8 +30,8 @@ public static class LinqExercises
         return sign * result;
     }
 
-    public static int GetCharacterWithMaximumNoOfOccurrences(this string s) =>
-        s.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
+    public static int GetCharacterWithMaximumNoOfOccurrences(this string input) =>
+        input.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
 
     public static IEnumerable<string> GetPalindromes(this string input) =>
         Enumerable
@@ -41,5 +41,5 @@ public static class LinqExercises
             .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
             .Distinct();
 
-    private static int GetSign(this string s) => s[0] == '-' ? -1 : 1;
+    private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 }
