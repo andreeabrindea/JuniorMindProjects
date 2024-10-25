@@ -25,9 +25,7 @@ public class OrderedEnumerable<TSource> : IOrderedEnumerable<TSource>
                 return result;
             }
 
-            var keyX = keySelector(x);
-            var keyY = keySelector(y);
-            return descending ? comparer.Compare(keyY, keyX) : comparer.Compare(keyX, keyY);
+            return descending ? comparer.Compare(keySelector(x), keySelector(y)) * -1 : comparer.Compare(keySelector(x), keySelector(y));
         });
 
         return new OrderedEnumerable<TSource>(source, secondaryComparer);
