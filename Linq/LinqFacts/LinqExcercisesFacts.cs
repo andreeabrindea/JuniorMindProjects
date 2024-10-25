@@ -40,6 +40,20 @@ public class LinqExcercisesFacts
     }
 
     [Fact]
+    public void ConvertsStringToInt_StringIsNegativeNumber()
+    {
+        string s = "-100";
+        Assert.Equal(-100, s.ConvertStringToInt());
+    }
+
+    [Fact]
+    public void ConvertsStringToInt_StringIsPositiveNumberWithSign()
+    {
+        string s = "+100";
+        Assert.Equal(+100, s.ConvertStringToInt());
+    }
+
+    [Fact]
     public void ConvertsStringToInt_StringIsNotNumber()
     {
         string s = "abc";
