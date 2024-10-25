@@ -12,6 +12,12 @@ public static class LinqExercises
     public static int ConvertStringToInt(this string s)
     {
         const int ten = 10;
+        int sign = GetSign(s);
+        if ("-+".Any(prefix => s.StartsWith(prefix)))
+        {
+            s = s[1..];
+        }
+
         var result = s.Aggregate(0, (accumulate, character) =>
         {
             if (character is < '0' or > '9')
@@ -21,7 +27,7 @@ public static class LinqExercises
 
             return accumulate * ten + (character - '0');
         });
-        return GetSign(s) * result;
+        return sign * result;
     }
 
     public static int GetCharacterWithMaximumNoOfOccurrences(this string s) =>
