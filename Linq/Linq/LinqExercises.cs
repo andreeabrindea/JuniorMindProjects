@@ -41,5 +41,21 @@ public static class LinqExercises
             .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
             .Distinct();
 
+    public static IEnumerable<string> GenerateSum(this int n, int k) =>
+        Enumerable.Range(0, 1 << n)
+            .Select(bits =>
+            {
+                List<int> permutation = Enumerable.Range(0, n)
+                    .Select(p => (bits & (1 << p)) != 0 ? (p + 1) : -(p + 1))
+                    .ToList();
+
+                int sum = permutation.Sum();
+                string representation = string.Join(" + ", permutation);
+
+                return new { sum, representation };
+            })
+            .Where(intermediate => intermediate.sum == k)
+            .Select(intermediate => $"{intermediate.representation} = {k}");
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 }
