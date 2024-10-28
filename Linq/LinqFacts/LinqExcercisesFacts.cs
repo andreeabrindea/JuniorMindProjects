@@ -94,4 +94,25 @@ public class LinqExcercisesFacts
         string s = string.Empty;
         Assert.True(s.GetPalindromes().SequenceEqual(new List<string>() { }));
     }
+
+    [Fact]
+    public void GenerateSum_InputShouldProduce3Representations()
+    {
+        int n = 5;
+        int k = 3;
+        Assert.True(n.GenerateSum(k).SequenceEqual
+            (new List<string>() {
+                "-1 + 2 + 3 + 4 + -5 = 3",
+                "1 + -2 + 3 + -4 + 5 = 3",
+                "-1 + -2 + -3 + 4 + 5 = 3",
+            }));
+    }
+
+    [Fact]
+    public void GenerateSum_InputShouldProduceNoRepresentation()
+    {
+        int n = 1;
+        int k = 3;
+        Assert.True(n.GenerateSum(k).SequenceEqual(new List<string>() { }));
+    }
 }
