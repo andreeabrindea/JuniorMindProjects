@@ -100,7 +100,7 @@ public class LinqExcercisesFacts
     {
         int n = 5;
         int k = 3;
-        Assert.True(n.GenerateSum(k).SequenceEqual
+        Assert.True(LinqExercises.GenerateSum(n, k).SequenceEqual
             (new List<string>() {
                 "-1 + 2 + 3 + 4 + -5 = 3",
                 "1 + -2 + 3 + -4 + 5 = 3",
@@ -113,6 +113,6 @@ public class LinqExcercisesFacts
     {
         int n = 1;
         int k = 3;
-        Assert.True(n.GenerateSum(k).SequenceEqual(new List<string>() { }));
+        Assert.True(LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
     }
 }

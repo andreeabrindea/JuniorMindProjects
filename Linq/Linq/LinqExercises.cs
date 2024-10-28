@@ -41,7 +41,7 @@ public static class LinqExercises
             .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
             .Distinct();
 
-    public static IEnumerable<string> GenerateSum(this int n, int k) =>
+    public static IEnumerable<string> GenerateSum(int n, int k) =>
         Enumerable.Range(0, 1 << n)
             .Select(bits =>
             {
