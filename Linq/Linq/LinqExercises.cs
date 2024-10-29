@@ -2,15 +2,22 @@ namespace Linq;
 
 public static class LinqExercises
 {
-    public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input) =>
-        (input.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
+    public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(input);
+        return (input.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
             input.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
+    }
 
-    public static char GetFirstCharacterThatDoesNotRepeat(this string input) =>
-        input.ToLookup(p => p).First(p => p.Count() == 1).Key;
+    public static char GetFirstCharacterThatDoesNotRepeat(this string input)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(input);
+        return input.ToLookup(p => p).First(p => p.Count() == 1).Key;
+    }
 
     public static int ConvertStringToInt(this string s)
     {
+        ArgumentException.ThrowIfNullOrEmpty(s);
         const int ten = 10;
         int sign = GetSign(s);
         if ("-+".Any(prefix => s.StartsWith(prefix)))
@@ -30,19 +37,31 @@ public static class LinqExercises
         return sign * result;
     }
 
-    public static int GetCharacterWithMaximumNoOfOccurrences(this string input) =>
-        input.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
+    public static int GetCharacterWithMaximumNoOfOccurrences(this string input)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(input);
+        return input.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
+    }
 
-    public static IEnumerable<string> GetPalindromes(this string input) =>
-        Enumerable
+    public static IEnumerable<string> GetPalindromes(this string input)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(input));
+        return Enumerable
             .Range(1, input.Length)
             .SelectMany(length => Enumerable.Range(0, input.Length - length + 1)
                 .Select(a => input.Substring(a, length)))
             .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
             .Distinct();
+    }
 
-    public static IEnumerable<string> GenerateSum(int n, int k) =>
-        Enumerable.Range(0, 1 << n)
+    public static IEnumerable<string> GenerateSum(int n, int k)
+    {
+        if (n < 1)
+        {
+            throw new ArgumentException("{0} cannot be smaller than 1.", nameof(n));
+        }
+
+        return Enumerable.Range(0, 1 << n)
             .Select(bits =>
             {
                 List<int> permutation = Enumerable.Range(0, n)
@@ -56,6 +75,7 @@ public static class LinqExercises
             })
             .Where(intermediate => intermediate.sum == k)
             .Select(intermediate => $"{intermediate.representation} = {k}");
+    }
 
     public static IEnumerable<(int, int, int)> GetPythagoreanTriplets(this int[] array)
     {

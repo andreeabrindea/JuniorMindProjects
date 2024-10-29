@@ -117,6 +117,14 @@ public class LinqExcercisesFacts
     }
 
     [Fact]
+    public void GenerateSum_NIsNegative_ShouldThrowException()
+    {
+        int n = -1;
+        int k = 3;
+        Assert.Throws<ArgumentException>(() => LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
+    }
+
+    [Fact]
     public void GetPythagoreanTriplets_InputHasSeveralElements_OutputShouldHave2Pairs()
     {
         int[] array = { 1, 2, 6, 4, 8, 9, 11, 3, 17, 15, 5 };
