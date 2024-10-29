@@ -115,4 +115,32 @@ public class LinqExcercisesFacts
         int k = 3;
         Assert.True(LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
     }
+
+    [Fact]
+    public void GetPythagoreanTriplets_InputHasSeveralElements_OutputShouldHave2Pairs()
+    {
+        int[] array = { 1, 2, 6, 4, 8, 9, 11, 3, 17, 15, 5 };
+        Assert.True(array.GetPythagoreanTriplets().SequenceEqual(new List<(int, int, int)>() { (4, 3, 5), (8, 17, 15) }));
+    }
+
+    [Fact]
+    public void GetPythagoreanTriplets_InputHasInsufficientElements_ShouldThrowException()
+    {
+        int[] array = { 1, 2 };
+        Assert.Throws<ArgumentException>(() => array.GetPythagoreanTriplets().ToList());
+    }
+
+    [Fact]
+    public void GetPythagoreanTriplets_InputIsNull_ShouldThrowException()
+    {
+        int[] array = null;
+        Assert.Throws<NullReferenceException>(() => array.GetPythagoreanTriplets().ToList());
+    }
+
+    [Fact]
+    public void GetPythagoreanTriplets_InputHasNoPythagoreanTriplets_ShouldReturnEmptyEnumerable()
+    {
+        int[] array = { 1, 2, 3, 4, 10};
+        Assert.True(array.GetPythagoreanTriplets().SequenceEqual(new List<(int, int, int)>() { }));
+    }
 }
