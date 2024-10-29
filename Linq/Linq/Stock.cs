@@ -16,7 +16,7 @@ public class Stock
 
     public Dictionary<Product, int> ProductsStock { get; }
 
-    public Action<Product, int> Notify { get; }
+    public Action<Product, int> Notify { get; set; }
 
     public void AddProduct(Product product, int quantity)
     {
@@ -28,17 +28,37 @@ public class Stock
         if (ProductsStock.ContainsKey(product))
         {
             ProductsStock[product] += quantity;
-            NotifyAboutStock();
+            NotifyAboutStock(product);
             return;
         }
 
         ProductsStock.Add(product, quantity);
-        NotifyAboutStock();
+        NotifyAboutStock(product);
     }
 
     public void RemoveProduct(Product product) => ProductsStock.Remove(product);
 
     public void SellProduct(Product product)
+    {
+        const string notInStockMessage = "Product is not in stock";
+        if (!ProductsStock.ContainsKey(product))
+        {
+            throw new InvalidOperationException(notInStockMessage);
+        }
+
+        var quantity = ProductsStock[product];
+        if (quantity > 0)
+        {
+            ProductsStock[product]--;
+            NotifyAboutStock(product);
+        }
+        else
+        {
+            throw new ArgumentException(notInStockMessage);
+        }
+    }
+
+    public void SellProductByQuantity(Product product, int productQuantity)
     {
         if (!ProductsStock.ContainsKey(product))
         {
@@ -48,8 +68,8 @@ public class Stock
         var quantity = ProductsStock[product];
         if (quantity > 0)
         {
-            ProductsStock[product]--;
-            NotifyAboutStock();
+            ProductsStock[product] -= productQuantity;
+            NotifyAboutStock(product);
         }
         else
         {
@@ -57,12 +77,33 @@ public class Stock
         }
     }
 
-    private void NotifyAboutStock()
+    public void SellSeveralProducts(List<Product> products)
     {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
+        foreach (var product in products)
+        {
+            SellProduct(product);
+        }
+    }
+
+    public void SellSeveralProducts(Dictionary<Product, int> products)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
+        foreach (var product in products)
+        {
+            SellProductByQuantity(product.Key, product.Value);
+        }
+    }
+
+    private void NotifyAboutStock(Product stockProduct)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(stockProduct));
         const int ten = 10;
-        ProductsStock
-            .Where(product => product.Value < ten)
-            .ToList()
-            .ForEach(product => Notify.Invoke(product.Key, product.Value));
+        if (ProductsStock[stockProduct] >= ten)
+        {
+            return;
+        }
+
+        Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
     }
 }
