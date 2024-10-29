@@ -80,19 +80,13 @@ public class Stock
     public void SellSeveralProducts(List<Product> products)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        foreach (var product in products)
-        {
-            SellProduct(product);
-        }
+        products.ForEach(SellProduct);
     }
 
     public void SellSeveralProducts(Dictionary<Product, int> products)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        foreach (var product in products)
-        {
-            SellProductByQuantity(product.Key, product.Value);
-        }
+        products.ToList().ForEach(product => SellProductByQuantity(product.Key, product.Value));
     }
 
     private void NotifyAboutStock(Product stockProduct)
