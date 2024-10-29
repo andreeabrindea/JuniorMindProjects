@@ -57,5 +57,30 @@ public static class LinqExercises
             .Where(intermediate => intermediate.sum == k)
             .Select(intermediate => $"{intermediate.representation} = {k}");
 
+    public static IEnumerable<(int, int, int)> GetPythagoreanTriplets(this int[] array)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
+        if (array.Length < 3)
+        {
+            throw new ArgumentException("{0} has insufficient elements.", nameof(array));
+        }
+
+        const int skipPositionsForFirstIterator = 1;
+        const int skipPositionsForSecondIterator = 2;
+        return array
+            .SelectMany((a, i) => array.Skip(i + skipPositionsForFirstIterator)
+                .SelectMany((b, j) => array.Skip(i + j + skipPositionsForSecondIterator)
+                    .Where(c => ArePythagoreanTriplets(a, b, c))
+                    .Select(c => (a, b, c))));
+    }
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
+
+    private static bool ArePythagoreanTriplets(int a, int b, int c)
+    {
+        const int two = 2;
+        return (int)(Math.Pow(a, two) + Math.Pow(b, two)) == (int)Math.Pow(c, two) ||
+               (int)(Math.Pow(a, two) + Math.Pow(c, two)) == (int)Math.Pow(b, two) ||
+               (int)(Math.Pow(c, two) + Math.Pow(b, two)) == (int)Math.Pow(a, two);
+    }
 }
