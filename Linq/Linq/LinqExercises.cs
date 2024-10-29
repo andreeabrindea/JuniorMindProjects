@@ -94,21 +94,21 @@ public static class LinqExercises
                     .Select(c => (a, b, c))));
     }
 
-    public static IEnumerable<SecondProduct> FilterProductsContainAnyFeature(this IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
+    public static IEnumerable<ProductFromExercise10> FilterProductsContainAnyFeature(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
         return products.Where(product => product.Features.Any(features.Contains));
     }
 
-    public static IEnumerable<SecondProduct> FilterProductsContainAllFeatures(this IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
+    public static IEnumerable<ProductFromExercise10> FilterProductsContainAllFeatures(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
         return products.Where(product => features.All(product.Features.Contains));
     }
 
-    public static IEnumerable<SecondProduct> FilterProductsThatDoNotContainAnyFeature(this IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
+    public static IEnumerable<ProductFromExercise10> FilterProductsThatDoNotContainAnyFeature(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));

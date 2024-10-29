@@ -1,8 +1,8 @@
 namespace Linq;
 
-public class SecondProduct
+public class ProductFromExercise10
 {
-    public SecondProduct(string name, ICollection<Feature> features)
+    public ProductFromExercise10(string name, ICollection<Feature> features)
     {
         Name = name;
         Features = features;
