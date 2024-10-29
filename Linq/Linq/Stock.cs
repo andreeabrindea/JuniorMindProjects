@@ -97,7 +97,6 @@ public class Stock
 
     private void NotifyAboutStock(Product stockProduct)
     {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(stockProduct));
         const int ten = 10;
         if (ProductsStock[stockProduct] >= ten)
         {
