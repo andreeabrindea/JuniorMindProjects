@@ -101,6 +101,13 @@ public static class LinqExercises
         return products.Where(product => product.Features.Any(features.Contains));
     }
 
+    public static IEnumerable<SecondProduct> FilterProductsContainAllFeatures(this IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
+        ArgumentException.ThrowIfNullOrEmpty(nameof(features));
+        return products.Where(product => features.All(product.Features.Contains));
+    }
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 
     private static bool ArePythagoreanTriplets(int a, int b, int c)
