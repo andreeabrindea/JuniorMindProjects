@@ -78,7 +78,7 @@ public class LinqExcercisesFacts
     public void GetCharacterWithMaximumNoOfOccurrences_InputIsEmpty_ShouldThrowException()
     {
         string s = "";
-        Assert.Throws<NullReferenceException>(() => s.GetCharacterWithMaximumNoOfOccurrences());
+        Assert.Throws<ArgumentException>(() => s.GetCharacterWithMaximumNoOfOccurrences());
     }
 
     [Fact]
@@ -150,5 +150,34 @@ public class LinqExcercisesFacts
     {
         int[] array = { 1, 2, 3, 4, 10};
         Assert.True(array.GetPythagoreanTriplets().SequenceEqual(new List<(int, int, int)>() { }));
+    }
+
+    [Fact]
+    public void FilterProductsContainAnyFeature_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith2Elements()
+    {
+        var firstFeature = new Feature(1);
+        var secondFeature = new Feature(8);
+        List<Feature> features1 = new() { firstFeature, new Feature(2), new Feature(3) };
+        List<Feature> features2 = new() { new Feature(9), new Feature(12), new Feature(53) };
+        List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
+
+        SecondProduct product1 = new("product1", features1);
+        SecondProduct product2 = new("product2", features2);
+        SecondProduct product3 = new("product3", features3);
+
+        List<Feature> featuresToCheck = new() { firstFeature, new Feature(7), secondFeature };
+        List<SecondProduct> products = new() { product1, product2, product3 };
+
+        Assert.True(
+            products.FilterProductsContainAnyFeature(featuresToCheck)
+                .SequenceEqual(new List<SecondProduct>() { product1, product3 }));
+    }
+
+    [Fact]
+    public void FilterProductsContainAnyFeature_InputIsNull_ShouldThrowException()
+    {
+        List<Feature> features = new() { new Feature(1), new Feature(2) };
+        List<SecondProduct> products = null;
+        Assert.Throws<ArgumentNullException>(() => products.FilterProductsContainAnyFeature(features).ToList());
     }
 }
