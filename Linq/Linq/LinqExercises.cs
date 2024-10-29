@@ -15,21 +15,21 @@ public static class LinqExercises
         return input.ToLookup(p => p).First(p => p.Count() == 1).Key;
     }
 
-    public static int ConvertStringToInt(this string s)
+    public static int ConvertStringToInt(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(s);
+        ArgumentException.ThrowIfNullOrEmpty(input);
         const int ten = 10;
-        int sign = GetSign(s);
-        if ("-+".Any(prefix => s.StartsWith(prefix)))
+        int sign = GetSign(input);
+        if ("-+".Any(prefix => input.StartsWith(prefix)))
         {
-            s = s[1..];
+            input = input[1..];
         }
 
-        var result = s.Aggregate(0, (accumulate, character) =>
+        var result = input.Aggregate(0, (accumulate, character) =>
         {
             if (character is < '0' or > '9')
             {
-                throw new FormatException(nameof(s));
+                throw new FormatException(nameof(input));
             }
 
             return accumulate * ten + (character - '0');
