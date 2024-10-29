@@ -94,11 +94,11 @@ public static class LinqExercises
                     .Select(c => (a, b, c))));
     }
 
-    public static IEnumerable<SecondProduct> FilterProductsContainAnyFeature(IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
+    public static IEnumerable<SecondProduct> FilterProductsContainAnyFeature(this IEnumerable<SecondProduct> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        return products.Where(product => product.Features.Intersect(features).Any());
+        return products.Where(product => product.Features.Any(features.Contains));
     }
 
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
