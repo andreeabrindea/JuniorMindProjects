@@ -18,6 +18,17 @@ public class Stock
 
     public Action<Product, int> Notify { get; set; }
 
+    private int[] Thresholds
+    {
+        get
+        {
+            const int first = 2;
+            const int second = 5;
+            const int third = 10;
+            return new[] { first, second, third };
+        }
+    }
+
     public void AddProduct(Product product, int quantity)
     {
         if (quantity < 1)
@@ -28,11 +39,20 @@ public class Stock
         if (ProductsStock.ContainsKey(product))
         {
             ProductsStock[product] += quantity;
-            NotifyAboutStock(product);
+            if (IsThresholdAttained(product))
+            {
+                NotifyAboutStock(product);
+            }
+
             return;
         }
 
         ProductsStock.Add(product, quantity);
+        if (!IsThresholdAttained(product))
+        {
+            return;
+        }
+
         NotifyAboutStock(product);
     }
 
@@ -50,7 +70,10 @@ public class Stock
         if (quantity > 0)
         {
             ProductsStock[product]--;
-            NotifyAboutStock(product);
+            if (IsThresholdAttained(product))
+            {
+                NotifyAboutStock(product);
+            }
         }
         else
         {
@@ -69,7 +92,10 @@ public class Stock
         if (quantity > 0)
         {
             ProductsStock[product] -= productQuantity;
-            NotifyAboutStock(product);
+            if (IsThresholdAttained(product))
+            {
+                NotifyAboutStock(product);
+            }
         }
         else
         {
@@ -89,14 +115,7 @@ public class Stock
         products.ToList().ForEach(product => SellProductByQuantity(product.Key, product.Value));
     }
 
-    private void NotifyAboutStock(Product stockProduct)
-    {
-        const int ten = 10;
-        if (ProductsStock[stockProduct] >= ten)
-        {
-            return;
-        }
+    private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
 
-        Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
-    }
+    private bool IsThresholdAttained(Product product) => Thresholds.FirstOrDefault(t => ProductsStock[product] < t) != 0;
 }
