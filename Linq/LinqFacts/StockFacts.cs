@@ -91,7 +91,7 @@ public class StockFacts
             { oven, 7 },
         }, products);
 
-        Assert.Equal(7, stockNumber);
+        Assert.Equal(9, stockNumber);
         Assert.Equal(oven, lowStockProduct);
     }
 
@@ -130,7 +130,7 @@ public class StockFacts
                 { oven, 7 },
             }, products);
 
-        Assert.Equal(7, stockNumber);
-        Assert.Equal(oven, lowStockProduct);
+        Assert.Equal(0, stockNumber);
+        Assert.Equal(null, lowStockProduct);
     }
 }

@@ -18,17 +18,6 @@ public class Stock
 
     public Action<Product, int> Notify { get; set; }
 
-    private int[] Thresholds
-    {
-        get
-        {
-            const int first = 2;
-            const int second = 5;
-            const int third = 10;
-            return new[] { first, second, third };
-        }
-    }
-
     public void AddProduct(Product product, int quantity)
     {
         if (quantity < 1)
@@ -117,5 +106,12 @@ public class Stock
 
     private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
 
-    private bool IsThresholdAttained(Product product) => Thresholds.FirstOrDefault(t => ProductsStock[product] < t) != 0;
+    private bool IsThresholdAttained(Product product)
+    {
+        const int first = 1;
+        const int second = 4;
+        const int third = 9;
+        int[] thresholds = { first, second, third };
+        return thresholds.Contains(ProductsStock[product]);
+    }
 }
