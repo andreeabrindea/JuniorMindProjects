@@ -124,6 +124,12 @@ public static class LinqExercises
             .Select(group => new ProductFromExercise11(group.Key, group.Sum(q => q.Quantity)));
     }
 
+    public static List<TestResults> MergeEntriesWithSameFamilyId(this List<TestResults> testResults)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(testResults));
+        return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score)).ToList();
+    }
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 
     private static bool ArePythagoreanTriplets(int a, int b, int c)

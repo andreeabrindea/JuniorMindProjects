@@ -275,4 +275,31 @@ public class LinqExcercisesFacts
         List<ProductFromExercise11> firstList = new List<ProductFromExercise11> { book, plant };
         Assert.Throws<ArgumentNullException>(() => firstList.ConcatenateByProductName(secondList));
     }
+
+    [Fact]
+    public void MergeEntriesWithSameFamilyId_InputHas2EntriesWithSameFamilyId_OutputShouldHave2Elements()
+    {
+        TestResults testResult1 = new("1", "Pop", 5);
+        TestResults testResult2 = new("2", "Pop", 2);
+        TestResults testResult3 = new("3", "Popescu", 3);
+        List<TestResults> results = new() { testResult1, testResult2, testResult3 };
+        Assert.True(results.MergeEntriesWithSameFamilyId().SequenceEqual(new List<TestResults> { testResult1, testResult3 }));
+    }
+
+    [Fact]
+    public void MergeEntriesWithSameFamilyId_InputHasNoDuplicates_OutputShouldConcatenateTheInputLists()
+    {
+        TestResults testResult1 = new("1", "Pop", 5);
+        TestResults testResult2 = new("2", "Chis", 2);
+        TestResults testResult3 = new("3", "Popescu", 3);
+        List<TestResults> results = new() { testResult1, testResult2, testResult3 };
+        Assert.True(results.MergeEntriesWithSameFamilyId().SequenceEqual(new List<TestResults> { testResult1, testResult2, testResult3 }));
+    }
+
+    [Fact]
+    public void MergeEntriesWithSameFamilyId_InputIsNull()
+    {
+        List<TestResults> results = null;
+        Assert.Throws<ArgumentNullException>(() => results.MergeEntriesWithSameFamilyId());
+    }
 }
