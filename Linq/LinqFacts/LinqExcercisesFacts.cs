@@ -240,7 +240,7 @@ public class LinqExcercisesFacts
     }
 
     [Fact]
-    public void ConcatenateLists_InputHasSeveralObjectsInCommon_OutputShouldHave4Elements()
+    public void ConcatenateByProductName_InputHasSeveralObjectsInCommon_OutputShouldHave4Elements()
     {
         ProductFromExercise11 book = new("book", 10);
         ProductFromExercise11 plant = new("plant", 5);
@@ -257,7 +257,7 @@ public class LinqExcercisesFacts
     }
 
     [Fact]
-    public void ConcatenateLists_FirstListIsNull_ShouldThrowException()
+    public void ConcatenateByProductName_FirstListIsNull_ShouldThrowException()
     {
         ProductFromExercise11 book = new("book", 10);
         ProductFromExercise11 plant = new("plant", 5);
@@ -267,7 +267,7 @@ public class LinqExcercisesFacts
     }
 
     [Fact]
-    public void ConcatenateLists_SecondListIsNull_ShouldThrowException()
+    public void ConcatenateByProductName_SecondListIsNull_ShouldThrowException()
     {
         ProductFromExercise11 book = new("book", 10);
         ProductFromExercise11 plant = new("plant", 5);
