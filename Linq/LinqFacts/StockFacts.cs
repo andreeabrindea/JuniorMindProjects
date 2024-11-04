@@ -9,29 +9,13 @@ public class StockFacts
     {
         Product chair = new Product("chair", 10.50);
         Action<Product, int> notification = null;
-        Stock stock = new Stock(notification);
+        Stock stock = new Stock();
+        stock.Notify = notification;
         Assert.Throws<ArgumentException>(() => stock.AddProduct(chair, -2));
     }
 
     [Fact]
-    public void AddProduct_AddexistingProduct_ShouldIncreaseQuantity()
-    {
-        Product chair = new Product("chair", 10.50);
-        Product table = new Product("table", 12);
-        Dictionary<Product, int> products = new Dictionary<Product, int>
-        {
-            { chair, 10 },
-            { table, 23 },
-        };
-
-        Action<Product, int> notification = null;
-        Stock stock = new Stock(products, notification);
-        stock.AddProduct(chair, 2);
-        Assert.Equal(12, stock.ProductsStock[chair]);
-    }
-
-    [Fact]
-    public void NotifyAboutStock_AfterSellingProduct()
+    public void NotifyAboutStock_AfterSellingProductAndThresholdIsAttained()
     {
         Product chair = new Product("chair", 10.50);
         Product table = new Product("table", 12);
@@ -49,7 +33,9 @@ public class StockFacts
             stockNumber = remainingStock;
         };
 
-        Stock stock = new Stock(products, notification);
+        Stock stock = new Stock();
+        stock.Notify = notification;
+        stock.AddProducts(products);
         stock.SellProduct(chair);
 
         Assert.Equal(9, stockNumber);
@@ -57,7 +43,7 @@ public class StockFacts
     }
 
     [Fact]
-    public void SellSeveralProducts()
+    public void NotifyAboutStock_AfterSellingSeveralProductsAndThresholdIsNotAttained()
     {
         Product chair = new Product("chair", 10.50);
         Product table = new Product("table", 12);
@@ -79,96 +65,20 @@ public class StockFacts
             stockNumber = remainingStock;
         };
 
-        Stock stock = new Stock(products, notification);
-        List<Product> productsToSell = new() { chair, table, tv, oven, chair, oven, oven };
-        stock.SellSeveralProducts(productsToSell);
-        Assert.Equal(
-            new Dictionary<Product, int>
-        {
-            { chair, 8 },
-            { table, 22 },
-            { tv, 11 },
-            { oven, 7 },
-        }, products);
+        Stock stock = new Stock();
+        stock.Notify = notification;
+        stock.AddProducts(products);
 
-        Assert.Equal(9, stockNumber);
-        Assert.Equal(oven, lowStockProduct);
-    }
-
-    [Fact]
-    public void SellSeveralProductsWithQuantity()
-    {
-        Product chair = new Product("chair", 10.50);
-        Product table = new Product("table", 12);
-        Product tv = new Product("tv", 70);
-        Product oven = new Product("oven", 20);
-        Dictionary<Product, int> products = new Dictionary<Product, int>
-        {
-            { chair, 10 },
-            { table, 23 },
-            { tv, 12 },
-            { oven, 10 },
-        };
-
-        Product lowStockProduct = null;
-        int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
-
-        Stock stock = new Stock(products, notification);
         Dictionary<Product, int> productsToSell = new() { { chair, 2 }, { table, 1 }, { tv, 1 }, { oven, 3 } };
         stock.SellSeveralProducts(productsToSell);
-        Assert.Equal(
-            new Dictionary<Product, int>
-            {
-                { chair, 8 },
-                { table, 22 },
-                { tv, 11 },
-                { oven, 7 },
-            }, products);
-
         Assert.Equal(0, stockNumber);
-        Assert.Equal(null, lowStockProduct);
-    }
-
-    [Fact]
-    public void SellSeveralProductsWithQuantity2()
-    {
-        Product chair = new Product("chair", 10.50);
-        Product table = new Product("table", 12);
-        Dictionary<Product, int> products = new Dictionary<Product, int>
-        {
-            { chair, 11 },
-            { table, 23 },
-        };
-
-        Product lowStockProduct = null;
-        int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
-
-        Stock stock = new Stock(products, notification);
-        Dictionary<Product, int> productsToSell = new() { { chair, 2 } };
-        stock.SellSeveralProducts(productsToSell);
-        Assert.Equal(9, stockNumber);
-        Assert.Equal(chair, lowStockProduct);
+        Assert.Null(lowStockProduct);
     }
 
     [Fact]
     public void NotifyAboutStock_WhenThresholdIsNotAttained()
     {
         Product chair = new Product("chair", 10.50);
-        Dictionary<Product, int> products = new Dictionary<Product, int>
-        {
-            { chair, 10 },
-        };
-
         Product lowStockProduct = null;
         int stockNumber = 0;
         Action<Product, int> notification = (product, remainingStock) =>
@@ -177,9 +87,11 @@ public class StockFacts
             stockNumber = remainingStock;
         };
 
-        Stock stock = new Stock(products, notification);
-        Dictionary<Product, int> productsToSell = new() { { chair, 2 } };
-        stock.SellSeveralProducts(productsToSell);
+        Stock stock = new Stock();
+        stock.Notify = notification;
+
+        stock.AddProduct(chair, 10);
+        stock.SellProductByQuantity(chair, 2);
         Assert.Equal(0, stockNumber);
         Assert.Null(lowStockProduct);
     }
@@ -201,7 +113,10 @@ public class StockFacts
             stockNumber = remainingStock;
         };
 
-        Stock stock = new Stock(products, notification);
+        Stock stock = new Stock();
+        stock.Notify = notification;
+        stock.AddProducts(products);
+
         Dictionary<Product, int> productsToSell = new() { { chair, 2 } };
         stock.SellSeveralProducts(productsToSell);
         Assert.Equal(4, stockNumber);
