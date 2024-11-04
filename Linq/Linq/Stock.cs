@@ -21,21 +21,10 @@ public class Stock
         if (ProductsStock.ContainsKey(product))
         {
             ProductsStock[product] += quantity;
-            if (IsThresholdAttained(product))
-            {
-                NotifyAboutStock(product);
-            }
-
             return;
         }
 
         ProductsStock.Add(product, quantity);
-        if (!IsThresholdAttained(product))
-        {
-            return;
-        }
-
-        NotifyAboutStock(product);
     }
 
     public void AddProducts(Dictionary<Product, int> products)
@@ -60,9 +49,9 @@ public class Stock
         if (quantity > 0)
         {
             ProductsStock[product]--;
-            if (IsThresholdAttained(product))
+            if (IsThresholdAttained(product, quantity))
             {
-                NotifyAboutStock(product);
+                NotifyAboutStock(product, quantity);
             }
         }
         else
@@ -82,9 +71,9 @@ public class Stock
         if (quantity > 0)
         {
             ProductsStock[product] -= productQuantity;
-            if (IsThresholdAttained(product))
+            if (IsThresholdAttained(product, productQuantity))
             {
-                NotifyAboutStock(product);
+                NotifyAboutStock(product, productQuantity);
             }
         }
         else
@@ -102,17 +91,32 @@ public class Stock
     public void SellSeveralProducts(Dictionary<Product, int> products)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        products.ToList().ForEach(product => SellProductByQuantity(product.Key, product.Value));
+        foreach (var product in products)
+        {
+            SellProductByQuantity(product.Key, product.Value);
+        }
     }
 
-    private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
+    private void NotifyAboutStock(Product stockProduct, int quantity) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
 
-    private bool IsThresholdAttained(Product product)
+    private bool IsThresholdAttained(Product product, int quantity) =>
+        FindTheClosestThreshold(ProductsStock[product] + quantity) > ProductsStock[product];
+
+    private int FindTheClosestThreshold(int quantity)
     {
-        const int first = 1;
-        const int second = 4;
-        const int third = 9;
-        int[] thresholds = { first, second, third };
-        return thresholds.Contains(ProductsStock[product]);
+        const int first = 2;
+        const int second = 5;
+        const int third = 10;
+        if (quantity >= third)
+        {
+            return third;
+        }
+
+        if (quantity >= second)
+        {
+            return second;
+        }
+
+        return first;
     }
 }

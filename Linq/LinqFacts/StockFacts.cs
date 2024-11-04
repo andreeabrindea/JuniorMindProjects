@@ -71,8 +71,8 @@ public class StockFacts
 
         Dictionary<Product, int> productsToSell = new() { { chair, 2 }, { table, 1 }, { tv, 1 }, { oven, 3 } };
         stock.SellSeveralProducts(productsToSell);
-        Assert.Equal(0, stockNumber);
-        Assert.Null(lowStockProduct);
+        Assert.Equal(7, stockNumber);
+        Assert.Equal(oven, lowStockProduct);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class StockFacts
         Stock stock = new Stock();
         stock.Notify = notification;
 
-        stock.AddProduct(chair, 10);
+        stock.AddProduct(chair, 9);
         stock.SellProductByQuantity(chair, 2);
         Assert.Equal(0, stockNumber);
         Assert.Null(lowStockProduct);
