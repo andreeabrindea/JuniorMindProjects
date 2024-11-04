@@ -2,21 +2,14 @@ namespace Linq;
 
 public class Stock
 {
-    public Stock(Dictionary<Product, int> stock, Action<Product, int> notify)
-    {
-        this.ProductsStock = stock;
-        this.Notify = notify;
-    }
-
-    public Stock(Action<Product, int> notify)
+    public Stock()
     {
         this.ProductsStock = new Dictionary<Product, int>();
-        this.Notify = notify;
     }
 
-    public Dictionary<Product, int> ProductsStock { get; }
-
     public Action<Product, int> Notify { get; set; }
+
+    private Dictionary<Product, int> ProductsStock { get; }
 
     public void AddProduct(Product product, int quantity)
     {
@@ -43,6 +36,14 @@ public class Stock
         }
 
         NotifyAboutStock(product);
+    }
+
+    public void AddProducts(Dictionary<Product, int> products)
+    {
+        foreach (var product in products)
+        {
+            AddProduct(product.Key, product.Value);
+        }
     }
 
     public void RemoveProduct(Product product) => ProductsStock.Remove(product);
