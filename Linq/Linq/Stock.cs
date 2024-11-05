@@ -104,19 +104,15 @@ public class Stock
 
     private int FindTheClosestThreshold(int quantity)
     {
-        const int first = 2;
-        const int second = 5;
-        const int third = 10;
-        if (quantity >= third)
+        int[] thresholds = { 10, 5, 2 };
+        foreach (var threshold in thresholds)
         {
-            return third;
+            if (quantity >= threshold)
+            {
+                return threshold;
+            }
         }
 
-        if (quantity >= second)
-        {
-            return second;
-        }
-
-        return first;
+        return thresholds[^1];
     }
 }
