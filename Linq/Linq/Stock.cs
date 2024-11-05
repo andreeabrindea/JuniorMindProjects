@@ -51,7 +51,7 @@ public class Stock
             ProductsStock[product]--;
             if (IsThresholdAttained(product, quantity))
             {
-                NotifyAboutStock(product, quantity);
+                NotifyAboutStock(product);
             }
         }
         else
@@ -73,7 +73,7 @@ public class Stock
             ProductsStock[product] -= productQuantity;
             if (IsThresholdAttained(product, productQuantity))
             {
-                NotifyAboutStock(product, productQuantity);
+                NotifyAboutStock(product);
             }
         }
         else
@@ -97,22 +97,14 @@ public class Stock
         }
     }
 
-    private void NotifyAboutStock(Product stockProduct, int quantity) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
+    private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
 
     private bool IsThresholdAttained(Product product, int quantity) =>
-        FindTheClosestThreshold(ProductsStock[product] + quantity) > ProductsStock[product];
+        FindTheClosestThreshold(ProductsStock[product], quantity) > ProductsStock[product];
 
-    private int FindTheClosestThreshold(int quantity)
+    private int FindTheClosestThreshold(int quantity, int soldQuantity)
     {
         int[] thresholds = { 10, 5, 2 };
-        foreach (var threshold in thresholds)
-        {
-            if (quantity >= threshold)
-            {
-                return threshold;
-            }
-        }
-
-        return thresholds[^1];
+        return thresholds.First(threshold => threshold <= quantity + soldQuantity);
     }
 }
