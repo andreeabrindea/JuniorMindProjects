@@ -302,4 +302,25 @@ public class LinqExcercisesFacts
         List<TestResults> results = null;
         Assert.Throws<ArgumentNullException>(() => results.MergeEntriesWithSameFamilyId());
     }
+
+    [Fact]
+    public void GetMostUsedWords_TextIsEmpty()
+    {
+        string text = string.Empty;
+        Assert.Throws<ArgumentException>(() => text.GetMostUsedWords(3).ToList());
+    }
+
+    [Fact]
+    public void GetMostUsedWords_TextHasSeveralNonUniqueWords()
+    {
+        string text = "Hello there, hello again. Hello, how it is going? Is everything ok?";
+        Assert.True(text.GetMostUsedWords(2).SequenceEqual(new List<string> { "hello", "is" }));
+    }
+
+    [Fact]
+    public void GetMostUsedWords_TextHasSeveralUniqueWords_ShouldTakeFirstWordsFromText()
+    {
+        string text = "This is a random text with unique words";
+        Assert.True(text.GetMostUsedWords(2).SequenceEqual(new List<string> { "this", "is" }));
+    }
 }

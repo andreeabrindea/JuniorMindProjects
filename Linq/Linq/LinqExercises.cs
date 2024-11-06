@@ -130,6 +130,18 @@ public static class LinqExercises
         return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score)).ToList();
     }
 
+    public static IEnumerable<string> GetMostUsedWords(this string text, int n)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(text);
+        char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
+        return text.ToLower()
+            .Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries)
+            .GroupBy(word => word)
+            .OrderByDescending(entry => entry.Count())
+            .Select(entry => entry.Key)
+            .Take(n);
+    }
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 
     private static bool ArePythagoreanTriplets(int a, int b, int c)
