@@ -99,12 +99,15 @@ public class Stock
 
     private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
 
-    private bool IsThresholdAttained(Product product, int quantity) =>
-        FindTheClosestThreshold(ProductsStock[product], quantity) > ProductsStock[product];
+    private bool IsThresholdAttained(Product product, int quantity)
+    {
+        int closestThreshold = FindTheClosestThreshold(ProductsStock[product], quantity);
+        return closestThreshold != 0 && closestThreshold > ProductsStock[product];
+    }
 
     private int FindTheClosestThreshold(int quantity, int soldQuantity)
     {
         int[] thresholds = { 10, 5, 2 };
-        return thresholds.First(threshold => threshold <= quantity + soldQuantity);
+        return thresholds.FirstOrDefault(threshold => threshold <= quantity + soldQuantity);
     }
 }
