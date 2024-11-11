@@ -323,4 +323,106 @@ public class LinqExcercisesFacts
         string text = "This is a random text with unique words";
         Assert.True(text.GetMostUsedWords(2).SequenceEqual(new List<string> { "this", "is" }));
     }
+
+    [Fact]
+    public void IsValidSudokuBoard_BoardIsValid_ShouldReturnTrue()
+    {
+        int[][] sudoku =
+        {
+            new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+            new[] { 4, 5, 6, 7, 8, 9, 1, 2, 3 },
+            new[] { 7, 8, 9, 1, 2, 3, 4, 5, 6 },
+            new[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+            new[] { 5, 6, 7, 8, 9, 1, 2, 3, 4 },
+            new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
+            new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
+            new[] { 6, 7, 8, 9, 1, 2, 3, 4, 5 },
+            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+        };
+
+        Assert.True(sudoku.IsValidSudokuBoard());
+    }
+
+    [Fact]
+    public void IsValidSudokuBoard_InputIsNull_ShouldThrowException()
+    {
+        int[][] board = null;
+        Assert.Throws<NullReferenceException>(() => board.IsValidSudokuBoard());
+    }
+
+    [Fact]
+    public void IsValidSudokuBoard_RowHasDuplicates_ShouldReturnFalse()
+    {
+        int[][] sudoku =
+        {
+            new[] { 1, 2, 3, 4, 5, 6, 7, 8, 2 },
+            new[] { 4, 5, 6, 7, 8, 9, 1, 2, 3 },
+            new[] { 7, 8, 9, 1, 2, 3, 4, 5, 6 },
+            new[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+            new[] { 5, 6, 7, 8, 9, 1, 2, 3, 4 },
+            new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
+            new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
+            new[] { 6, 7, 8, 9, 1, 2, 3, 4, 5 },
+            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+        };
+
+        Assert.False(sudoku.IsValidSudokuBoard());
+    }
+
+    [Fact]
+    public void IsValidSudokuBoard_ColumnHasDuplicates_ShouldReturnFalse()
+    {
+        int[][] sudoku =
+        {
+            new[] { 1, 2, 3, 4, 5, 6, 7, 8, 2 },
+            new[] { 4, 5, 6, 7, 8, 9, 1, 2, 3 },
+            new[] { 7, 8, 9, 1, 2, 3, 4, 5, 6 },
+            new[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+            new[] { 5, 6, 7, 8, 9, 1, 2, 3, 4 },
+            new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
+            new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
+            new[] { 1, 7, 8, 9, 1, 2, 3, 4, 5 },
+            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+        };
+
+        Assert.False(sudoku.IsValidSudokuBoard());
+    }
+
+    [Fact]
+    public void IsValidSudokuBoard_SubgridHasDuplicates_ShouldReturnFalse()
+    {
+        int[][] sudoku =
+        {
+            new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+            new[] { 4, 5, 1, 7, 8, 9, 1, 2, 3 },
+            new[] { 7, 8, 9, 1, 2, 3, 4, 5, 6 },
+            new[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+            new[] { 5, 6, 7, 8, 9, 1, 2, 3, 4 },
+            new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
+            new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
+            new[] { 6, 7, 8, 9, 1, 2, 3, 4, 5 },
+            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+        };
+
+        Assert.False(sudoku.IsValidSudokuBoard());
+    }
+
+    [Fact]
+    public void IsValidSudokuBoard_BoardHasInvalidNumber_ShouldReturnTrue()
+    {
+        int[][] sudoku =
+        {
+            new[] { 91, 2, 3, 4, 5, 6, 7, 8, 9 },
+            new[] { 4, 5, 6, 7, 8, 9, 1, 2, 3 },
+            new[] { 7, 8, 9, 1, 2, 3, 4, 5, 6 },
+            new[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 },
+            new[] { 5, 6, 7, 8, 92, 1, 2, 3, 4 },
+            new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
+            new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
+            new[] { 6, 7, 8, 9, 1, 2, 3, 4, 5 },
+            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+        };
+
+        Assert.False(sudoku.IsValidSudokuBoard());
+    }
 }

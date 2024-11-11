@@ -142,6 +142,48 @@ public static class LinqExercises
             .Take(n);
     }
 
+    public static bool IsValidSudokuBoard(this int[][] board)
+    {
+        bool areRowsValid = Enumerable.Range(0, 9).All(row => !HasDuplicates(board[row]) && HasAllElementsDigits(board[row]));
+
+        bool areColumnsValid = Enumerable.Range(0, 9)
+            .All(column =>
+            {
+                var columnElements = Enumerable.Range(0, 9).Select(row => board[row][column]);
+                return !HasDuplicates(columnElements) &&
+                       HasAllElementsDigits(columnElements);
+            });
+
+        bool areSubgridsValid = Enumerable.Range(0, 9)
+            .All(b =>
+            {
+                var subgridElements = Enumerable.Range(0, 9).Select(i => board[b / 3 * 3 + i / 3][b % 3 * 3 + i % 3]);
+                return !HasDuplicates(subgridElements) &&
+                       HasAllElementsDigits(subgridElements);
+            });
+
+        return areRowsValid && areColumnsValid && areSubgridsValid;
+    }
+
+    private static bool HasDuplicates(IEnumerable<int> array)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
+        return array.Where(num => num != 0).GroupBy(num => num).Any(g => g.Count() > 1);
+    }
+
+    private static bool HasAllElementsDigits(IEnumerable<int> array)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
+        return array.All(r => r.IsDigit());
+    }
+
+    private static bool IsDigit(this int number)
+    {
+        const int lowerBound = 0;
+        const int higherBound = 9;
+        return number is >= lowerBound and <= higherBound;
+    }
+
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
 
     private static bool ArePythagoreanTriplets(int a, int b, int c)
