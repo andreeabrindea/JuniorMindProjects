@@ -180,8 +180,8 @@ public static class LinqExercises
     private static bool IsDigit(this int number)
     {
         const int lowerBound = 0;
-        const int higherBound = 9;
-        return number is >= lowerBound and <= higherBound;
+        const int higherBound = 10;
+        return number is > lowerBound and < higherBound;
     }
 
     private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
