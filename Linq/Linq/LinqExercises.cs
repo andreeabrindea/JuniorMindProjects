@@ -155,9 +155,9 @@ public static class LinqExercises
             });
 
         bool areSubgridsValid = Enumerable.Range(0, 9)
-            .All(b =>
+            .All(blockIndex =>
             {
-                var subgridElements = Enumerable.Range(0, 9).Select(i => board[b / 3 * 3 + i / 3][b % 3 * 3 + i % 3]);
+                var subgridElements = Enumerable.Range(0, 9).Select(i => board[blockIndex / 3 * 3 + i / 3][blockIndex % 3 * 3 + i % 3]);
                 return !HasDuplicates(subgridElements) &&
                        HasAllElementsDigits(subgridElements);
             });
