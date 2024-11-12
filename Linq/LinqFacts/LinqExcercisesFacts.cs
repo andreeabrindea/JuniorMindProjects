@@ -337,7 +337,7 @@ public class LinqExcercisesFacts
             new[] { 8, 9, 1, 2, 3, 4, 5, 6, 7 },
             new[] { 3, 4, 5, 6, 7, 8, 9, 1, 2 },
             new[] { 6, 7, 8, 9, 1, 2, 3, 4, 5 },
-            new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 },
+            new[] { 9, 1, 2, 3, 4, 5, 6, 7, 8 },
         };
 
         Assert.True(sudoku.IsValidSudokuBoard());
