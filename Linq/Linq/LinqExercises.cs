@@ -108,21 +108,24 @@ public static class LinqExercises
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        return products.Where(product => product.Features.Any(features.Contains));
+        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
+        return products.Where(product => product.Features.Any(featuresSet.Contains));
     }
 
     public static IEnumerable<ProductFromExercise10> FilterProductsContainAllFeatures(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        return products.Where(product => features.All(product.Features.Contains));
+        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
+        return products.Where(product => featuresSet.IsSubsetOf(product.Features));
     }
 
     public static IEnumerable<ProductFromExercise10> FilterProductsThatDoNotContainAnyFeature(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(products));
         ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        return products.Where(product => features.All(feature => !product.Features.Contains(feature)));
+        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
+        return products.Where(product => product.Features.All(feature => !featuresSet.Contains(feature)));
     }
 
     public static IEnumerable<ProductFromExercise11> ConcatenateByProductName(this List<ProductFromExercise11> firstListOfProducts, List<ProductFromExercise11> secondListOfProducts)
