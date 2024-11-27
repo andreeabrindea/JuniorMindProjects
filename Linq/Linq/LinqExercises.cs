@@ -5,8 +5,16 @@ public static class LinqExercises
     public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input)
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
-        return (input.Count(character => !"aeiou".Contains(character) && char.IsLetter(character)),
-            input.Count(character => "aeiou".Contains(character) && char.IsLetter(character)));
+        var result = input.ToLower()
+            .Where(char.IsLetter)
+            .GroupBy(c => "aeiou".Contains(c) ? "Vowels" : "Consonants")
+            .Select(g => new { Type = g.Key, Count = g.Count() })
+            .ToDictionary(x => x.Type, x => x.Count);
+
+        int vowelCount = result.TryGetValue("Vowels", out var value) ? value : 0;
+        int consonantCount = result.TryGetValue("Consonants", out var value1) ? value1 : 0;
+
+        return (consonantCount, vowelCount);
     }
 
     public static char GetFirstCharacterThatDoesNotRepeat(this string input)
