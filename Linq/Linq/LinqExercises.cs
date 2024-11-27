@@ -54,11 +54,12 @@ public static class LinqExercises
     public static IEnumerable<string> GetPalindromes(this string input)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(input));
+        const int minimumLength = 2;
         return Enumerable
-            .Range(1, input.Length)
+            .Range(minimumLength, input.Length)
             .SelectMany(length => Enumerable.Range(0, input.Length - length + 1)
                 .Select(a => input.Substring(a, length)))
-            .Where(b => b.SequenceEqual(b.Reverse()) && b.Length > 1)
+            .Where(b => b.SequenceEqual(b.Reverse()))
             .Distinct();
     }
 
