@@ -70,7 +70,8 @@ public static class LinqExercises
             throw new ArgumentException("{0} cannot be smaller than 1.", nameof(n));
         }
 
-        return Enumerable.Range(0, 1 << n)
+        const int noOfPossibleSignsPerElement = 2;
+        return Enumerable.Range(0, (int)Math.Pow(noOfPossibleSignsPerElement, n))
             .Select(bits =>
             {
                 List<int> permutation = Enumerable.Range(0, n)
