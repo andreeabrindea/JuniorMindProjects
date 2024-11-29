@@ -8,9 +8,7 @@ public class StockFacts
     public void AddProduct_InvalidQuantity_ShouldThrowException()
     {
         Product chair = new Product("chair", 10.50);
-        Action<Product, int> notification = null;
         Stock stock = new Stock();
-        stock.Notify = notification;
         Assert.Throws<ArgumentException>(() => stock.AddProduct(chair, -2));
     }
 
@@ -27,14 +25,13 @@ public class StockFacts
 
         Product lowStockProduct = null;
         int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
 
         Stock stock = new Stock();
-        stock.Notify = notification;
+        stock.Notify += (sender, e) =>
+        {
+            lowStockProduct = e.Product;
+            stockNumber = e.Quantity;
+        };
         stock.AddProducts(products);
         stock.SellProduct(chair);
 
@@ -59,14 +56,12 @@ public class StockFacts
 
         Product lowStockProduct = null;
         int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
-
         Stock stock = new Stock();
-        stock.Notify = notification;
+        stock.Notify += (sender, e) =>
+        {
+            lowStockProduct = e.Product;
+            stockNumber = e.Quantity;
+        };
         stock.AddProducts(products);
 
         Dictionary<Product, int> productsToSell = new() { { chair, 2 }, { table, 1 }, { tv, 1 }, { oven, 3 } };
@@ -81,14 +76,12 @@ public class StockFacts
         Product chair = new Product("chair", 10.50);
         Product lowStockProduct = null;
         int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
-
         Stock stock = new Stock();
-        stock.Notify = notification;
+        stock.Notify += (sender, e) =>
+        {
+            lowStockProduct = e.Product;
+            stockNumber = e.Quantity;
+        };
 
         stock.AddProduct(chair, 9);
         stock.SellProductByQuantity(chair, 2);
@@ -107,14 +100,14 @@ public class StockFacts
 
         Product lowStockProduct = null;
         int stockNumber = 0;
-        Action<Product, int> notification = (product, remainingStock) =>
-        {
-            lowStockProduct = product;
-            stockNumber = remainingStock;
-        };
 
         Stock stock = new Stock();
-        stock.Notify = notification;
+        stock.Notify += (sender, e) =>
+        {
+            lowStockProduct = e.Product;
+            stockNumber = e.Quantity;
+        };
+
         stock.AddProducts(products);
 
         Dictionary<Product, int> productsToSell = new() { { chair, 2 } };

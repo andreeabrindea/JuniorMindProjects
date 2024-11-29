@@ -7,7 +7,7 @@ public class Stock
         this.ProductsStock = new Dictionary<Product, int>();
     }
 
-    public Action<Product, int> Notify { get; set; }
+    public event EventHandler<StockEventArgs> Notify;
 
     private Dictionary<Product, int> ProductsStock { get; }
 
@@ -97,7 +97,7 @@ public class Stock
         }
     }
 
-    private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(stockProduct, ProductsStock[stockProduct]);
+    private void NotifyAboutStock(Product stockProduct) => Notify.Invoke(this, new StockEventArgs(stockProduct, ProductsStock[stockProduct]));
 
     private bool IsThresholdAttained(Product product, int soldQuantity) =>
         FindTheClosestThreshold(ProductsStock[product], soldQuantity);
