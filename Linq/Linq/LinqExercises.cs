@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Linq;
 
 public static class LinqExercises
@@ -176,6 +178,44 @@ public static class LinqExercises
             });
 
         return areRowsValid && areColumnsValid && areSubgridsValid;
+    }
+
+    public static double SolvePostfixNotationExpression(this string expression)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(expression);
+        var operators = new Dictionary<string, Func<double, double, double>>
+        {
+            { "+", (a, b) => a + b },
+            { "-", (a, b) => a - b },
+            { "*", (a, b) => a * b },
+            { "/", (a, b) => a / b }
+        };
+
+        var stack = new Stack<double>();
+        expression.Split(' ').ToList().ForEach(e =>
+        {
+            if (double.TryParse(e, out double number))
+            {
+                stack.Push(number);
+            }
+            else if (operators.ContainsKey(e))
+            {
+                if (stack.Count < 2)
+                {
+                    throw new InvalidExpressionException("Insufficient operands for the operation.");
+                }
+
+                double b = stack.Pop();
+                double a = stack.Pop();
+                stack.Push(operators[e](a, b));
+            }
+            else
+            {
+                throw new InvalidExpressionException("Invalid token.");
+            }
+        });
+
+        return stack.Count == 1 ? stack.Pop() : 0;
     }
 
     private static bool HasDuplicates(IEnumerable<int> array)
