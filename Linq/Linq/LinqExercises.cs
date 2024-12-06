@@ -152,25 +152,31 @@ public static class LinqExercises
 
     public static bool IsValidSudokuBoard(this int[][] board)
     {
-        bool areRowsValid = Enumerable.Range(0, 9).All(row => !HasDuplicates(board[row]) && HasAllElementsDigits(board[row]));
+        const int rowAndColumnLength = 9;
+        if (!board.HasSudokuValidLength(rowAndColumnLength))
+        {
+            return false;
+        }
 
-        bool areColumnsValid = Enumerable.Range(0, 9)
-            .All(column =>
+        return Enumerable.Range(0, rowAndColumnLength).All(
+            index =>
             {
-                var columnElements = Enumerable.Range(0, 9).Select(row => board[row][column]);
-                return !HasDuplicates(columnElements) &&
-                       HasAllElementsDigits(columnElements);
-            });
+                if (HasDuplicates(board[index]) || !HasAllElementsDigits(board[index]))
+                {
+                    return false;
+                }
 
-        bool areSubgridsValid = Enumerable.Range(0, 9)
-            .All(blockIndex =>
-            {
-                var subgridElements = Enumerable.Range(0, 9).Select(i => board[blockIndex / 3 * 3 + i / 3][blockIndex % 3 * 3 + i % 3]);
-                return !HasDuplicates(subgridElements) &&
-                       HasAllElementsDigits(subgridElements);
-            });
+                var column = Enumerable.Range(0, 9)
+                    .Select(rowIndex => board[rowIndex][index]);
 
-        return areRowsValid && areColumnsValid && areSubgridsValid;
+                if (HasDuplicates(column) || !HasAllElementsDigits(column))
+                {
+                    return false;
+                }
+
+                var subgridElements = Enumerable.Range(0, 9).Select(i => board[index / 3 * 3 + i / 3][index % 3 * 3 + i % 3]);
+                return !HasDuplicates(subgridElements) && HasAllElementsDigits(subgridElements);
+            });
     }
 
     public static double SolvePostfixNotationExpression(this string expression)
@@ -210,6 +216,9 @@ public static class LinqExercises
 
         return stack.Count == 1 ? stack.Pop() : 0;
     }
+
+    private static bool HasSudokuValidLength(this int[][] board, int rowAndColumnLength) =>
+        board.Length == rowAndColumnLength && board.All(row => row.Length == rowAndColumnLength);
 
     private static bool HasDuplicates(IEnumerable<int> array)
     {
