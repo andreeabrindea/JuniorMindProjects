@@ -15,7 +15,7 @@ public static class LinqExercises
     public static char GetFirstCharacterThatDoesNotRepeat(this string input)
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
-        return input.ToLookup(p => p).First(p => p.Count() == 1).Key;
+        return input.GroupBy(p => p).First(p => p.Count() == 1).Key;
     }
 
     public static int ConvertStringToInt(this string input)
