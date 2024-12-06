@@ -7,16 +7,9 @@ public static class LinqExercises
     public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input)
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
-        var result = input.ToLower()
-            .Where(char.IsLetter)
-            .GroupBy(c => "aeiou".Contains(c) ? "Vowels" : "Consonants")
-            .Select(g => new { Type = g.Key, Count = g.Count() })
-            .ToDictionary(x => x.Type, x => x.Count);
-
-        int vowelCount = result.TryGetValue("Vowels", out var value) ? value : 0;
-        int consonantCount = result.TryGetValue("Consonants", out var value1) ? value1 : 0;
-
-        return (consonantCount, vowelCount);
+        int vowels = input.Count(c => "aeiou".Contains(c));
+        int consonants = input.Length - vowels - input.Count(c => !char.IsLetter(c));
+        return (consonants, vowels);
     }
 
     public static char GetFirstCharacterThatDoesNotRepeat(this string input)
@@ -139,10 +132,10 @@ public static class LinqExercises
             .Select(group => new ProductFromExercise11(group.Key, group.Sum(q => q.Quantity)));
     }
 
-    public static List<TestResults> MergeEntriesWithSameFamilyId(this List<TestResults> testResults)
+    public static IEnumerable<TestResults?> MergeEntriesWithSameFamilyId(this List<TestResults> testResults)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(testResults));
-        return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score)).ToList();
+        return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score));
     }
 
     public static IEnumerable<string> GetMostUsedWords(this string text, int n)
