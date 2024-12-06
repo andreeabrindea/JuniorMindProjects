@@ -70,7 +70,7 @@ public static class LinqExercises
             .Select(bits =>
             {
                 List<int> permutation = Enumerable.Range(0, n)
-                    .Select(p => (bits & (1 << p)) != 0 ? (p + 1) : -(p + 1))
+                    .Select(p => ((bits / (int)Math.Pow(2, p)) % 2 == 1) ? (p + 1) : -(p + 1))
                     .ToList();
 
                 int sum = permutation.Sum();
