@@ -6,246 +6,72 @@ public static class LinqExercises
 {
     public static (int Consonants, int Vowels) GetNoOfConsonantsAndVowels(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
-        int vowels = input.Count(c => "aeiou".Contains(c));
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        int vowels = input.Count(p => "aeiou".Contains(p));
         int consonants = input.Length - vowels - input.Count(c => !char.IsLetter(c));
         return (consonants, vowels);
     }
 
     public static char GetFirstCharacterThatDoesNotRepeat(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
-        return input.GroupBy(p => p).First(p => p.Count() == 1).Key;
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        return input.GroupBy(p => p).FirstOrDefault(p => p.Count() == 1)!.Key;
     }
 
     public static int ConvertStringToInt(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
-        const int ten = 10;
-        int sign = GetSign(input);
-        if ("-+".Any(prefix => input.StartsWith(prefix)))
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        if (input.Length == 1)
         {
+            return char.IsDigit(input[0]) ? input[0] - '0' : throw new FormatException();
+        }
+
+        int sign = 1;
+        if ("-+".Any(sign => input.Contains(sign)))
+        {
+            sign = input[0] == '-' ? -1 : 1;
             input = input[1..];
         }
 
-        var result = input.Aggregate(0, (accumulate, character) =>
+        var result = input.Aggregate(0, (accumulate, c) =>
         {
-            if (character is < '0' or > '9')
+            if (c is > '9' || c < '0')
             {
-                throw new FormatException(nameof(input));
+                throw new FormatException();
             }
 
-            return accumulate * ten + (character - '0');
+            return accumulate * 10 + (c - '0');
         });
-        return sign * result;
+
+        return result * sign;
     }
 
-    public static int GetCharacterWithMaximumNoOfOccurrences(this string input)
+    public static char GetCharacterWithMaximumNoOfOccurrences(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(input);
-        return input.GroupBy(p => p).MaxBy(p => p.Count())!.Key;
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        return input.GroupBy(p => p).MaxBy(p => p.Count()).Key;
     }
 
     public static IEnumerable<string> GetPalindromes(this string input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(input));
         const int minimumLength = 2;
-        return Enumerable
-            .Range(minimumLength, input.Length)
-            .SelectMany(length => Enumerable.Range(0, input.Length - length + 1)
-                .Select(a => input.Substring(a, length)))
-            .Where(b => b.SequenceEqual(b.Reverse()))
-            .Distinct();
+        return Enumerable.Range(minimumLength, input.Length)
+            .SelectMany(length => Enumerable.Range(0, input.Length - length + 1).Select(start => input.Substring(start, length))
+                .Where(substring => substring.SequenceEqual(substring.Reverse()))
+                .Distinct());
     }
 
-    public static IEnumerable<string> GenerateSum(int n, int k)
+    public static IEnumerable<IEnumerable<int>> GenerateSubsequencesWithSumLessThanK(this int[] nums, int k)
     {
-        if (n < 1)
+        ArgumentNullException.ThrowIfNull(nums);
+        if (k < 1)
         {
-            throw new ArgumentException("{0} cannot be smaller than 1.", nameof(n));
+            throw new InvalidOperationException(nameof(k));
         }
 
-        const int noOfPossibleSignsPerElement = 2;
-        return Enumerable.Range(0, (int)Math.Pow(noOfPossibleSignsPerElement, n))
-            .Select(bits =>
-            {
-                List<int> permutation = Enumerable.Range(0, n)
-                    .Select(p => ((bits / (int)Math.Pow(2, p)) % 2 == 1) ? (p + 1) : -(p + 1))
-                    .ToList();
-
-                int sum = permutation.Sum();
-                string representation = string.Join(" + ", permutation);
-
-                return new { sum, representation };
-            })
-            .Where(intermediate => intermediate.sum == k)
-            .Select(intermediate => $"{intermediate.representation} = {k}");
-    }
-
-    public static IEnumerable<(int, int, int)> GetPythagoreanTriplets(this int[] array)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
-        if (array.Length < 3)
-        {
-            throw new ArgumentException("{0} has insufficient elements.", nameof(array));
-        }
-
-        const int skipPositionsForFirstIterator = 1;
-        const int skipPositionsForSecondIterator = 2;
-        return array
-            .SelectMany((a, i) => array.Skip(i + skipPositionsForFirstIterator)
-                .SelectMany((b, j) => array.Skip(i + j + skipPositionsForSecondIterator)
-                    .Where(c => ArePythagoreanTriplets(a, b, c))
-                    .Select(c => (a, b, c))));
-    }
-
-    public static IEnumerable<ProductFromExercise10> FilterProductsContainAnyFeature(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
-        return products.Where(product => product.Features.Any(featuresSet.Contains));
-    }
-
-    public static IEnumerable<ProductFromExercise10> FilterProductsContainAllFeatures(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
-        return products.Where(product => featuresSet.IsSubsetOf(product.Features));
-    }
-
-    public static IEnumerable<ProductFromExercise10> FilterProductsThatDoNotContainAnyFeature(this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(products));
-        ArgumentException.ThrowIfNullOrEmpty(nameof(features));
-        HashSet<Feature> featuresSet = new HashSet<Feature>(features);
-        return products.Where(product => product.Features.All(feature => !featuresSet.Contains(feature)));
-    }
-
-    public static IEnumerable<ProductFromExercise11> ConcatenateByProductName(this List<ProductFromExercise11> firstListOfProducts, List<ProductFromExercise11> secondListOfProducts)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(firstListOfProducts));
-        ArgumentException.ThrowIfNullOrEmpty(nameof(secondListOfProducts));
-        return firstListOfProducts.Concat(secondListOfProducts)
-            .GroupBy(product => product.Name)
-            .Select(group => new ProductFromExercise11(group.Key, group.Sum(q => q.Quantity)));
-    }
-
-    public static IEnumerable<TestResults?> MergeEntriesWithSameFamilyId(this List<TestResults> testResults)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(testResults));
-        return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score));
-    }
-
-    public static IEnumerable<string> GetMostUsedWords(this string text, int n)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(text);
-        char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
-        return text.ToLower()
-            .Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries)
-            .GroupBy(word => word)
-            .OrderByDescending(entry => entry.Count())
-            .Select(entry => entry.Key)
-            .Take(n);
-    }
-
-    public static bool IsValidSudokuBoard(this int[][] board)
-    {
-        const int rowAndColumnLength = 9;
-        if (!board.HasSudokuValidLength(rowAndColumnLength))
-        {
-            return false;
-        }
-
-        return Enumerable.Range(0, rowAndColumnLength).All(
-            index =>
-            {
-                if (HasDuplicates(board[index]) || !HasAllElementsDigits(board[index]))
-                {
-                    return false;
-                }
-
-                var column = Enumerable.Range(0, 9)
-                    .Select(rowIndex => board[rowIndex][index]);
-
-                if (HasDuplicates(column) || !HasAllElementsDigits(column))
-                {
-                    return false;
-                }
-
-                var subgridElements = Enumerable.Range(0, 9).Select(i => board[index / 3 * 3 + i / 3][index % 3 * 3 + i % 3]);
-                return !HasDuplicates(subgridElements) && HasAllElementsDigits(subgridElements);
-            });
-    }
-
-    public static double SolvePostfixNotationExpression(this string expression)
-    {
-        ArgumentNullException.ThrowIfNullOrEmpty(expression);
-        var operators = new Dictionary<string, Func<double, double, double>>
-        {
-            { "+", (a, b) => a + b },
-            { "-", (a, b) => a - b },
-            { "*", (a, b) => a * b },
-            { "/", (a, b) => a / b }
-        };
-
-        var stack = new Stack<double>();
-        expression.Split(' ').ToList().ForEach(e =>
-        {
-            if (double.TryParse(e, out double number))
-            {
-                stack.Push(number);
-            }
-            else if (operators.ContainsKey(e))
-            {
-                if (stack.Count < 2)
-                {
-                    throw new InvalidExpressionException("Insufficient operands for the operation.");
-                }
-
-                double b = stack.Pop();
-                double a = stack.Pop();
-                stack.Push(operators[e](a, b));
-            }
-            else
-            {
-                throw new InvalidExpressionException("Invalid token.");
-            }
-        });
-
-        return stack.Count == 1 ? stack.Pop() : 0;
-    }
-
-    private static bool HasSudokuValidLength(this int[][] board, int rowAndColumnLength) =>
-        board.Length == rowAndColumnLength && board.All(row => row.Length == rowAndColumnLength);
-
-    private static bool HasDuplicates(IEnumerable<int> array)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
-        return array.Where(num => num != 0).GroupBy(num => num).Any(g => g.Count() > 1);
-    }
-
-    private static bool HasAllElementsDigits(IEnumerable<int> array)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
-        return array.All(r => r.IsDigit());
-    }
-
-    private static bool IsDigit(this int number)
-    {
-        const int lowerBound = 0;
-        const int higherBound = 10;
-        return number is > lowerBound and < higherBound;
-    }
-
-    private static int GetSign(this string input) => input[0] == '-' ? -1 : 1;
-
-    private static bool ArePythagoreanTriplets(int a, int b, int c)
-    {
-        const int two = 2;
-        return (int)(Math.Pow(a, two) + Math.Pow(b, two)) == (int)Math.Pow(c, two) ||
-               (int)(Math.Pow(a, two) + Math.Pow(c, two)) == (int)Math.Pow(b, two) ||
-               (int)(Math.Pow(c, two) + Math.Pow(b, two)) == (int)Math.Pow(a, two);
+        const int minimumLength = 1;
+        return Enumerable.Range(minimumLength, nums.Length).SelectMany(length =>
+                Enumerable.Range(0, nums.Length - length + 1).Select(start => nums.Skip(start).Take(length)))
+            .Where(sequence => sequence.Sum() <= k);
     }
 }
