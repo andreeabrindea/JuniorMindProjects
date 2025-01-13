@@ -74,4 +74,46 @@ public static class LinqExercises
                 Enumerable.Range(0, nums.Length - length + 1).Select(start => nums.Skip(start).Take(length)))
             .Where(sequence => sequence.Sum() <= k);
     }
+
+    public static List<string> GenerateSum(this int n, int k)
+    {
+        if (n < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(n));
+        }
+
+        int[] nums = Enumerable.Range(1, n).ToArray();
+        List<string> expressions = new List<string>();
+        GenerateCombinations(nums, k, 0, 0, "", expressions);
+        return expressions;
+    }
+
+    private static void GenerateCombinations(int[] nums, int k, int currentIndex, int currentSum, string currentExpression, List<string> expressions)
+    {
+        if (currentIndex == nums.Length)
+        {
+            if (currentSum == k)
+            {
+                expressions.Add(currentExpression.TrimStart('+') + "=" + k);
+            }
+
+            return;
+        }
+
+        GenerateCombinations(
+            nums,
+            k,
+            currentIndex + 1,
+            currentSum + nums[currentIndex],
+            currentExpression + "+" + nums[currentIndex],
+            expressions);
+
+        GenerateCombinations(
+            nums,
+            k,
+            currentIndex + 1,
+            currentSum - nums[currentIndex],
+            currentExpression + "-" + nums[currentIndex],
+            expressions);
+    }
 }

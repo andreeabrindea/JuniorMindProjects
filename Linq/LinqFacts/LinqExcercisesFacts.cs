@@ -135,34 +135,50 @@ public class LinqExcercisesFacts
         Assert.Equal(new[] { new[] { 1 }, new[] { 2 }, new[] { 3 }, new[] { 4 }, new[] { 5 }, new[] { 6 }, new[] { 1, 2 }, new[] { 2, 3 }, new[] { 1, 2, 3 } }, nums.GenerateSubsequencesWithSumLessThanK(k));
     }
 
-    // [Fact]
-    // public void GenerateSum_InputShouldProduce3Representations()
-    // {
-    //     int n = 5;
-    //     int k = 3;
-    //     Assert.True(LinqExercises.GenerateSum(n, k).SequenceEqual
-    //         (new List<string>() {
-    //             "-1 + 2 + 3 + 4 + -5 = 3",
-    //             "1 + -2 + 3 + -4 + 5 = 3",
-    //             "-1 + -2 + -3 + 4 + 5 = 3",
-    //         }));
-    // }
-    //
-    // [Fact]
-    // public void GenerateSum_InputShouldProduceNoRepresentation()
-    // {
-    //     int n = 1;
-    //     int k = 3;
-    //     Assert.True(LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
-    // }
-    //
-    // [Fact]
-    // public void GenerateSum_NIsNegative_ShouldThrowException()
-    // {
-    //     int n = -1;
-    //     int k = 3;
-    //     Assert.Throws<ArgumentException>(() => LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
-    // }
+    [Fact]
+    public void GenerateSum_TargetIsNegative_ShouldReturnExpected()
+    {
+        int n = 2;
+        int k = -1;
+        Assert.Equal(
+            LinqExercises.GenerateSum(n, k),
+            new List<string>()
+            {
+               "1-2=-1",
+            });
+    }
+
+    [Fact]
+    public void GenerateSum_InputShouldProduce3Representations()
+    {
+        int n = 5;
+        int k = 3;
+        Assert.Equal(
+            LinqExercises.GenerateSum(n, k),
+            new List<string>()
+            {
+                "1-2+3-4+5=3",
+                "-1+2+3+4-5=3",
+                "-1-2-3+4+5=3",
+            });
+    }
+
+    [Fact]
+    public void GenerateSum_InputShouldProduceNoRepresentation()
+    {
+        int n = 1;
+        int k = 3;
+        Assert.Equal(LinqExercises.GenerateSum(n, k), new List<string>() { });
+    }
+
+    [Fact]
+    public void GenerateSum_NIsNegative_ShouldThrowException()
+    {
+        int n = -1;
+        int k = 3;
+        Assert.Throws<ArgumentOutOfRangeException>(() => LinqExercises.GenerateSum(n, k).SequenceEqual(new List<string>() { }));
+    }
+
     //
     // [Fact]
     // public void GetPythagoreanTriplets_InputHasSeveralElements_OutputShouldHave2Pairs()
