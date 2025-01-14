@@ -88,6 +88,28 @@ public static class LinqExercises
         return expressions;
     }
 
+    public static IEnumerable<(int, int, int)> GetPythagoreanTriplets(this int[] nums)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(nums));
+        if (nums.Length < 3)
+        {
+            throw new ArgumentException("{0} has insufficient elements.", nameof(nums));
+        }
+
+        const int skipPositionsForFirstIterator = 1;
+        const int skipPositionsForSecondIterator = 2;
+
+        return nums.SelectMany((a, i) => nums.Skip(i + skipPositionsForFirstIterator)
+            .SelectMany((b, j) => nums.Skip(i + j + skipPositionsForSecondIterator)
+                .Where(c => ArePythagoreanTriplets(a, b, c))
+            .Select(c => (a, b, c))));
+    }
+
+    private static bool ArePythagoreanTriplets(int a, int b, int c)
+    {
+        return a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a;
+    }
+
     private static void GenerateCombinations(int[] nums, int k, int currentIndex, int currentSum, string currentExpression, List<string> expressions)
     {
         if (currentIndex == nums.Length)
