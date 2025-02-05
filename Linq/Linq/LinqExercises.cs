@@ -139,6 +139,12 @@ public static class LinqExercises
             .Select(group => new ProductFromExercise11(group.Key, group.Sum(q => q.Quantity)));
     }
 
+    public static IEnumerable<TestResults?> MergeEntriesWithSameFamilyId(this List<TestResults> testResults)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(testResults));
+        return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score));
+    }
+
     private static bool ArePythagoreanTriplets(int a, int b, int c)
     {
         return a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a;
