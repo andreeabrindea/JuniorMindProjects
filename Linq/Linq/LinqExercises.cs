@@ -158,6 +158,55 @@ public static class LinqExercises
             .Take(numberOfWords);
     }
 
+    public static bool IsValidSudokuBoard(this int[][] board)
+    {
+        ArgumentNullException.ThrowIfNull(board);
+        const int columnRowsLength = 9;
+
+        if (!HasSudokuValidLength(board, columnRowsLength))
+        {
+            return false;
+        }
+
+        return Enumerable.Range(0, columnRowsLength).All(
+            index =>
+            {
+                if (HasDuplicates(board[index]) || !HasAllElementsDigits(board[index]))
+                {
+                    return false;
+                }
+
+                var column = Enumerable.Range(0, columnRowsLength).Select(
+                    rowIndex => board[index][rowIndex]);
+                {
+                    if (HasDuplicates(column) || !HasAllElementsDigits(column))
+                    {
+                        return false;
+                    }
+                }
+
+                var subgridElements = Enumerable.Range(0, 9).Select(i => board[index / 3 * 3 + i / 3][index % 3 * 3 + i % 3]);
+                return !HasDuplicates(subgridElements) && HasAllElementsDigits(subgridElements);
+            });
+    }
+
+    private static bool HasSudokuValidLength(this int[][] board, int rowAndColumnLength) =>
+        board.Length == rowAndColumnLength && board.All(row => row.Length == rowAndColumnLength);
+
+    private static bool HasDuplicates(IEnumerable<int> array)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
+        return array.Where(num => num != 0).GroupBy(num => num).Any(g => g.Count() > 1);
+    }
+
+    private static bool HasAllElementsDigits(IEnumerable<int> array)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(array));
+        const int biggestDigit = 9;
+        const int smallestDigit = 0;
+        return array.All(r => r is >= smallestDigit and <= biggestDigit);
+    }
+
     private static bool ArePythagoreanTriplets(int a, int b, int c)
     {
         return a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a;
