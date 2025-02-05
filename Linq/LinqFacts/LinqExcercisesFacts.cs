@@ -293,43 +293,43 @@ public class LinqExcercisesFacts
         Assert.Throws<ArgumentNullException>(() => products.FilterProductsThatDoNotContainAnyFeature(features).ToList());
     }
 
-    // [Fact]
-    // public void ConcatenateByProductName_InputHasSeveralObjectsInCommon_OutputShouldHave4Elements()
-    // {
-    //     ProductFromExercise11 book = new("book", 10);
-    //     ProductFromExercise11 plant = new("plant", 5);
-    //     ProductFromExercise11 carpet = new("carpet", 3);
-    //     ProductFromExercise11 secondCarpet = new("carpet", 2);
-    //     ProductFromExercise11 secondTypeOfBook = new("book", 12);
-    //     ProductFromExercise11 tv = new("tv", 6);
-    //
-    //     List<ProductFromExercise11> firstList = new List<ProductFromExercise11>() { book, plant, carpet, secondCarpet };
-    //     List<ProductFromExercise11> secondList = new List<ProductFromExercise11>() { book, carpet, secondTypeOfBook, tv };
-    //     Assert.True(
-    //         firstList.ConcatenateByProductName(secondList)
-    //             .SequenceEqual(new List<ProductFromExercise11>() { new("book", 32),  new("plant", 5), new("carpet", 8), new("tv", 6) }));
-    // }
-    //
-    // [Fact]
-    // public void ConcatenateByProductName_FirstListIsNull_ShouldThrowException()
-    // {
-    //     ProductFromExercise11 book = new("book", 10);
-    //     ProductFromExercise11 plant = new("plant", 5);
-    //     List<ProductFromExercise11> firstList = null;
-    //     List<ProductFromExercise11> secondList = new List<ProductFromExercise11>() { book, plant };
-    //     Assert.Throws<ArgumentNullException>(() => firstList.ConcatenateByProductName(secondList));
-    // }
-    //
-    // [Fact]
-    // public void ConcatenateByProductName_SecondListIsNull_ShouldThrowException()
-    // {
-    //     ProductFromExercise11 book = new("book", 10);
-    //     ProductFromExercise11 plant = new("plant", 5);
-    //     List<ProductFromExercise11> secondList = null;
-    //     List<ProductFromExercise11> firstList = new List<ProductFromExercise11> { book, plant };
-    //     Assert.Throws<ArgumentNullException>(() => firstList.ConcatenateByProductName(secondList));
-    // }
-    //
+    [Fact]
+    public void ConcatenateByProductName_InputHasSeveralObjectsInCommon_OutputShouldHave4Elements()
+    {
+        ProductFromExercise11 book = new("book", 10);
+        ProductFromExercise11 plant = new("plant", 5);
+        ProductFromExercise11 carpet = new("carpet", 3);
+        ProductFromExercise11 secondCarpet = new("carpet", 2);
+        ProductFromExercise11 secondTypeOfBook = new("book", 12);
+        ProductFromExercise11 tv = new("tv", 6);
+
+        List<ProductFromExercise11> firstList = new List<ProductFromExercise11>() { book, plant, carpet, secondCarpet };
+        List<ProductFromExercise11> secondList = new List<ProductFromExercise11>() { book, carpet, secondTypeOfBook, tv };
+        Assert.True(
+            firstList.ConcatenateByProductName(secondList)
+                .SequenceEqual(new List<ProductFromExercise11>() { new("book", 32),  new("plant", 5), new("carpet", 8), new("tv", 6) }));
+    }
+
+    [Fact]
+    public void ConcatenateByProductName_FirstListIsNull_ShouldThrowException()
+    {
+        ProductFromExercise11 book = new("book", 10);
+        ProductFromExercise11 plant = new("plant", 5);
+        List<ProductFromExercise11> firstList = null;
+        List<ProductFromExercise11> secondList = new List<ProductFromExercise11>() { book, plant };
+        Assert.Throws<ArgumentNullException>(() => firstList.ConcatenateByProductName(secondList));
+    }
+
+    [Fact]
+    public void ConcatenateByProductName_SecondListIsNull_ShouldThrowException()
+    {
+        ProductFromExercise11 book = new("book", 10);
+        ProductFromExercise11 plant = new("plant", 5);
+        List<ProductFromExercise11> secondList = null;
+        List<ProductFromExercise11> firstList = new List<ProductFromExercise11> { book, plant };
+        Assert.Throws<ArgumentNullException>(() => firstList.ConcatenateByProductName(secondList));
+    }
+
     // [Fact]
     // public void MergeEntriesWithSameFamilyId_InputHas2EntriesWithSameFamilyId_OutputShouldHave2Elements()
     // {

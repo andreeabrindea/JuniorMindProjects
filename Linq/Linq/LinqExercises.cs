@@ -130,6 +130,15 @@ public static class LinqExercises
         return products.Where(product => featuresSet.All(feature => !product.Features.Contains(feature)));
     }
 
+    public static IEnumerable<ProductFromExercise11> ConcatenateByProductName(this List<ProductFromExercise11> firstListOfProducts, List<ProductFromExercise11> secondListOfProducts)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(firstListOfProducts));
+        ArgumentException.ThrowIfNullOrEmpty(nameof(secondListOfProducts));
+        return firstListOfProducts.Concat(secondListOfProducts)
+            .GroupBy(product => product.Name)
+            .Select(group => new ProductFromExercise11(group.Key, group.Sum(q => q.Quantity)));
+    }
+
     private static bool ArePythagoreanTriplets(int a, int b, int c)
     {
         return a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a;
