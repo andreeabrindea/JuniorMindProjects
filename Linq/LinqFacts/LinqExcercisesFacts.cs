@@ -1,3 +1,4 @@
+using System.Data;
 using Xunit;
 
 namespace Linq.Facts;
@@ -480,24 +481,24 @@ public class LinqExcercisesFacts
         Assert.False(sudoku.IsValidSudokuBoard());
     }
 
-    // [Fact]
-    // public void SolvePostfixNotationExpression_InputIsValid()
-    // {
-    //     string postfixExpression = "3 4 + 2 * 7 /";
-    //     Assert.Equal(2, postfixExpression.SolvePostfixNotationExpression());
-    // }
-    //
-    // [Fact]
-    // public void SolvePostfixNotationExpression_InputIsMissingOperators()
-    // {
-    //     string postfixExpression = "3 4 + 2 * ";
-    //     Assert.Throws<InvalidExpressionException>(() => postfixExpression.SolvePostfixNotationExpression());
-    // }
-    //
-    // [Fact]
-    // public void SolvePostfixNotationExpression_InputIsMissingOperands()
-    // {
-    //     string postfixExpression = "3 4 + * 7 / ";
-    //     Assert.Throws<InvalidExpressionException>(() => postfixExpression.SolvePostfixNotationExpression());
-    // }
+    [Fact]
+    public void SolvePostfixNotationExpression_InputIsValid()
+    {
+        string postfixExpression = "3 4 + 2 * 7 /";
+        Assert.Equal(2, postfixExpression.SolvePostfixNotationExpression());
+    }
+
+    [Fact]
+    public void SolvePostfixNotationExpression_InputIsMissingOperators()
+    {
+        string postfixExpression = "3 4 + 2 * ";
+        Assert.Throws<InvalidExpressionException>(() => postfixExpression.SolvePostfixNotationExpression());
+    }
+
+    [Fact]
+    public void SolvePostfixNotationExpression_InputIsMissingOperands()
+    {
+        string postfixExpression = "3 4 + * 7 / ";
+        Assert.Throws<InvalidExpressionException>(() => postfixExpression.SolvePostfixNotationExpression());
+    }
 }

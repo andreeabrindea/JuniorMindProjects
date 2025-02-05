@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Linq;
 
 public static class LinqExercises
@@ -188,6 +190,46 @@ public static class LinqExercises
                 var subgridElements = Enumerable.Range(0, 9).Select(i => board[index / 3 * 3 + i / 3][index % 3 * 3 + i % 3]);
                 return !HasDuplicates(subgridElements) && HasAllElementsDigits(subgridElements);
             });
+    }
+
+    public static double SolvePostfixNotationExpression(this string input)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        Dictionary<string, Func<double, double, double>> operators = new()
+        {
+            { "-", (a, b) => a - b },
+            { "+", (a, b) => a + b },
+            { "*", (a, b) => a * b },
+            { "/", (a, b) => a / b }
+        };
+
+        Stack<double> stack = new();
+        input.Split(' ')
+            .ToList()
+            .ForEach(element =>
+            {
+                if (double.TryParse(element, out double number))
+                {
+                    stack.Push(number);
+                }
+                else if (operators.ContainsKey(element))
+                {
+                    if (stack.Count < 2)
+                    {
+                        throw new InvalidExpressionException("Insufficient operands for the operation.");
+                    }
+
+                    double a = stack.Pop();
+                    double b = stack.Pop();
+                    stack.Push(operators[element](b, a));
+                }
+                else
+                {
+                    throw new InvalidExpressionException("Invalid token.");
+                }
+            });
+
+        return stack.Count == 1 ? stack.Pop() : 0;
     }
 
     private static bool HasSudokuValidLength(this int[][] board, int rowAndColumnLength) =>
