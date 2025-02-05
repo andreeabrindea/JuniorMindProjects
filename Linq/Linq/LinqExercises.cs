@@ -1,5 +1,3 @@
-using System.Data;
-
 namespace Linq;
 
 public static class LinqExercises
@@ -103,6 +101,33 @@ public static class LinqExercises
             .SelectMany((b, j) => nums.Skip(i + j + skipPositionsForSecondIterator)
                 .Where(c => ArePythagoreanTriplets(a, b, c))
             .Select(c => (a, b, c))));
+    }
+
+    public static IEnumerable<ProductFromExercise10> FilterProductsContainAnyFeature(
+        this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
+    {
+        ArgumentNullException.ThrowIfNull(products);
+        ArgumentNullException.ThrowIfNull(features);
+        HashSet<Feature> featuresSet = new(features);
+        return products.Where(product => featuresSet.Any(feature => product.Features.Contains(feature)));
+    }
+
+    public static IEnumerable<ProductFromExercise10> FilterProductsContainAllFeatures(
+        this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
+    {
+        ArgumentNullException.ThrowIfNull(products);
+        ArgumentNullException.ThrowIfNull(features);
+        HashSet<Feature> featuresSet = new(features);
+        return products.Where(product => featuresSet.All(feature => product.Features.Contains(feature)));
+    }
+
+    public static IEnumerable<ProductFromExercise10> FilterProductsThatDoNotContainAnyFeature(
+        this IEnumerable<ProductFromExercise10> products, IEnumerable<Feature> features)
+    {
+        ArgumentNullException.ThrowIfNull(products);
+        ArgumentNullException.ThrowIfNull(features);
+        HashSet<Feature> featuresSet = new(features);
+        return products.Where(product => featuresSet.All(feature => !product.Features.Contains(feature)));
     }
 
     private static bool ArePythagoreanTriplets(int a, int b, int c)

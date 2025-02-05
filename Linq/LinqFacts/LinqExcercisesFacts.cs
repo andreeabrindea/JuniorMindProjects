@@ -1,4 +1,3 @@
-using System.Data;
 using Xunit;
 
 namespace Linq.Facts;
@@ -207,93 +206,93 @@ public class LinqExcercisesFacts
         Assert.Equal(array.GetPythagoreanTriplets(), new List<(int, int, int)>());
     }
 
-    // [Fact]
-    // public void FilterProductsContainAnyFeature_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith2Elements()
-    // {
-    //     var firstFeature = new Feature(1);
-    //     var secondFeature = new Feature(8);
-    //     List<Feature> features1 = new() { firstFeature, new Feature(2), new Feature(3) };
-    //     List<Feature> features2 = new() { new Feature(9), new Feature(12), new Feature(53) };
-    //     List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
-    //
-    //     ProductFromExercise10 product1 = new("product1", features1);
-    //     ProductFromExercise10 product2 = new("product2", features2);
-    //     ProductFromExercise10 product3 = new("product3", features3);
-    //
-    //     List<Feature> featuresToCheck = new() { firstFeature, new Feature(7), secondFeature };
-    //     List<ProductFromExercise10> products = new() { product1, product2, product3 };
-    //
-    //     Assert.True(
-    //         products.FilterProductsContainAnyFeature(featuresToCheck)
-    //             .SequenceEqual(new List<ProductFromExercise10>() { product1, product3 }));
-    // }
-    //
-    // [Fact]
-    // public void FilterProductsContainAnyFeature_InputIsNull_ShouldThrowException()
-    // {
-    //     List<Feature> features = new() { new Feature(1), new Feature(2) };
-    //     List<ProductFromExercise10> products = null;
-    //     Assert.Throws<ArgumentNullException>(() => products.FilterProductsContainAnyFeature(features).ToList());
-    // }
-    //
-    // [Fact]
-    // public void FilterProductsContainAllFeatures_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith1Element()
-    // {
-    //     var firstFeature = new Feature(1);
-    //     var secondFeature = new Feature(8);
-    //     List<Feature> features1 = new() { firstFeature, secondFeature, new Feature(3) };
-    //     List<Feature> features2 = new() { new Feature(9), firstFeature, new Feature(53) };
-    //     List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
-    //
-    //     ProductFromExercise10 product1 = new("product1", features1);
-    //     ProductFromExercise10 product2 = new("product2", features2);
-    //     ProductFromExercise10 product3 = new("product3", features3);
-    //
-    //     List<Feature> featuresToCheck = new() { firstFeature, secondFeature };
-    //     List<ProductFromExercise10> products = new() { product1, product2, product3 };
-    //
-    //     Assert.True(
-    //         products.FilterProductsContainAllFeatures(featuresToCheck)
-    //             .SequenceEqual(new List<ProductFromExercise10> { product1 }));
-    // }
-    //
-    // [Fact]
-    // public void FilterProductsContainAllFeatures_InputIsNull_ShouldThrowException()
-    // {
-    //     List<Feature> features = new() { new Feature(1), new Feature(2) };
-    //     List<ProductFromExercise10> products = null;
-    //     Assert.Throws<ArgumentNullException>(() => products.FilterProductsContainAllFeatures(features).ToList());
-    // }
-    //
-    // [Fact]
-    // public void FilterProductsDoNotContainAnyFeature_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith1Element()
-    // {
-    //     var firstFeature = new Feature(1);
-    //     var secondFeature = new Feature(8);
-    //     List<Feature> features1 = new() { firstFeature, secondFeature, new Feature(3) };
-    //     List<Feature> features2 = new() { new Feature(9), new Feature(45), new Feature(53) };
-    //     List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
-    //
-    //     ProductFromExercise10 product1 = new("product1", features1);
-    //     ProductFromExercise10 product2 = new("product2", features2);
-    //     ProductFromExercise10 product3 = new("product3", features3);
-    //
-    //     List<Feature> featuresToCheck = new() { firstFeature, secondFeature };
-    //     List<ProductFromExercise10> products = new() { product1, product2, product3 };
-    //
-    //     Assert.True(
-    //         products.FilterProductsThatDoNotContainAnyFeature(featuresToCheck)
-    //             .SequenceEqual(new List<ProductFromExercise10> { product2 }));
-    // }
-    //
-    // [Fact]
-    // public void FilterProductsDoNotContainAnyFeature_InputIsNull_ShouldThrowException()
-    // {
-    //     List<Feature> features = new() { new Feature(1), new Feature(2) };
-    //     List<ProductFromExercise10> products = null;
-    //     Assert.Throws<ArgumentNullException>(() => products.FilterProductsThatDoNotContainAnyFeature(features).ToList());
-    // }
-    //
+    [Fact]
+    public void FilterProductsContainAnyFeature_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith2Elements()
+    {
+        var firstFeature = new Feature(1);
+        var secondFeature = new Feature(8);
+        List<Feature> features1 = new() { firstFeature, new Feature(2), new Feature(3) };
+        List<Feature> features2 = new() { new Feature(9), new Feature(12), new Feature(53) };
+        List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
+
+        ProductFromExercise10 product1 = new("product1", features1);
+        ProductFromExercise10 product2 = new("product2", features2);
+        ProductFromExercise10 product3 = new("product3", features3);
+
+        List<Feature> featuresToCheck = new() { firstFeature, new Feature(7), secondFeature };
+        List<ProductFromExercise10> products = new() { product1, product2, product3 };
+
+        Assert.True(
+            products.FilterProductsContainAnyFeature(featuresToCheck)
+                .SequenceEqual(new List<ProductFromExercise10>() { product1, product3 }));
+    }
+
+    [Fact]
+    public void FilterProductsContainAnyFeature_InputIsNull_ShouldThrowException()
+    {
+        List<Feature> features = new() { new Feature(1), new Feature(2) };
+        List<ProductFromExercise10> products = null;
+        Assert.Throws<ArgumentNullException>(() => products.FilterProductsContainAnyFeature(features).ToList());
+    }
+
+    [Fact]
+    public void FilterProductsContainAllFeatures_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith1Element()
+    {
+        var firstFeature = new Feature(1);
+        var secondFeature = new Feature(8);
+        List<Feature> features1 = new() { firstFeature, secondFeature, new Feature(3) };
+        List<Feature> features2 = new() { new Feature(9), firstFeature, new Feature(53) };
+        List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
+
+        ProductFromExercise10 product1 = new("product1", features1);
+        ProductFromExercise10 product2 = new("product2", features2);
+        ProductFromExercise10 product3 = new("product3", features3);
+
+        List<Feature> featuresToCheck = new() { firstFeature, secondFeature };
+        List<ProductFromExercise10> products = new() { product1, product2, product3 };
+
+        Assert.True(
+            products.FilterProductsContainAllFeatures(featuresToCheck)
+                .SequenceEqual(new List<ProductFromExercise10> { product1 }));
+    }
+
+    [Fact]
+    public void FilterProductsContainAllFeatures_InputIsNull_ShouldThrowException()
+    {
+        List<Feature> features = new() { new Feature(1), new Feature(2) };
+        List<ProductFromExercise10> products = null;
+        Assert.Throws<ArgumentNullException>(() => products.FilterProductsContainAllFeatures(features).ToList());
+    }
+
+    [Fact]
+    public void FilterProductsDoNotContainAnyFeature_InputHasSeveralElements_OutputShouldBeAnIEnumerableWith1Element()
+    {
+        var firstFeature = new Feature(1);
+        var secondFeature = new Feature(8);
+        List<Feature> features1 = new() { firstFeature, secondFeature, new Feature(3) };
+        List<Feature> features2 = new() { new Feature(9), new Feature(45), new Feature(53) };
+        List<Feature> features3 = new() { secondFeature, new Feature(54), new Feature(99) };
+
+        ProductFromExercise10 product1 = new("product1", features1);
+        ProductFromExercise10 product2 = new("product2", features2);
+        ProductFromExercise10 product3 = new("product3", features3);
+
+        List<Feature> featuresToCheck = new() { firstFeature, secondFeature };
+        List<ProductFromExercise10> products = new() { product1, product2, product3 };
+
+        Assert.True(
+            products.FilterProductsThatDoNotContainAnyFeature(featuresToCheck)
+                .SequenceEqual(new List<ProductFromExercise10> { product2 }));
+    }
+
+    [Fact]
+    public void FilterProductsDoNotContainAnyFeature_InputIsNull_ShouldThrowException()
+    {
+        List<Feature> features = new() { new Feature(1), new Feature(2) };
+        List<ProductFromExercise10> products = null;
+        Assert.Throws<ArgumentNullException>(() => products.FilterProductsThatDoNotContainAnyFeature(features).ToList());
+    }
+
     // [Fact]
     // public void ConcatenateByProductName_InputHasSeveralObjectsInCommon_OutputShouldHave4Elements()
     // {
