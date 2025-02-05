@@ -145,6 +145,19 @@ public static class LinqExercises
         return testResults.GroupBy(t => t.FamilyId).Select(t => t.MaxBy(test => test.Score));
     }
 
+    public static IEnumerable<string> GetMostUsedWords(this string input, int numberOfWords)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(input);
+        char[] delimiterChars = { ' ', '.', ',', '\t' };
+        return input
+            .ToLower()
+            .Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries)
+            .GroupBy(word => word)
+            .OrderByDescending(p => p.Count())
+            .Select(p => p.Key)
+            .Take(numberOfWords);
+    }
+
     private static bool ArePythagoreanTriplets(int a, int b, int c)
     {
         return a * a + b * b == c * c || a * a + c * c == b * b || b * b + c * c == a * a;
