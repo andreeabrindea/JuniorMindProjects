@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitClient", "GitClient\GitClient.csproj", "{598B9499-C5E2-4D9E-B422-A35AD8833F03}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{598B9499-C5E2-4D9E-B422-A35AD8833F03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{598B9499-C5E2-4D9E-B422-A35AD8833F03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{598B9499-C5E2-4D9E-B422-A35AD8833F03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{598B9499-C5E2-4D9E-B422-A35AD8833F03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
