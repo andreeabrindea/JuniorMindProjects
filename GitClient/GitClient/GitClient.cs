@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GitClientApp;
@@ -11,9 +12,7 @@ public class GitClient
     public GitClient(string repositoryPath)
     {
         workingDirectory = repositoryPath;
-
-        // TODO: do not override and replace it with the actual path for each possible OS
-        gitExecutablePath = "/usr/bin/git";
+        gitExecutablePath = FindGitExecutable();
     }
 
     public List<CommitInfo> GetCommits()
@@ -95,4 +94,21 @@ public class GitClient
             throw new InvalidOperationException($"Failed to execute git command: {ex.Message}");
         }
     }
+
+    private string FindGitExecutable()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            return FindGitExecutableByCommonPaths(new[] { "/usr/bin/git", "/usr/local/bin/git" });
+        }
+
+        return FindGitExecutableByCommonPaths(new[]
+        {
+            @"C:\Program Files\Git\bin\git.exe", @"C:\Program Files (x86)\Git\bin\git.exe"
+        });
+    }
+
+    private string FindGitExecutableByCommonPaths(string[] commonPaths)
+        => commonPaths.FirstOrDefault(File.Exists)
+           ?? throw new InvalidOperationException("Git is not installed on the machine.");
 }
