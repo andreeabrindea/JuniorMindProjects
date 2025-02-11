@@ -26,17 +26,11 @@ public class GitClient
         const int indexOfAuthor = 1;
         const int indexOfDate = 2;
         const int indexOfMessage = 3;
+
         foreach (var line in output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries))
         {
-            try
-            {
-                string[] entries = line.Split(',', 4);
-                commits.Add(new CommitInfo(entries[indexOfHash], entries[indexOfAuthor], DateTime.Parse(entries[indexOfDate]), entries[indexOfMessage]));
-            }
-            catch (InvalidDataException e)
-            {
-                throw new InvalidDataException($"Invalid output data format. {e.Message}");
-            }
+            string[] entries = line.Split(',');
+            commits.Add(new CommitInfo(entries[indexOfHash], entries[indexOfAuthor], DateTime.Parse(entries[indexOfDate]), entries[indexOfMessage]));
         }
 
         return commits;
