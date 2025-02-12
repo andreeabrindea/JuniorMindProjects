@@ -35,7 +35,7 @@ public class GitClient
     {
         ProcessStartInfo startInfo = new()
         {
-            FileName = gitExecutablePath,
+            FileName = "git",
             Arguments = arguments,
             WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
