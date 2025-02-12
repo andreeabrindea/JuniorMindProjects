@@ -99,16 +99,16 @@ public class GitClient
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
         {
-            return FindGitExecutableByCommonPaths(new[] { "/usr/bin/git", "/usr/local/bin/git" });
+            return CheckIfGitExecutableExistsInCommonPaths(new[] { "/usr/bin/git", "/usr/local/bin/git" });
         }
 
-        return FindGitExecutableByCommonPaths(new[]
+        return CheckIfGitExecutableExistsInCommonPaths(new[]
         {
             @"C:\Program Files\Git\bin\git.exe", @"C:\Program Files (x86)\Git\bin\git.exe"
         });
     }
 
-    private string FindGitExecutableByCommonPaths(string[] commonPaths)
+    private string CheckIfGitExecutableExistsInCommonPaths(string[] commonPaths)
         => commonPaths.FirstOrDefault(File.Exists)
            ?? throw new InvalidOperationException("Git is not installed on the machine.");
 }
