@@ -7,7 +7,7 @@ internal class Program
         GitClient gitClient = new(Directory.GetCurrentDirectory());
         foreach (var r in gitClient.GetCommits())
         {
-            Console.WriteLine(r.Author);
+            Console.WriteLine(r.Author + " " + r.Date + " " + r.Message);
         }
     }
 }
