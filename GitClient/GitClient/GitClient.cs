@@ -1,18 +1,15 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GitClientApp;
 
 public class GitClient
 {
-    private readonly string gitExecutablePath;
     private readonly string workingDirectory;
 
     public GitClient(string repositoryPath)
     {
         workingDirectory = repositoryPath;
-        gitExecutablePath = FindGitExecutable();
     }
 
     public List<CommitInfo> GetCommits()
@@ -90,21 +87,4 @@ public class GitClient
             throw new InvalidOperationException($"Failed to execute git command: {ex.Message}");
         }
     }
-
-    private string FindGitExecutable()
-    {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
-        {
-            return CheckIfGitExecutableExistsInCommonPaths(new[] { "/usr/bin/git", "/usr/local/bin/git" });
-        }
-
-        return CheckIfGitExecutableExistsInCommonPaths(new[]
-        {
-            @"C:\Program Files\Git\bin\git.exe", @"C:\Program Files (x86)\Git\bin\git.exe"
-        });
-    }
-
-    private string CheckIfGitExecutableExistsInCommonPaths(string[] commonPaths)
-        => commonPaths.FirstOrDefault(File.Exists)
-           ?? throw new InvalidOperationException("Git is not installed on the machine.");
 }
