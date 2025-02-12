@@ -17,7 +17,6 @@ public class GitClient
 
     public List<CommitInfo> GetCommits()
     {
-        List<CommitInfo> commits = new();
         const string command = "log --pretty=format:\"%H,%an,%ad,%s\" --date=iso";
         string output = ExecuteGitCommand(command);
         char[] newLineEscapeCharacters = { '\r', '\n' };
@@ -26,13 +25,10 @@ public class GitClient
         const int indexOfDate = 2;
         const int indexOfMessage = 3;
 
-        foreach (var line in output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries))
-        {
-            string[] entries = line.Split(',');
-            commits.Add(new CommitInfo(entries[indexOfHash], entries[indexOfAuthor], DateTime.Parse(entries[indexOfDate]), entries[indexOfMessage]));
-        }
-
-        return commits;
+        return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Split(','))
+            .Select(entries =>
+                new CommitInfo(entries[indexOfHash], entries[indexOfAuthor], DateTime.Parse(entries[indexOfDate]), entries[indexOfMessage])).ToList();
     }
 
     private string ExecuteGitCommand(string arguments)
