@@ -8,7 +8,7 @@ internal class Program
         const int codeForYellow = 33;
         const int codeForBlue = 34;
         const int codeForMagenta = 35;
-        const int codeForGreen = 36;
+        const int codeForGreen = 32;
         foreach (var r in gitClient.GetCommits())
         {
             Console.WriteLine(
