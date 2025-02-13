@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace GitClientApp;
@@ -25,7 +26,7 @@ public class GitClient
         return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
             .Select(line => line.Split(','))
             .Select(entries =>
-                new CommitInfo(entries[indexOfHash], entries[indexOfAuthor], DateTime.Parse(entries[indexOfDate]), entries[indexOfMessage])).ToList();
+                new CommitInfo(entries[indexOfHash], DateTime.Parse(entries[indexOfDate],  CultureInfo.CreateSpecificCulture("ro-Ro")), entries[indexOfAuthor], entries[indexOfMessage])).ToList();
     }
 
     private string ExecuteGitCommand(string arguments)
