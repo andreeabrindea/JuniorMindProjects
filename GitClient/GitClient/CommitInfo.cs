@@ -2,11 +2,11 @@ namespace GitClientApp;
 
 public class CommitInfo
 {
-    public CommitInfo(string hash, string author, DateTime date, string message)
+    public CommitInfo(string hash, DateTime date, string author, string message)
     {
         Hash = hash;
-        Author = author;
         Date = date;
+        Author = author;
         Message = message;
     }
 
