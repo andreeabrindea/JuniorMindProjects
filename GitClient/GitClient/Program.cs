@@ -8,7 +8,6 @@ internal class Program
         const int codeForYellow = 33;
         const int codeForBlue = 34;
         const int codeForMagenta = 35;
-        const int codeForGreen = 32;
         foreach (var r in gitClient.GetCommits())
         {
             Console.WriteLine(
@@ -16,7 +15,7 @@ internal class Program
                 $"\x1b[{codeForYellow}m{r.Hash}\x1b[0m",
                 $"\x1b[{codeForBlue}m{r.Date}\x1b[0m",
                 $"\x1b[{codeForMagenta}m{r.Author}\x1b[0m",
-                $"\x1b[{codeForGreen}m{r.Message}");
+                r.Message);
         }
     }
 }
