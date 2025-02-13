@@ -14,7 +14,7 @@ public class GitClient
 
     public List<CommitInfo> GetCommits()
     {
-        const string command = "log --pretty=format:\"%H,%an,%ad,%s\" --date=iso";
+        const string command = "log --pretty=format:\"%h,%an,%ad,%s\" --date=iso";
         string output = ExecuteGitCommand(command);
         char[] newLineEscapeCharacters = { '\r', '\n' };
         const int indexOfHash = 0;
