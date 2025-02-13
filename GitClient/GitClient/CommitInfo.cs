@@ -5,7 +5,7 @@ public class CommitInfo
     public CommitInfo(string hash, DateTime date, string author, string message)
     {
         Hash = hash;
-        Date = date;
+        Date = date.ToString("dd/MM/yyyy");
         Author = author;
         Message = message;
     }
@@ -14,7 +14,7 @@ public class CommitInfo
 
     public string Author { get; set; }
 
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
 
     public string Message { get; set; }
 }
