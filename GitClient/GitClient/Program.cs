@@ -18,7 +18,9 @@ internal class Program
         const int codeForBlue = 34;
         const int codeForMagenta = 35;
         const int padRight = 28;
-        const int spacesBetween = 2 * 2 + 1 + 6 + 3 + 5;
+        const int spacesBetween = 2 * 3 + 2 + 6;
+        const int borderLength = 3;
+        const int three = 3;
         for (int i = 0; i < limit; i++)
         {
             if (i == currentLine)
@@ -26,21 +28,22 @@ internal class Program
                 Console.BackgroundColor = ConsoleColor.Yellow;
             }
 
-            int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length + commits[i].Message.Length + padRight + spacesBetween;
-            if (remainingSpace < currentLineLength)
+            int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length + commits[i].Message.Length + spacesBetween + borderLength;
+            if (remainingSpace < currentLineLength + three)
             {
-                commits[i].Message = commits[i].Message[..(currentLineLength - remainingSpace)];
+                int overlapDistance = currentLineLength - remainingSpace;
+                commits[i].Message = commits[i].Message.Length < overlapDistance ? "" : commits[i].Message.Substring(0, commits[i].Message.Length - overlapDistance - 1 - three) + "...";
             }
 
             Console.Write(
-                " {0, 0}  {1, 5}  {2, 5}  {3, 5} {4, 5} {5, 5}",
+                " {0} {1, 4} {2, 7} {3} {4} {5}",
                 "│",
                 i + 1,
                 $"\x1b[{codeForYellow}m{commits[i].Hash}\x1b[0m",
                 $"\x1b[{codeForBlue}m{commits[i].Date}\x1b[0m",
                 $"\x1b[{codeForMagenta}m{commits[i].Author}\x1b[0m".PadRight(padRight),
                 commits[i].Message);
-            for (int j = currentLineLength; j <= remainingSpace; j++)
+            for (int j = currentLineLength; j < remainingSpace - 1; j++)
             {
                 Console.Write(" ");
             }
@@ -102,7 +105,7 @@ internal class Program
         const string startCorner = " └";
         const string endCorner = "┘";
         Console.Write(startCorner);
-        for (int i = startCorner.Length + endCorner.Length; i < remainingSpace; i++)
+        for (int i = startCorner.Length + endCorner.Length; i < remainingSpace - 1; i++)
         {
             Console.Write(border);
         }
