@@ -6,91 +6,124 @@ internal class Program
     {
         GitClient gitClient = new(Directory.GetCurrentDirectory());
         var commits = gitClient.GetCommits();
-        DisplayCommits(commits, commits.Count, Console.WindowHeight);
-        MoveCursor(commits);
+        int currentWindowHeightAvailableForCommits = Console.WindowHeight - 3;
+        DisplayCommitsAndPanel(commits, currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits);
+        MoveCursor(commits, currentWindowHeightAvailableForCommits);
     }
 
-    private static void DisplayCommits(List<CommitInfo> commits, int currentLine, int limit)
+    private static void DisplayCommitsAndPanel(List<CommitInfo> commits, int currentLine, int lowerBound, int upperBound)
     {
-        int remainingSpace = Console.WindowWidth - 5;
-        DisplayPanelHeader(commits, currentLine + 1,  remainingSpace);
-        const int codeForYellow = 33;
-        const int codeForBlue = 34;
-        const int codeForMagenta = 35;
-        const int padRight = 28;
-        const int spacesBetween = 2 * 3 + 2 + 6;
-        const int borderLength = 3;
-        const int three = 3;
-        for (int i = 0; i < limit; i++)
+        int availableSpace = Console.WindowWidth - 5;
+        DisplayPanelHeader(commits, currentLine,  availableSpace);
+        const int ellipsisLength = 3;
+        const int spaceBetweenEntries = 5;
+        const int borderLineCountBefore = 1;
+        for (int i = lowerBound; i < upperBound; i++)
         {
-            if (i == currentLine)
+            string endBackgroundColor = i == currentLine ? "\x1b[0m" : "";
+            int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length +
+                                    commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore;
+
+            // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
+            if (availableSpace < currentLineLength + ellipsisLength)
             {
-                Console.BackgroundColor = ConsoleColor.Yellow;
+                int overlapDistance = currentLineLength - availableSpace;
+                currentLineLength -= commits[i].Message.Length;
+                commits[i].Message = commits[i].Message.Length < overlapDistance ? "" : commits[i].Message.Substring(0, commits[i].Message.Length - overlapDistance - 1 - ellipsisLength) + "...";
+                currentLineLength += commits[i].Message.Length + ellipsisLength;
             }
 
-            int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length + commits[i].Message.Length + spacesBetween + borderLength;
-            if (remainingSpace < currentLineLength + three)
-            {
-                int overlapDistance = currentLineLength - remainingSpace;
-                commits[i].Message = commits[i].Message.Length < overlapDistance ? "" : commits[i].Message.Substring(0, commits[i].Message.Length - overlapDistance - 1 - three) + "...";
-            }
+            DisplayCommitLine(commits, i, currentLine);
 
-            Console.Write(
-                " {0} {1, 4} {2, 7} {3} {4} {5}",
-                "│",
-                i + 1,
-                $"\x1b[{codeForYellow}m{commits[i].Hash}\x1b[0m",
-                $"\x1b[{codeForBlue}m{commits[i].Date}\x1b[0m",
-                $"\x1b[{codeForMagenta}m{commits[i].Author}\x1b[0m".PadRight(padRight),
-                commits[i].Message);
-            for (int j = currentLineLength; j < remainingSpace - 1; j++)
+            // Fill remaining space from the panel with empty spaces
+            for (int j = currentLineLength; j < availableSpace - 1; j++)
             {
                 Console.Write(" ");
             }
 
-            Console.Write("│");
+            Console.Write($"{endBackgroundColor}│");
             Console.WriteLine();
             Console.ResetColor();
         }
 
-        DisplayPanelFooter(remainingSpace);
+        DisplayPanelFooter(availableSpace);
     }
 
-    private static void MoveCursor(List<CommitInfo> commits)
+    private static void DisplayCommitLine(List<CommitInfo> commits, int i, int currentLine)
+    {
+        const int codeForYellow = 33;
+        const int codeForBlue = 34;
+        const int codeForMagenta = 35;
+        string backgroundColor = i == currentLine ? "\x1b[46m" : "";
+
+        Console.Write(
+            "{0} {1} {2} {3} {4}",
+            $"│{backgroundColor}",
+            $"\x1b[{codeForYellow}m{commits[i].Hash}\x1b[0m{backgroundColor}",
+            $"\x1b[{codeForBlue}m{commits[i].Date}\x1b[0m{backgroundColor}",
+            $"\x1b[{codeForMagenta}m{commits[i].Author}\x1b[0m{backgroundColor}",
+            $"{commits[i].Message}{backgroundColor}");
+    }
+
+    private static void MoveCursor(List<CommitInfo> commits, int availableSpace)
     {
         var readKey = Console.ReadKey(true).Key;
-        var currentPosition = Console.GetCursorPosition().Top;
-        const int left = 0;
+        var currentPosition = availableSpace - 1;
+        int upperBound = availableSpace - 1;
+        int lowerBound = 0;
         while (readKey != ConsoleKey.Escape)
         {
             readKey = Console.ReadKey().Key;
-            if (readKey == ConsoleKey.UpArrow)
+            switch (readKey)
             {
-                currentPosition--;
-                Console.Clear();
-                DisplayCommits(commits, currentPosition, Console.WindowHeight);
-                Console.SetCursorPosition(left, currentPosition - 1);
+                case ConsoleKey.UpArrow when currentPosition > 0:
+                    currentPosition--;
+                    if (currentPosition <= upperBound && lowerBound > 0 && upperBound > 0)
+                    {
+                        upperBound--;
+                        lowerBound--;
+                    }
+
+                    break;
+
+                case ConsoleKey.DownArrow when currentPosition < commits.Count:
+                    if (currentPosition < upperBound)
+                    {
+                        currentPosition++;
+                    }
+
+                    if (currentPosition == upperBound && lowerBound < commits.Count && upperBound < commits.Count)
+                    {
+                        upperBound++;
+                        lowerBound++;
+                    }
+
+                    break;
+
+                default:
+                    continue;
             }
 
-            if (readKey == ConsoleKey.DownArrow)
-            {
-                currentPosition++;
-                Console.Clear();
-                DisplayCommits(commits, currentPosition, Console.WindowHeight);
-                Console.SetCursorPosition(left, currentPosition + 1);
-            }
+            DisplayCommitsWithUpdatedCursorPosition(commits, currentPosition, lowerBound, upperBound);
         }
+    }
+
+    private static void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound)
+    {
+        Console.Clear();
+        DisplayCommitsAndPanel(commits, currentPosition, lowerBound, upperBound);
+        Console.SetCursorPosition(0, currentPosition + 1);
     }
 
     private static void DisplayPanelHeader(List<CommitInfo> commits, int currentCommitNumber, int remainingSpace)
     {
-        const string startCorner = " ┌";
+        const string startCorner = "┌";
         const string endCorner = "┐";
         const string delimiter = "/";
         const string border = "─";
         int currentLineLength = startCorner.Length + commits.Count.ToString().Length + delimiter.Length + endCorner.Length + currentCommitNumber.ToString().Length;
-        Console.Write(startCorner + commits.Count + delimiter + currentCommitNumber);
-        for (int i = currentLineLength; i < remainingSpace; i++)
+        Console.Write(startCorner + currentCommitNumber + delimiter + commits.Count);
+        for (int i = currentLineLength; i < remainingSpace - 1; i++)
         {
             Console.Write(border);
         }
@@ -102,7 +135,7 @@ internal class Program
     private static void DisplayPanelFooter(int remainingSpace)
     {
         const string border = "─";
-        const string startCorner = " └";
+        const string startCorner = "└";
         const string endCorner = "┘";
         Console.Write(startCorner);
         for (int i = startCorner.Length + endCorner.Length; i < remainingSpace - 1; i++)
