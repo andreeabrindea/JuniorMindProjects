@@ -1,10 +1,12 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace GitClientApp;
 
 public class GitClient
 {
+    private static readonly IFormatProvider DateTimeFormatProvider = CultureInfo.CurrentCulture;
     private readonly string workingDirectory;
 
     public GitClient(string repositoryPath)
@@ -25,7 +27,7 @@ public class GitClient
         return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
             .Select(line => line.Split(','))
             .Select(entries =>
-                new CommitInfo(entries[indexOfHash], DateTime.Parse(entries[indexOfDate]), entries[indexOfAuthor], entries[indexOfMessage])).ToList();
+                new CommitInfo(entries[indexOfHash], DateTime.Parse(entries[indexOfDate], DateTimeFormatProvider), entries[indexOfAuthor], entries[indexOfMessage])).ToList();
     }
 
     private string ExecuteGitCommand(string arguments)
