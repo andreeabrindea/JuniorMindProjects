@@ -7,14 +7,14 @@ internal class Program
         GitClient gitClient = new(Directory.GetCurrentDirectory());
         var commits = gitClient.GetCommits();
         int currentWindowHeightAvailableForCommits = Console.WindowHeight - 3;
-        DisplayCommitsAndPanel(commits, currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits);
-        MoveCursor(commits, currentWindowHeightAvailableForCommits);
+        int totalWidthAvailableSpace = Console.WindowWidth - 5;
+        DisplayCommitsAndPanel(commits, currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits, totalWidthAvailableSpace);
+        MoveCursor(commits, currentWindowHeightAvailableForCommits, totalWidthAvailableSpace);
     }
 
-    private static void DisplayCommitsAndPanel(List<CommitInfo> commits, int currentLine, int lowerBound, int upperBound)
+    private static void DisplayCommitsAndPanel(List<CommitInfo> commits, int currentLine, int lowerBound, int upperBound, int availableWidthSpace)
     {
-        int availableSpace = Console.WindowWidth - 5;
-        DisplayPanelHeader(commits, currentLine,  availableSpace);
+        DisplayPanelHeader(commits, currentLine,  availableWidthSpace);
         const int ellipsisLength = 3;
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
@@ -25,9 +25,9 @@ internal class Program
                                     commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore;
 
             // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
-            if (availableSpace < currentLineLength + ellipsisLength)
+            if (availableWidthSpace < currentLineLength + ellipsisLength)
             {
-                int overlapDistance = currentLineLength - availableSpace;
+                int overlapDistance = currentLineLength - availableWidthSpace;
                 currentLineLength -= commits[i].Message.Length;
                 commits[i].Message = commits[i].Message.Length < overlapDistance ? "" : commits[i].Message.Substring(0, commits[i].Message.Length - overlapDistance - 1 - ellipsisLength) + "...";
                 currentLineLength += commits[i].Message.Length + ellipsisLength;
@@ -36,7 +36,7 @@ internal class Program
             DisplayCommitLine(commits, i, currentLine);
 
             // Fill remaining space from the panel with empty spaces
-            for (int j = currentLineLength; j < availableSpace - 1; j++)
+            for (int j = currentLineLength; j < availableWidthSpace - 1; j++)
             {
                 Console.Write(" ");
             }
@@ -46,7 +46,7 @@ internal class Program
             Console.ResetColor();
         }
 
-        DisplayPanelFooter(availableSpace);
+        DisplayPanelFooter(availableWidthSpace);
     }
 
     private static void DisplayCommitLine(List<CommitInfo> commits, int i, int currentLine)
@@ -65,11 +65,11 @@ internal class Program
             $"{commits[i].Message}{backgroundColor}");
     }
 
-    private static void MoveCursor(List<CommitInfo> commits, int availableSpace)
+    private static void MoveCursor(List<CommitInfo> commits, int availableHeightSpace, int availableWidthSpace)
     {
         var readKey = Console.ReadKey(true).Key;
-        var currentPosition = availableSpace - 1;
-        int upperBound = availableSpace - 1;
+        var currentPosition = availableHeightSpace - 1;
+        int upperBound = availableHeightSpace - 1;
         int lowerBound = 0;
         while (readKey != ConsoleKey.Escape)
         {
@@ -104,14 +104,14 @@ internal class Program
                     continue;
             }
 
-            DisplayCommitsWithUpdatedCursorPosition(commits, currentPosition, lowerBound, upperBound);
+            DisplayCommitsWithUpdatedCursorPosition(commits, currentPosition, lowerBound, upperBound, availableWidthSpace);
         }
     }
 
-    private static void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound)
+    private static void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int availableWidthSpace)
     {
         Console.Clear();
-        DisplayCommitsAndPanel(commits, currentPosition, lowerBound, upperBound);
+        DisplayCommitsAndPanel(commits, currentPosition, lowerBound, upperBound, availableWidthSpace);
         Console.SetCursorPosition(0, currentPosition + 1);
     }
 
