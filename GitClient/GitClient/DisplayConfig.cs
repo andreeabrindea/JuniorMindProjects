@@ -55,8 +55,8 @@ public class DisplayConfig
     internal void MoveCursor(List<CommitInfo> commits)
     {
         var readKey = Console.ReadKey(true).Key;
-        var currentPosition = AvailableWidthSpace - 1;
-        int upperBound = AvailableWidthSpace - 1;
+        var currentPosition = WindowHeightForCommits;
+        int upperBound = WindowHeightForCommits;
         int lowerBound = 0;
         while (readKey != ConsoleKey.Escape)
         {
