@@ -25,7 +25,7 @@ public class DisplayConfig
         {
             string endBackgroundColor = i == currentLine ? "\x1b[0m" : "";
             int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length +
-                                    commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding;
+                                    commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding + 1;
 
             // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
             if (AvailableWidthSpace < currentLineLength + ellipsisLength)
