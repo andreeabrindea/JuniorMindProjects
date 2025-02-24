@@ -147,10 +147,9 @@ public class DisplayConfig
             $"{commits[i].Message}{backgroundColor}");
     }
 
-    private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int cursorPosition)
+    private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int scrollBarPosition)
     {
         Console.Clear();
-        DisplayCommitsAndPanel(currentPosition, lowerBound, upperBound, cursorPosition);
         Console.SetCursorPosition(0, currentPosition + 1);
     }
 
