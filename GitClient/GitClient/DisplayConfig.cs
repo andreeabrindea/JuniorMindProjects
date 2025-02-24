@@ -131,13 +131,12 @@ public class DisplayConfig
         string colorForDate = "\x1b[34m";
         string colorForAuthor = "\x1b[35m";
         string backgroundColor = "\x1b[46m";
-        const string whiteColor = "\x1b[20m";
 
         backgroundColor = i == currentLine ? backgroundColor : "";
-        colorForHash = i == currentLine ? whiteColor : colorForHash;
-        colorForDate = i == currentLine ? whiteColor : colorForDate;
-        colorForAuthor = i == currentLine ? whiteColor : colorForAuthor;
-        colorForHash = i == currentLine ? whiteColor : colorForHash;
+        colorForHash = i == currentLine ? "" : colorForHash;
+        colorForDate = i == currentLine ? "" : colorForDate;
+        colorForAuthor = i == currentLine ? "" : colorForAuthor;
+        colorForHash = i == currentLine ? "" : colorForHash;
         Console.Write(
             "{0} {1} {2} {3} {4} {5}",
             $"│{backgroundColor}",
