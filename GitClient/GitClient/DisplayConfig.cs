@@ -150,7 +150,8 @@ public class DisplayConfig
     private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int scrollBarPosition)
     {
         Console.Clear();
-        Console.SetCursorPosition(0, currentPosition + 1);
+        DisplayCommitsAndPanel(currentPosition, lowerBound, upperBound, scrollBarPosition);
+        Console.SetCursorPosition(0, Math.Min(currentPosition + 1, Console.BufferHeight));
     }
 
     private void DisplayPanelHeader(int currentCommitNumber, int remainingSpace)
