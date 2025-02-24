@@ -61,8 +61,6 @@ public class DisplayConfig
         int upperBound = WindowHeightForCommits;
         int lowerBound = 0;
         int scrollIndex = lowerBound;
-        int step = Commits.Count / 100;
-
         var readKey = Console.ReadKey(true).Key;
 
         while (readKey != ConsoleKey.Escape)
@@ -71,11 +69,11 @@ public class DisplayConfig
 
             if (readKey == ConsoleKey.UpArrow)
             {
-                HandleUpArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex, step);
+                HandleUpArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex);
             }
             else if (readKey == ConsoleKey.DownArrow)
             {
-                HandleDownArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex, step);
+                HandleDownArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex);
             }
             else
             {
@@ -86,7 +84,7 @@ public class DisplayConfig
         }
 }
 
-    private void HandleUpArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex, int step)
+    private void HandleUpArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex)
     {
         if (currentPosition <= 0)
         {
@@ -105,7 +103,7 @@ public class DisplayConfig
         scrollIndex = lowerBound + (int)((double)lowerBound / Commits.Count * (upperBound - lowerBound));
     }
 
-    private void HandleDownArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex, int step)
+    private void HandleDownArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex)
     {
         if (currentPosition == Commits.Count - 1)
         {
