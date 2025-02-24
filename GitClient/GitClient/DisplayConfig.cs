@@ -47,7 +47,7 @@ public class DisplayConfig
                 Console.Write(" ");
             }
 
-            Console.Write($"{endBackgroundColor}│");
+            Console.Write(i == cursorPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
             Console.ResetColor();
         }
@@ -57,45 +57,74 @@ public class DisplayConfig
 
     internal void MoveCursor()
     {
-        var readKey = Console.ReadKey(true).Key;
         var currentPosition = WindowHeightForCommits;
         int upperBound = WindowHeightForCommits;
         int lowerBound = 0;
+        int scrollIndex = lowerBound;
+        int step = Commits.Count / 100;
+
+        var readKey = Console.ReadKey(true).Key;
+
         while (readKey != ConsoleKey.Escape)
         {
             readKey = Console.ReadKey().Key;
-            switch (readKey)
+
+            if (readKey == ConsoleKey.UpArrow)
             {
-                case ConsoleKey.UpArrow when currentPosition > 0:
-                    currentPosition--;
-                    if (currentPosition <= upperBound && lowerBound > 0 && upperBound > 0)
-                    {
-                        upperBound--;
-                        lowerBound--;
-                    }
-
-                    break;
-
-                case ConsoleKey.DownArrow when currentPosition < commits.Count:
-                    if (currentPosition < upperBound)
-                    {
-                        currentPosition++;
-                    }
-
-                    if (currentPosition == upperBound && lowerBound < commits.Count && upperBound < commits.Count)
-                    {
-                        upperBound++;
-                        lowerBound++;
-                    }
-
-                    break;
-
-                default:
-                    continue;
+                HandleUpArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex, step);
+            }
+            else if (readKey == ConsoleKey.DownArrow)
+            {
+                HandleDownArrowNavigation(ref currentPosition, ref lowerBound, ref upperBound, ref scrollIndex, step);
+            }
+            else
+            {
+                continue;
             }
 
-            DisplayCommitsWithUpdatedCursorPosition(commits, currentPosition, lowerBound, upperBound);
+            DisplayCommitsWithUpdatedCursorPosition(Commits, currentPosition, lowerBound, upperBound, scrollIndex);
         }
+}
+
+    private void HandleUpArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex, int step)
+    {
+        if (currentPosition <= 0)
+        {
+            return;
+        }
+
+        currentPosition--;
+
+        if (currentPosition > upperBound || lowerBound <= 0 || upperBound <= 0)
+        {
+            return;
+        }
+
+        upperBound--;
+        lowerBound--;
+        scrollIndex = lowerBound + (int)((double)lowerBound / Commits.Count * (upperBound - lowerBound));
+    }
+
+    private void HandleDownArrowNavigation(ref int currentPosition, ref int lowerBound, ref int upperBound, ref int scrollIndex, int step)
+    {
+        if (currentPosition == Commits.Count - 1)
+        {
+            return;
+        }
+
+        if (currentPosition < upperBound)
+        {
+            currentPosition++;
+        }
+
+        if (currentPosition != upperBound || lowerBound >= Commits.Count || upperBound >= Commits.Count)
+        {
+            return;
+        }
+
+        upperBound++;
+        lowerBound++;
+        scrollIndex = lowerBound + (int)((double)currentPosition / Commits.Count * (upperBound - lowerBound));
     }
 
     private void DisplayCommitLine(List<CommitInfo> commits, int i, int currentLine)
