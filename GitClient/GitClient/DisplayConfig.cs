@@ -18,7 +18,7 @@ public class DisplayConfig
 
     public List<CommitInfo> Commits { get; }
 
-    internal void DisplayCommitsAndPanel(int currentLine, int lowerBound, int upperBound, int cursorPosition)
+    internal void DisplayCommitsAndPanel(int currentLine, int lowerBound, int upperBound, int scrollBarPosition)
     {
         DisplayPanelHeader(currentLine,  AvailableWidthSpace);
         const int ellipsisLength = 3;
@@ -47,7 +47,7 @@ public class DisplayConfig
                 Console.Write(" ");
             }
 
-            Console.Write(i == cursorPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
+            Console.Write(i == scrollBarPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
             Console.ResetColor();
         }
