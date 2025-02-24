@@ -129,18 +129,24 @@ public class DisplayConfig
 
     private void DisplayCommitLine(List<CommitInfo> commits, int i, int currentLine)
     {
-        const int codeForYellow = 33;
-        const int codeForBlue = 34;
-        const int codeForMagenta = 35;
-        string backgroundColor = i == currentLine ? "\x1b[46m" : "";
+        string colorForHash = "\x1b[33m";
+        string colorForDate = "\x1b[34m";
+        string colorForAuthor = "\x1b[35m";
+        string backgroundColor = "\x1b[46m";
+        const string whiteColor = "\x1b[20m";
 
+        backgroundColor = i == currentLine ? backgroundColor : "";
+        colorForHash = i == currentLine ? whiteColor : colorForHash;
+        colorForDate = i == currentLine ? whiteColor : colorForDate;
+        colorForAuthor = i == currentLine ? whiteColor : colorForAuthor;
+        colorForHash = i == currentLine ? whiteColor : colorForHash;
         Console.Write(
             "{0} {1} {2} {3} {4} {5}",
             $"│{backgroundColor}",
-            $"\x1b[{codeForYellow}m{commits[i].Hash}\x1b[0m{backgroundColor}",
-            $"\x1b[{codeForBlue}m{commits[i].Date}\x1b[0m{backgroundColor}",
+            $"{colorForHash}{commits[i].Hash}\x1b[0m{backgroundColor}",
+            $"{colorForDate}{commits[i].Date}\x1b[0m{backgroundColor}",
             "".PadLeft(Padding),
-            $"\x1b[{codeForMagenta}m{commits[i].Author}\x1b[0m{backgroundColor}",
+            $"{colorForAuthor}{commits[i].Author}\x1b[0m{backgroundColor}",
             $"{commits[i].Message}{backgroundColor}");
     }
 
