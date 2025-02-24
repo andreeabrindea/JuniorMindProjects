@@ -7,10 +7,9 @@ internal class Program
         GitClient gitClient = new(Directory.GetCurrentDirectory());
         int currentWindowHeightAvailableForCommits = Console.WindowHeight - 4;
         int totalWidthAvailableSpace = Console.WindowWidth - 1;
-
-        DisplayConfig displayConfig = new(totalWidthAvailableSpace, 5, currentWindowHeightAvailableForCommits);
         var commits = gitClient.GetCommits();
-        displayConfig.DisplayCommitsAndPanel(commits, currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits);
-        displayConfig.MoveCursor(commits);
+        DisplayConfig displayConfig = new(commits, totalWidthAvailableSpace, 5, currentWindowHeightAvailableForCommits);
+        displayConfig.DisplayCommitsAndPanel(currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits, 0);
+        displayConfig.MoveCursor();
     }
 }

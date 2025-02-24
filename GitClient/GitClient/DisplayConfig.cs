@@ -2,11 +2,12 @@ namespace GitClientApp;
 
 public class DisplayConfig
 {
-    public DisplayConfig(int availableWidthSpace, int padding, int windowHeightForCommits)
+    public DisplayConfig(List<CommitInfo> commits, int availableWidthSpace, int padding, int windowHeightForCommits)
     {
         AvailableWidthSpace = availableWidthSpace;
         Padding = padding;
         WindowHeightForCommits = windowHeightForCommits;
+        Commits = commits;
     }
 
     public int AvailableWidthSpace { get; }
@@ -15,28 +16,30 @@ public class DisplayConfig
 
     public int WindowHeightForCommits { get; }
 
-    internal void DisplayCommitsAndPanel(List<CommitInfo> commits, int currentLine, int lowerBound, int upperBound)
+    public List<CommitInfo> Commits { get; }
+
+    internal void DisplayCommitsAndPanel(int currentLine, int lowerBound, int upperBound, int cursorPosition)
     {
-        DisplayPanelHeader(commits, currentLine,  AvailableWidthSpace);
+        DisplayPanelHeader(currentLine,  AvailableWidthSpace);
         const int ellipsisLength = 3;
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
         for (int i = lowerBound; i < upperBound; i++)
         {
             string endBackgroundColor = i == currentLine ? "\x1b[0m" : "";
-            int currentLineLength = commits[i].Hash.Length + commits[i].Date.Length + commits[i].Author.Length +
-                                    commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding + 1;
+            int currentLineLength = Commits[i].Hash.Length + Commits[i].Date.Length + Commits[i].Author.Length +
+                                    Commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding + 1;
 
             // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
             if (AvailableWidthSpace < currentLineLength + ellipsisLength)
             {
                 int overlapDistance = currentLineLength - AvailableWidthSpace;
-                currentLineLength -= commits[i].Message.Length;
-                commits[i].Message = commits[i].Message.Length < overlapDistance ? "" : commits[i].Message.Substring(0, commits[i].Message.Length - overlapDistance - 1 - ellipsisLength) + "...";
-                currentLineLength += commits[i].Message.Length + ellipsisLength;
+                currentLineLength -= Commits[i].Message.Length;
+                Commits[i].Message = Commits[i].Message.Length < overlapDistance ? "" : Commits[i].Message.Substring(0, Commits[i].Message.Length - overlapDistance - 1 - ellipsisLength) + "...";
+                currentLineLength += Commits[i].Message.Length + ellipsisLength;
             }
 
-            DisplayCommitLine(commits, i, currentLine);
+            DisplayCommitLine(Commits, i, currentLine);
 
             // Fill remaining space from the panel with empty spaces
             for (int j = currentLineLength; j < AvailableWidthSpace - 1; j++)
@@ -52,7 +55,7 @@ public class DisplayConfig
         DisplayPanelFooter(AvailableWidthSpace);
     }
 
-    internal void MoveCursor(List<CommitInfo> commits)
+    internal void MoveCursor()
     {
         var readKey = Console.ReadKey(true).Key;
         var currentPosition = WindowHeightForCommits;
@@ -112,21 +115,21 @@ public class DisplayConfig
             $"{commits[i].Message}{backgroundColor}");
     }
 
-    private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound)
+    private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int cursorPosition)
     {
         Console.Clear();
-        DisplayCommitsAndPanel(commits, currentPosition, lowerBound, upperBound);
+        DisplayCommitsAndPanel(currentPosition, lowerBound, upperBound, cursorPosition);
         Console.SetCursorPosition(0, currentPosition + 1);
     }
 
-    private void DisplayPanelHeader(List<CommitInfo> commits, int currentCommitNumber, int remainingSpace)
+    private void DisplayPanelHeader(int currentCommitNumber, int remainingSpace)
     {
         const string startCorner = "┌";
         const string endCorner = "┐";
         const string delimiter = "/";
         const string border = "─";
-        int currentLineLength = startCorner.Length + commits.Count.ToString().Length + delimiter.Length + endCorner.Length + currentCommitNumber.ToString().Length;
-        Console.Write(startCorner + currentCommitNumber + delimiter + commits.Count);
+        int currentLineLength = startCorner.Length + Commits.Count.ToString().Length + delimiter.Length + endCorner.Length + currentCommitNumber.ToString().Length;
+        Console.Write(startCorner + (currentCommitNumber + 1) + delimiter + Commits.Count);
         for (int i = currentLineLength; i < remainingSpace - 1; i++)
         {
             Console.Write(border);
