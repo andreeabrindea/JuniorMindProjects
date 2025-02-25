@@ -80,7 +80,7 @@ public class DisplayConfig
                 continue;
             }
 
-            DisplayCommitsWithUpdatedCursorPosition(Commits, currentPosition, lowerBound, upperBound, scrollIndex);
+            DisplayCommitsWithUpdatedCursorPosition(currentPosition, lowerBound, upperBound, scrollIndex);
         }
 }
 
@@ -147,11 +147,10 @@ public class DisplayConfig
             $"{commits[i].Message}{backgroundColor}");
     }
 
-    private void DisplayCommitsWithUpdatedCursorPosition(List<CommitInfo> commits, int currentPosition, int lowerBound, int upperBound, int scrollBarPosition)
+    private void DisplayCommitsWithUpdatedCursorPosition(int currentPosition, int lowerBound, int upperBound, int scrollBarPosition)
     {
         Console.Clear();
         DisplayCommitsAndPanel(currentPosition, lowerBound, upperBound, scrollBarPosition);
-        Console.SetCursorPosition(0, Math.Min(currentPosition + 1, Console.BufferHeight));
     }
 
     private void DisplayPanelHeader(int currentCommitNumber, int remainingSpace)
