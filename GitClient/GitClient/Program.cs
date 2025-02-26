@@ -9,7 +9,7 @@ internal class Program
         int totalWidthAvailableSpace = Console.WindowWidth - 1;
         var commits = gitClient.GetCommits();
         DisplayConfig displayConfig = new(commits, totalWidthAvailableSpace, 5, currentWindowHeightAvailableForCommits);
-        displayConfig.DisplayCommitsAndPanel(currentWindowHeightAvailableForCommits, 0, currentWindowHeightAvailableForCommits, 0);
+        displayConfig.DisplayCommitsAndPanel(0, 0, currentWindowHeightAvailableForCommits, 0);
         displayConfig.MoveCursor();
     }
 }

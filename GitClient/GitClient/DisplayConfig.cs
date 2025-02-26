@@ -57,7 +57,7 @@ public class DisplayConfig
 
     internal void MoveCursor()
     {
-        var currentPosition = WindowHeightForCommits;
+        var currentPosition = 0;
         int upperBound = WindowHeightForCommits;
         int lowerBound = 0;
         int scrollIndex = lowerBound;
