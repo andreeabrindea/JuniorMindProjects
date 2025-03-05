@@ -16,6 +16,7 @@ public class DisplayConfig
         LowerBound = 0;
         UpperBound = windowHeightForCommits;
         ScrollBarPosition = 0;
+        Console.CursorVisible = false;
         isRunning = true;
         var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSize)
         {
