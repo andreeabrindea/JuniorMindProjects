@@ -4,9 +4,10 @@ public class DisplayConfig
 {
     private const int Padding = 5;
     const int BorderHeight = 2;
-    private readonly int availableWidthSpace = Console.WindowWidth - 1;
-    private readonly int windowHeightForCommits = Console.WindowHeight - BorderHeight;
-    private readonly int totalWidth = Console.WindowWidth;
+    private int availableWidthSpace = Console.WindowWidth - 1;
+    private int windowHeightForCommits = Console.WindowHeight - BorderHeight;
+    private int totalWidth = Console.WindowWidth;
+    private bool isRunning;
 
     public DisplayConfig(List<CommitInfo> commits)
     {
@@ -15,9 +16,13 @@ public class DisplayConfig
         LowerBound = 0;
         UpperBound = windowHeightForCommits;
         ScrollBarPosition = 0;
+        isRunning = true;
+        var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSize)
+        {
+            IsBackground = true
+        };
+        threadToCheckWindowSize.Start();
     }
-
-    internal event EventHandler? OnConsoleWidthChanged;
 
     internal List<CommitInfo> Commits { get; }
 
@@ -68,8 +73,6 @@ public class DisplayConfig
 
     internal void MoveCursor()
     {
-        int upperBound = windowHeightForCommits;
-        int scrollIndex = LowerBound;
         var readKey = Console.ReadKey(true).Key;
 
         while (readKey != ConsoleKey.Escape)
@@ -91,7 +94,9 @@ public class DisplayConfig
 
             DisplayCommitsWithUpdatedCursorPosition();
         }
-}
+
+        isRunning = false;
+    }
 
     private void HandleUpArrowNavigation()
     {
@@ -151,8 +156,8 @@ public class DisplayConfig
             $"│{backgroundColor}",
             $"{colorForHash}{commits[i].Hash}\x1b[0m{backgroundColor}",
             $"{colorForDate}{commits[i].Date}\x1b[0m{backgroundColor}",
-            "".PadLeft(Padding),
             $"{colorForAuthor}{commits[i].Author}\x1b[0m{backgroundColor}",
+            "".PadLeft(Padding),
             $"{commits[i].Message}{backgroundColor}");
     }
 
@@ -193,14 +198,21 @@ public class DisplayConfig
         Console.Write(endCorner);
     }
 
-    private void Update()
+    private void UpdateConsoleWindowSize()
     {
-        if (Console.WindowWidth == totalWidth)
+        while (isRunning)
         {
-            return;
-        }
+            if (Console.WindowWidth != totalWidth)
+            {
+                totalWidth = Console.WindowWidth;
+                availableWidthSpace = totalWidth - 1;
+                windowHeightForCommits = Console.WindowHeight - BorderHeight;
+                Console.Clear();
+                DisplayCommitsAndPanel();
+            }
 
-        OnConsoleWidthChanged?.Invoke(this, EventArgs.Empty);
-        Console.WriteLine("aaaaaaaaaaaa");
+            const int timeOut = 100;
+            Thread.Sleep(timeOut);
+        }
     }
 }
