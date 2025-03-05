@@ -47,15 +47,18 @@ public class DisplayConfig
                                     Commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding + 1;
 
             // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
+            string originalCommitMessage = Commits[i].Message;
             if (availableWidthSpace < currentLineLength + ellipsisLength)
             {
                 int overlapDistance = currentLineLength - availableWidthSpace;
                 currentLineLength -= Commits[i].Message.Length;
-                Commits[i].Message = Commits[i].Message.Length < overlapDistance ? "" : Commits[i].Message.Substring(0, Commits[i].Message.Length - overlapDistance - 1 - ellipsisLength) + "...";
+                int newCommitLength = Math.Max(0, Commits[i].Message.Length - overlapDistance - 1 - ellipsisLength);
+                Commits[i].Message = newCommitLength == 0 ? "" : Commits[i].Message[..newCommitLength] + "...";
                 currentLineLength += Commits[i].Message.Length + ellipsisLength;
             }
 
             DisplayCommitLine(Commits, i);
+            Commits[i].Message = originalCommitMessage;
 
             // Fill remaining space from the panel with empty spaces
             for (int j = currentLineLength; j < availableWidthSpace - 1; j++)
@@ -205,7 +208,7 @@ public class DisplayConfig
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
-                availableWidthSpace = totalWidth - 1;
+                availableWidthSpace = Console.WindowWidth - 1;
                 windowHeightForCommits = Console.WindowHeight - BorderHeight;
                 Console.Clear();
                 DisplayCommitsAndPanel();
