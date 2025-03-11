@@ -3,7 +3,7 @@ namespace GitClientApp;
 public class DisplayConfig
 {
     private const int Padding = 5;
-    const int BorderHeight = 2;
+    private const int BorderHeight = 2;
     private int availableWidthSpace = Console.WindowWidth - 1;
     private int windowHeightForCommits = Console.WindowHeight - BorderHeight;
     private int totalWidth = Console.WindowWidth;
@@ -210,7 +210,13 @@ public class DisplayConfig
             {
                 totalWidth = Console.WindowWidth;
                 availableWidthSpace = Console.WindowWidth - 1;
-                windowHeightForCommits = Console.WindowHeight - BorderHeight;
+                Console.Clear();
+                DisplayCommitsAndPanel();
+            }
+
+            if (Console.WindowHeight - BorderHeight != windowHeightForCommits)
+            {
+                UpdateBounds();
                 Console.Clear();
                 DisplayCommitsAndPanel();
             }
@@ -218,5 +224,27 @@ public class DisplayConfig
             const int timeOut = 100;
             Thread.Sleep(timeOut);
         }
+    }
+
+    private void UpdateBounds()
+    {
+        int difference = Console.WindowHeight - BorderHeight - windowHeightForCommits;
+        if (UpperBound + difference >= 0 && UpperBound + difference <= Commits.Count)
+        {
+            UpperBound += difference;
+        }
+
+        windowHeightForCommits = Console.WindowHeight - BorderHeight;
+        if (CurrentLine >= UpperBound)
+        {
+            CurrentLine = UpperBound - 1;
+        }
+
+        if (CurrentLine >= LowerBound)
+        {
+            return;
+        }
+
+        CurrentLine = LowerBound + 1;
     }
 }
