@@ -177,7 +177,7 @@ public class DisplayConfig
         const string endCorner = "┐";
         const string delimiter = "/";
         const string border = "─";
-        int currentLineLength = startCorner.Length + Commits.Count.ToString().Length + delimiter.Length + endCorner.Length + CurrentLine.ToString().Length;
+        int currentLineLength = startCorner.Length + Commits.Count.ToString().Length + delimiter.Length + endCorner.Length + (CurrentLine + 1).ToString().Length;
         Console.Write(startCorner + (CurrentLine + 1) + delimiter + Commits.Count);
         for (int i = currentLineLength; i < availableWidthSpace - 1; i++)
         {
