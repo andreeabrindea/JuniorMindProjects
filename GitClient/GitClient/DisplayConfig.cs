@@ -278,6 +278,11 @@ public class DisplayConfig
     private void UpdateBounds()
     {
         int difference = Console.WindowHeight - BorderHeight - windowHeightForCommits;
+        if (UpperBound == Commits.Count)
+        {
+            LowerBound = difference < 0 ? LowerBound : LowerBound + BorderHeight - (Console.WindowHeight - (UpperBound - LowerBound));
+        }
+
         if (UpperBound + difference >= 0 && UpperBound + difference <= Commits.Count)
         {
             UpperBound += difference;
