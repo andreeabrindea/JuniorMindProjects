@@ -38,6 +38,7 @@ public class DisplayConfig
 
     internal void DisplayCommitsAndPanel()
     {
+        Console.SetCursorPosition(0, 0);
         DisplayPanelHeader();
         const int ellipsisLength = 3;
         const int spaceBetweenEntries = 5;
@@ -164,12 +165,6 @@ public class DisplayConfig
             $"{colorForAuthor}{commits[i].Author}\x1b[0m{backgroundColor}",
             "".PadLeft(Padding),
             $"{commits[i].Message}{backgroundColor}");
-    }
-
-    private void DisplayCommitsWithUpdatedCursorPosition()
-    {
-        Console.SetCursorPosition(0, 0);
-        DisplayCommitsAndPanel();
     }
 
     private void DisplayPanelHeader()
