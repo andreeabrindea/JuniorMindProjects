@@ -23,6 +23,7 @@ public class DisplayConfig
             IsBackground = true
         };
         threadToCheckWindowSize.Start();
+        threadToCheckWindowSize.Priority = ThreadPriority.Highest;
     }
 
     internal List<CommitInfo> Commits { get; }
@@ -204,24 +205,30 @@ public class DisplayConfig
 
     private void UpdateConsoleWindowSize()
     {
+        bool needsRedraw = false;
         while (isRunning)
         {
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
                 availableWidthSpace = Console.WindowWidth - 1;
-                Console.Clear();
-                DisplayCommitsAndPanel();
+                needsRedraw = true;
             }
 
             if (Console.WindowHeight - BorderHeight != windowHeightForCommits)
             {
                 UpdateBounds();
-                Console.Clear();
-                DisplayCommitsAndPanel();
+                needsRedraw = true;
             }
 
-            const int timeOut = 100;
+            if (needsRedraw)
+            {
+                Console.Clear();
+                DisplayCommitsAndPanel();
+                needsRedraw = false;
+            }
+
+            const int timeOut = 50;
             Thread.Sleep(timeOut);
         }
     }
