@@ -224,6 +224,7 @@ public class DisplayConfig
             if (needsRedraw)
             {
                 Console.Clear();
+                Console.WriteLine("\x1b[3J");
                 DisplayCommitsAndPanel();
                 needsRedraw = false;
             }
