@@ -2,9 +2,8 @@ namespace GitClientApp;
 
 public class DisplayConfig
 {
-    private const int Padding = 5;
     private const int BorderHeight = 2;
-    private int availableWidthSpace = Console.WindowWidth - 1;
+    private int availableWidthSpace = Console.WindowWidth - 2;
     private int windowHeightForCommits = Console.WindowHeight - BorderHeight;
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
@@ -40,31 +39,22 @@ public class DisplayConfig
     {
         Console.SetCursorPosition(0, 0);
         DisplayPanelHeader();
-        const int ellipsisLength = 3;
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
+        const int hashColumnWidth = 8;
+        const int dateColumnWidth = 12;
+        const int authorColumnWidth = 20;
         for (int i = LowerBound; i < UpperBound; i++)
         {
             string endBackgroundColor = i == CurrentLine ? "\x1b[0m" : "";
-            int currentLineLength = Commits[i].Hash.Length + Commits[i].Date.Length + Commits[i].Author.Length +
-                                    Commits[i].Message.Length + spaceBetweenEntries + borderLineCountBefore + Padding + 1;
+            int currentLineLength = hashColumnWidth + dateColumnWidth + authorColumnWidth + spaceBetweenEntries + borderLineCountBefore;
+            int messageColumnWidth = Math.Max(availableWidthSpace - currentLineLength, 1);
+            currentLineLength += messageColumnWidth;
 
-            // Check if the current line length is bigger than the space available and add an ellipsis to mark that the text was trimmed
-            string originalCommitMessage = Commits[i].Message;
-            if (availableWidthSpace < currentLineLength + ellipsisLength)
-            {
-                int overlapDistance = currentLineLength - availableWidthSpace;
-                currentLineLength -= Commits[i].Message.Length;
-                int newCommitLength = Math.Max(0, Commits[i].Message.Length - overlapDistance - 1 - ellipsisLength);
-                Commits[i].Message = newCommitLength == 0 ? "" : Commits[i].Message[..newCommitLength] + "...";
-                currentLineLength += Commits[i].Message.Length + ellipsisLength;
-            }
-
-            DisplayCommitLine(Commits, i);
-            Commits[i].Message = originalCommitMessage;
+            DisplayCommitLine(Commits, i, messageColumnWidth);
 
             // Fill remaining space from the panel with empty spaces
-            for (int j = currentLineLength; j < availableWidthSpace - 1; j++)
+            for (int j = currentLineLength; j < availableWidthSpace; j++)
             {
                 Console.Write(" ");
             }
@@ -191,7 +181,7 @@ public class DisplayConfig
         ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
     }
 
-    private void DisplayCommitLine(List<CommitInfo> commits, int i)
+    private void DisplayCommitLine(List<CommitInfo> commits, int i, int messageColumnWidth)
     {
         string colorForHash = "\x1b[33m";
         string colorForDate = "\x1b[34m";
@@ -203,14 +193,34 @@ public class DisplayConfig
         colorForDate = i == CurrentLine ? "" : colorForDate;
         colorForAuthor = i == CurrentLine ? "" : colorForAuthor;
         colorForHash = i == CurrentLine ? "" : colorForHash;
+
+        const int hashColumnWidth = 8;
+        const int dateColumnWidth = 12;
+        const int authorColumnWidth = 20;
+
+        string hash = commits[i].Hash.Length > hashColumnWidth
+            ? commits[i].Hash.Substring(0, hashColumnWidth - 1) + "…"
+            : commits[i].Hash.PadRight(hashColumnWidth);
+
+        string date = commits[i].Date.Length > dateColumnWidth
+            ? commits[i].Date.Substring(0, dateColumnWidth - 1) + "…"
+            : commits[i].Date.PadRight(dateColumnWidth);
+
+        string author = commits[i].Author.Length > authorColumnWidth
+            ? commits[i].Author.Substring(0, authorColumnWidth - 1) + "…"
+            : commits[i].Author.PadRight(authorColumnWidth);
+
+        string message = commits[i].Message.Length > messageColumnWidth
+            ? commits[i].Message.Substring(0, messageColumnWidth - 1) + "…"
+            : commits[i].Message.PadRight(messageColumnWidth);
+
         Console.Write(
-            "{0} {1} {2} {3} {4} {5}",
+            "{0} {1} {2} {3} {4}",
             $"│{backgroundColor}",
-            $"{colorForHash}{commits[i].Hash}\x1b[0m{backgroundColor}",
-            $"{colorForDate}{commits[i].Date}\x1b[0m{backgroundColor}",
-            $"{colorForAuthor}{commits[i].Author}\x1b[0m{backgroundColor}",
-            "".PadLeft(Padding),
-            $"{commits[i].Message}{backgroundColor}");
+            $"{colorForHash}{hash}\x1b[0m{backgroundColor}",
+            $"{colorForDate}{date}\x1b[0m{backgroundColor}",
+            $"{colorForAuthor}{author}\x1b[0m{backgroundColor}",
+            $"{message}{backgroundColor}");
     }
 
     private void DisplayPanelHeader()
@@ -221,7 +231,7 @@ public class DisplayConfig
         const string border = "─";
         int currentLineLength = startCorner.Length + Commits.Count.ToString().Length + delimiter.Length + endCorner.Length + (CurrentLine + 1).ToString().Length;
         Console.Write(startCorner + (CurrentLine + 1) + delimiter + Commits.Count);
-        for (int i = currentLineLength; i < availableWidthSpace - 1; i++)
+        for (int i = currentLineLength; i < availableWidthSpace; i++)
         {
             Console.Write(border);
         }
@@ -236,7 +246,7 @@ public class DisplayConfig
         const string startCorner = "└";
         const string endCorner = "┘";
         Console.Write(startCorner);
-        for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpace - 1; i++)
+        for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpace; i++)
         {
             Console.Write(border);
         }
@@ -252,7 +262,7 @@ public class DisplayConfig
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
-                availableWidthSpace = Console.WindowWidth - 1;
+                availableWidthSpace = Console.WindowWidth - BorderHeight;
                 needsRedraw = true;
             }
 
