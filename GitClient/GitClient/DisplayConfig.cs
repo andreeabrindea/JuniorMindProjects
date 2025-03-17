@@ -167,7 +167,7 @@ public class DisplayConfig
 
     private void DisplayCommitsWithUpdatedCursorPosition()
     {
-        Console.Clear();
+        Console.SetCursorPosition(0, 0);
         DisplayCommitsAndPanel();
     }
 
