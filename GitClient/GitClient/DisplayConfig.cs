@@ -79,28 +79,40 @@ public class DisplayConfig
 
     internal void MoveCursor()
     {
-        var readKey = Console.ReadKey(true).Key;
-
-        while (readKey != ConsoleKey.Escape)
+        ConsoleKey readKey;
+        do
         {
-            readKey = Console.ReadKey().Key;
+            readKey = Console.ReadKey(true).Key;
+            switch (readKey)
+            {
+                case ConsoleKey.UpArrow:
+                    HandleUpArrowNavigation();
+                    DisplayCommitsAndPanel();
+                    break;
 
-            if (readKey == ConsoleKey.UpArrow)
-            {
-                HandleUpArrowNavigation();
-            }
-            else if (readKey == ConsoleKey.DownArrow)
-            {
-                HandleDownArrowNavigation();
-            }
-            else
-            {
-                continue;
-            }
+                case ConsoleKey.DownArrow:
+                    HandleDownArrowNavigation();
+                    DisplayCommitsAndPanel();
+                    break;
 
-            DisplayCommitsWithUpdatedCursorPosition();
+                case ConsoleKey.PageUp:
+                    HandlePageUpNavigation();
+                    DisplayCommitsAndPanel();
+                    break;
+
+                case ConsoleKey.PageDown:
+                    HandlePageDownNavigation();
+                    DisplayCommitsAndPanel();
+                    break;
+
+                case ConsoleKey.Escape:
+                    break;
+
+                default:
+                    continue;
+            }
         }
-
+        while (readKey != ConsoleKey.Escape);
         isRunning = false;
     }
 
@@ -142,6 +154,40 @@ public class DisplayConfig
 
         UpperBound++;
         LowerBound++;
+        ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
+    }
+
+    private void HandlePageUpNavigation()
+    {
+        int step = UpperBound - LowerBound;
+
+        CurrentLine = Math.Max(0, CurrentLine - step);
+        if (LowerBound >= step)
+        {
+            LowerBound -= step;
+            UpperBound -= step;
+        }
+        else
+        {
+            UpperBound -= LowerBound;
+            LowerBound = 0;
+        }
+
+        ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
+    }
+
+    private void HandlePageDownNavigation()
+    {
+        int step = UpperBound - LowerBound;
+
+        CurrentLine = Math.Min(Commits.Count - 1, CurrentLine + step);
+        if (UpperBound < Commits.Count)
+        {
+            step = Math.Min(step, Commits.Count - UpperBound);
+            LowerBound += step;
+            UpperBound += step;
+        }
+
         ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
     }
 
