@@ -8,6 +8,6 @@ internal class Program
         var commits = gitClient.GetCommits();
         DisplayConfig displayConfig = new(commits);
         displayConfig.DisplayCommitsAndPanel();
-        displayConfig.MoveCursor();
+        displayConfig.Navigate();
     }
 }

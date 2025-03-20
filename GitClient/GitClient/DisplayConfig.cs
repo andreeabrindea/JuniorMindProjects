@@ -4,7 +4,7 @@ public class DisplayConfig
 {
     private const int BorderHeight = 2;
     private int availableWidthSpace = Console.WindowWidth - 2;
-    private int windowHeightForCommits = Console.WindowHeight - BorderHeight;
+    private int windowHeightForCommits;
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
 
@@ -13,16 +13,17 @@ public class DisplayConfig
         Commits = commits;
         CurrentLine = 0;
         LowerBound = 0;
-        UpperBound = windowHeightForCommits;
+        windowHeightForCommits = Console.WindowHeight - BorderHeight;
+        UpperBound = windowHeightForCommits > Commits.Count ? Commits.Count : windowHeightForCommits;
+        Console.SetWindowSize(totalWidth, windowHeightForCommits + BorderHeight);
         ScrollBarPosition = 0;
         Console.CursorVisible = false;
         isRunning = true;
-        var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSize)
+        var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSizeAfterResize)
         {
             IsBackground = true
         };
         threadToCheckWindowSize.Start();
-        threadToCheckWindowSize.Priority = ThreadPriority.Highest;
     }
 
     internal List<CommitInfo> Commits { get; }
@@ -67,7 +68,7 @@ public class DisplayConfig
         DisplayPanelFooter();
     }
 
-    internal void MoveCursor()
+    internal void Navigate()
     {
         ConsoleKey readKey;
         do
@@ -77,21 +78,25 @@ public class DisplayConfig
             {
                 case ConsoleKey.UpArrow:
                     HandleUpArrowNavigation();
+                    UpdateScrollBarPosition();
                     DisplayCommitsAndPanel();
                     break;
 
                 case ConsoleKey.DownArrow:
                     HandleDownArrowNavigation();
+                    UpdateScrollBarPosition();
                     DisplayCommitsAndPanel();
                     break;
 
                 case ConsoleKey.PageUp:
                     HandlePageUpNavigation();
+                    UpdateScrollBarPosition();
                     DisplayCommitsAndPanel();
                     break;
 
                 case ConsoleKey.PageDown:
                     HandlePageDownNavigation();
+                    UpdateScrollBarPosition();
                     DisplayCommitsAndPanel();
                     break;
 
@@ -114,7 +119,6 @@ public class DisplayConfig
         }
 
         CurrentLine--;
-
         if (CurrentLine > UpperBound || LowerBound <= 0 || UpperBound <= 0)
         {
             return;
@@ -122,7 +126,6 @@ public class DisplayConfig
 
         UpperBound--;
         LowerBound--;
-        ScrollBarPosition = LowerBound + (int)((double)LowerBound / Commits.Count * (UpperBound - LowerBound));
     }
 
     private void HandleDownArrowNavigation()
@@ -144,7 +147,6 @@ public class DisplayConfig
 
         UpperBound++;
         LowerBound++;
-        ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
     }
 
     private void HandlePageUpNavigation()
@@ -162,8 +164,6 @@ public class DisplayConfig
             UpperBound -= LowerBound;
             LowerBound = 0;
         }
-
-        ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
     }
 
     private void HandlePageDownNavigation()
@@ -171,14 +171,14 @@ public class DisplayConfig
         int step = UpperBound - LowerBound;
 
         CurrentLine = Math.Min(Commits.Count - 1, CurrentLine + step);
-        if (UpperBound < Commits.Count)
+        if (UpperBound == Commits.Count)
         {
-            step = Math.Min(step, Commits.Count - UpperBound);
-            LowerBound += step;
-            UpperBound += step;
+            return;
         }
 
-        ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
+        step = Math.Min(step, Commits.Count - UpperBound);
+        LowerBound += step;
+        UpperBound += step;
     }
 
     private void DisplayCommitLine(List<CommitInfo> commits, int i, int messageColumnWidth)
@@ -254,7 +254,7 @@ public class DisplayConfig
         Console.Write(endCorner);
     }
 
-    private void UpdateConsoleWindowSize()
+    private void UpdateConsoleWindowSizeAfterResize()
     {
         bool needsRedraw = false;
         while (isRunning)
@@ -268,7 +268,7 @@ public class DisplayConfig
 
             if (Console.WindowHeight - BorderHeight != windowHeightForCommits)
             {
-                UpdateBounds();
+                UpdateBoundsAfterWindowHeightResize();
                 needsRedraw = true;
             }
 
@@ -285,20 +285,23 @@ public class DisplayConfig
         }
     }
 
-    private void UpdateBounds()
+    private void UpdateBoundsAfterWindowHeightResize()
     {
-        int difference = Console.WindowHeight - BorderHeight - windowHeightForCommits;
-        if (UpperBound == Commits.Count)
-        {
-            LowerBound = difference < 0 ? LowerBound : LowerBound + BorderHeight - (Console.WindowHeight - (UpperBound - LowerBound));
-        }
+        int differenceBetweenCurrentAndPreviousHeight = Console.WindowHeight - (windowHeightForCommits + BorderHeight);
 
-        if (UpperBound + difference >= 0 && UpperBound + difference <= Commits.Count)
+        if (UpperBound + differenceBetweenCurrentAndPreviousHeight <= Commits.Count &&
+            UpperBound + differenceBetweenCurrentAndPreviousHeight > 0)
         {
-            UpperBound += difference;
+            UpperBound += differenceBetweenCurrentAndPreviousHeight;
+        }
+        else
+        {
+            LowerBound = Math.Max(0, LowerBound - differenceBetweenCurrentAndPreviousHeight);
         }
 
         windowHeightForCommits = Console.WindowHeight - BorderHeight;
+        Console.SetWindowSize(totalWidth, windowHeightForCommits + BorderHeight);
+
         if (CurrentLine >= UpperBound)
         {
             CurrentLine = UpperBound - 1;
@@ -311,4 +314,6 @@ public class DisplayConfig
 
         CurrentLine = LowerBound + 1;
     }
+
+    private void UpdateScrollBarPosition() => ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
 }
