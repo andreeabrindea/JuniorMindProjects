@@ -7,6 +7,7 @@ public class DisplayConfig
     private int windowHeightForCommits;
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
+    private string openPanel;
 
     public DisplayConfig(List<CommitInfo> commits)
     {
@@ -24,6 +25,7 @@ public class DisplayConfig
             IsBackground = true
         };
         threadToCheckWindowSize.Start();
+        openPanel = "main";
     }
 
     internal List<CommitInfo> Commits { get; }
@@ -93,6 +95,12 @@ public class DisplayConfig
                     HandlePageDownNavigation();
                     UpdateScrollBarPosition();
                     DisplayCommitsAndPanel();
+                    break;
+
+                case ConsoleKey.Enter:
+                    Console.Clear();
+                    openPanel = "info";
+                    DisplayCommitInfoPanel();
                     break;
 
                 case ConsoleKey.Escape:
@@ -270,7 +278,15 @@ public class DisplayConfig
             {
                 Console.Clear();
                 Console.WriteLine("\x1b[3J");
-                DisplayCommitsAndPanel();
+                if (openPanel == "main")
+                {
+                    DisplayCommitsAndPanel();
+                }
+                else
+                {
+                    DisplayCommitInfoPanel();
+                }
+
                 needsRedraw = false;
             }
 
@@ -310,4 +326,52 @@ public class DisplayConfig
     }
 
     private void UpdateScrollBarPosition() => ScrollBarPosition = LowerBound + (int)((double)CurrentLine / Commits.Count * (UpperBound - LowerBound));
+
+    private void DisplayCommitInfoPanel()
+    {
+        DisplayInfoSubPanel();
+        DisplayMessageSubPanel();
+    }
+
+    private void FillRemainingWidthSpace(int currentLineLength, int space)
+    {
+        for (int i = currentLineLength; i < space; i++)
+        {
+            Console.Write(" ");
+        }
+    }
+
+    private void DisplayRightBorder(int currentLineLength, int space, string color = "")
+    {
+        FillRemainingWidthSpace(currentLineLength, space);
+        Console.Write($"{color}\u2502");
+        Console.WriteLine();
+    }
+
+    private void DisplayInfoSubPanel()
+    {
+        const string lightGray = "\x1b[90m";
+
+        DisplayPanelHeader("Info", lightGray);
+        Console.Write($"{lightGray}\u2502Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
+        int currentLineLength = "\u2502Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
+                            " <>".Length;
+        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+
+        Console.Write($"{lightGray}\u2502Date: \x1b[0m{Commits[CurrentLine].LongDate}");
+        currentLineLength = "\u2502Date: ".Length + Commits[CurrentLine].LongDate.Length;
+        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+
+        currentLineLength = "\u2502Sah: ".Length + Commits[CurrentLine].LongHash.Length;
+        Console.Write($"{lightGray}\u2502Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
+        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+        DisplayPanelFooter(lightGray);
+    }
+
+    private void DisplayMessageSubPanel()
+    {
+        Console.WriteLine();
+        const string lightGray = "\x1b[90m";
+        DisplayPanelHeader("Message [..]", lightGray);
+    }
 }
