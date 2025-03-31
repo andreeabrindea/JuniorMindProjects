@@ -39,7 +39,7 @@ public class DisplayConfig
     internal void DisplayCommitsAndPanel()
     {
         Console.SetCursorPosition(0, 0);
-        DisplayPanelHeader();
+        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}");
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
         const int hashColumnWidth = 8;
@@ -53,12 +53,7 @@ public class DisplayConfig
             currentLineLength += messageColumnWidth;
 
             DisplayCommitLine(Commits, i, messageColumnWidth);
-
-            // Fill remaining space from the panel with empty spaces
-            for (int j = currentLineLength; j < availableWidthSpace; j++)
-            {
-                Console.Write(" ");
-            }
+            FillRemainingWidthSpace(currentLineLength, availableWidthSpace);
 
             Console.Write(i == ScrollBarPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
@@ -223,35 +218,34 @@ public class DisplayConfig
             $"{message}{backgroundColor}");
     }
 
-    private void DisplayPanelHeader()
+    private void DisplayPanelHeader(string message, string color = "")
     {
         const string startCorner = "┌";
         const string endCorner = "┐";
-        const string delimiter = "/";
         const string border = "─";
-        int currentLineLength = startCorner.Length + Commits.Count.ToString().Length + delimiter.Length + endCorner.Length + (CurrentLine + 1).ToString().Length;
-        Console.Write(startCorner + (CurrentLine + 1) + delimiter + Commits.Count);
+        int currentLineLength = startCorner.Length + endCorner.Length + message.Length;
+        Console.Write(color + startCorner + message + "\x1b[0m");
         for (int i = currentLineLength; i < availableWidthSpace; i++)
         {
-            Console.Write(border);
+            Console.Write(color + border + "\x1b[0m");
         }
 
-        Console.Write(endCorner);
+        Console.Write(color + endCorner + "\x1b[0m");
         Console.WriteLine();
     }
 
-    private void DisplayPanelFooter()
+    private void DisplayPanelFooter(string color = "")
     {
         const string border = "─";
         const string startCorner = "└";
         const string endCorner = "┘";
-        Console.Write(startCorner);
+        Console.Write($"{color}{startCorner}\x1b[0m");
         for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpace; i++)
         {
-            Console.Write(border);
+            Console.Write($"{color}{border}\x1b[0m");
         }
 
-        Console.Write(endCorner);
+        Console.Write($"{color}{endCorner}\x1b[0m");
     }
 
     private void UpdateConsoleWindowSizeAfterResize()
