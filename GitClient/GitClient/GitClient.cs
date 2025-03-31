@@ -16,18 +16,28 @@ public class GitClient
 
     public List<CommitInfo> GetCommits()
     {
-        const string command = "log --pretty=format:\"%h,%an,%ad,%s\" --date=iso";
+        const string command = "log --pretty=format:\"%h,%H,%an,%ae,%ad,%s,%b\" --date=iso";
         string output = ExecuteGitCommand(command);
         char[] newLineEscapeCharacters = { '\r', '\n' };
-        const int indexOfHash = 0;
-        const int indexOfAuthor = 1;
-        const int indexOfDate = 2;
-        const int indexOfMessage = 3;
+        const int indexOfShortHash = 0;
+        const int indexOfLongHash = 1;
+        const int indexOfAuthor = 2;
+        const int indexOfEmail = 3;
+        const int indexOfDate = 4;
+        const int indexOfMessage = 5;
+        const int indexOfMessageBody = 6;
 
         return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
             .Select(line => line.Split(','))
             .Select(entries =>
-                new CommitInfo(entries[indexOfHash], DateTime.Parse(entries[indexOfDate], DateTimeFormatProvider), entries[indexOfAuthor], entries[indexOfMessage])).ToList();
+                new CommitInfo(
+                    entries[indexOfShortHash],
+                    entries[indexOfLongHash],
+                    DateTime.Parse(entries[indexOfDate], DateTimeFormatProvider),
+                    entries[indexOfAuthor],
+                    entries[indexOfEmail],
+                    entries[indexOfMessage],
+                    entries[indexOfMessageBody])).ToList();
     }
 
     private string ExecuteGitCommand(string arguments)
