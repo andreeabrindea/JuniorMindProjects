@@ -193,9 +193,9 @@ public class DisplayConfig
         const int dateColumnWidth = 12;
         const int authorColumnWidth = 20;
 
-        string hash = commits[i].Hash.Length > hashColumnWidth
-            ? commits[i].Hash.Substring(0, hashColumnWidth - 1) + "…"
-            : commits[i].Hash.PadRight(hashColumnWidth);
+        string hash = commits[i].ShortHash.Length > hashColumnWidth
+            ? commits[i].ShortHash.Substring(0, hashColumnWidth - 1) + "…"
+            : commits[i].ShortHash.PadRight(hashColumnWidth);
 
         string date = commits[i].Date.Length > dateColumnWidth
             ? commits[i].Date.Substring(0, dateColumnWidth - 1) + "…"
