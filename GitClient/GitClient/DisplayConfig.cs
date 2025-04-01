@@ -1,13 +1,16 @@
+using System.Text;
+
 namespace GitClientApp;
 
 public class DisplayConfig
 {
     private const int NumberOfBorders = 2;
-    private int availableWidthSpace = Console.WindowWidth - 2;
+    private int availableWidthSpaceForFirstColumn = Console.WindowWidth - 2;
+    private int availableWidthSpaceForSecondColumn;
     private int windowHeightForCommits;
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
-    private string openPanel;
+    private bool isSecondColumnShown;
 
     public DisplayConfig(List<CommitInfo> commits)
     {
@@ -25,7 +28,6 @@ public class DisplayConfig
             IsBackground = true
         };
         threadToCheckWindowSize.Start();
-        openPanel = "main";
     }
 
     internal List<CommitInfo> Commits { get; }
@@ -51,11 +53,11 @@ public class DisplayConfig
         {
             string endBackgroundColor = i == CurrentLine ? "\x1b[0m" : "";
             int currentLineLength = hashColumnWidth + dateColumnWidth + authorColumnWidth + spaceBetweenEntries + borderLineCountBefore;
-            int messageColumnWidth = Math.Max(availableWidthSpace - currentLineLength, 1);
+            int messageColumnWidth = Math.Max(availableWidthSpaceForFirstColumn - currentLineLength, 1);
             currentLineLength += messageColumnWidth;
 
             DisplayCommitLine(Commits, i, messageColumnWidth);
-            FillRemainingWidthSpace(currentLineLength, availableWidthSpace);
+            FillRemainingWidthSpace(currentLineLength, availableWidthSpaceForFirstColumn);
 
             Console.Write(i == ScrollBarPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
@@ -99,7 +101,8 @@ public class DisplayConfig
 
                 case ConsoleKey.Enter:
                     Console.Clear();
-                    openPanel = "info";
+                    DivideColumnsWidth();
+                    DisplayCommitsAndPanel();
                     DisplayCommitInfoPanel();
                     break;
 
@@ -112,6 +115,19 @@ public class DisplayConfig
         }
         while (readKey != ConsoleKey.Escape);
         isRunning = false;
+    }
+
+    private void DivideColumnsWidth()
+    {
+        const int half = 2;
+        if (!isSecondColumnShown)
+        {
+            availableWidthSpaceForFirstColumn /= half;
+            availableWidthSpaceForSecondColumn =
+                Console.WindowWidth - NumberOfBorders - availableWidthSpaceForFirstColumn;
+        }
+
+        isSecondColumnShown = true;
     }
 
     private void HandleUpArrowNavigation()
@@ -233,7 +249,7 @@ public class DisplayConfig
         const string border = "─";
         int currentLineLength = startCorner.Length + endCorner.Length + message.Length;
         Console.Write(color + startCorner + message + "\x1b[0m");
-        for (int i = currentLineLength; i < availableWidthSpace; i++)
+        for (int i = currentLineLength; i < availableWidthSpaceForFirstColumn; i++)
         {
             Console.Write(color + border + "\x1b[0m");
         }
@@ -248,7 +264,7 @@ public class DisplayConfig
         const string startCorner = "└";
         const string endCorner = "┘";
         Console.Write($"{color}{startCorner}\x1b[0m");
-        for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpace; i++)
+        for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpaceForFirstColumn; i++)
         {
             Console.Write($"{color}{border}\x1b[0m");
         }
@@ -264,7 +280,7 @@ public class DisplayConfig
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
-                availableWidthSpace = Console.WindowWidth - NumberOfBorders;
+                availableWidthSpaceForFirstColumn = Console.WindowWidth - NumberOfBorders;
                 needsRedraw = true;
             }
 
@@ -278,15 +294,7 @@ public class DisplayConfig
             {
                 Console.Clear();
                 Console.WriteLine("\x1b[3J");
-                if (openPanel == "main")
-                {
-                    DisplayCommitsAndPanel();
-                }
-                else
-                {
-                    DisplayCommitInfoPanel();
-                }
-
+                DisplayCommitsAndPanel();
                 needsRedraw = false;
             }
 
@@ -329,6 +337,8 @@ public class DisplayConfig
 
     private void DisplayCommitInfoPanel()
     {
+        int remainingSpace = availableWidthSpaceForFirstColumn + 1;
+        Console.SetCursorPosition(remainingSpace, 0);
         DisplayInfoSubPanel();
         DisplayMessageSubPanel();
     }
@@ -350,66 +360,101 @@ public class DisplayConfig
 
     private void DisplayInfoSubPanel()
     {
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, 0);
         const string lightGray = "\x1b[90m";
 
         DisplayPanelHeader("Info", lightGray);
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
         int currentLineLength = "│Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
                             " <>".Length;
-        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
 
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Date: \x1b[0m{Commits[CurrentLine].LongDate}");
         currentLineLength = "│Date: ".Length + Commits[CurrentLine].LongDate.Length;
-        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
 
         currentLineLength = "│Sah: ".Length + Commits[CurrentLine].LongHash.Length;
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
-        DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
+        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         DisplayPanelFooter(lightGray);
     }
 
     private void DisplayMessageSubPanel()
     {
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         Console.WriteLine();
         const string lightGray = "\x1b[90m";
         const string boldFontStyle = "\x1b[1m";
+
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         DisplayPanelHeader("Message [..]", lightGray);
-        string message = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
-        string messageBody = AddSideBordersToText(Commits[CurrentLine].MessageBody, lightGray);
-        Console.Write(message);
-        Console.Write($"{lightGray}│\x1b[0m");
-        DisplayRightBorder(0, availableWidthSpace - NumberOfBorders, lightGray);
-        Console.Write(messageBody);
+
+        string formattedMessage = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
+        string[] lines = formattedMessage.Split("$REPOSITION$");
+
+        foreach (string line in lines)
+        {
+            Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+            Console.Write(line);
+        }
+
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+
+        if (Commits[CurrentLine].MessageBody.Length > 0)
+        {
+            Console.Write($"{lightGray}│\x1b[0m");
+            DisplayRightBorder(0, availableWidthSpaceForSecondColumn - NumberOfBorders, lightGray);
+
+            string formattedBody = AddSideBordersToText(Commits[CurrentLine].MessageBody, lightGray);
+            lines = formattedBody.Split("$REPOSITION$");
+
+            foreach (string line in lines)
+            {
+                Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+                Console.Write(line);
+            }
+        }
+
+        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         DisplayPanelFooter(lightGray);
     }
 
     private string AddSideBordersToText(string initialMessage, string borderColor = "", string fontStyle = "")
     {
-        int numberOfLines = (int)Math.Ceiling((double)initialMessage.Length / availableWidthSpace);
-        string messageWithBorders = $"{borderColor}│\x1b[0m";
+        StringBuilder result = new StringBuilder();
+        int charsPerLine = availableWidthSpaceForSecondColumn - NumberOfBorders;
+        int numberOfLines = (int)Math.Ceiling((double)initialMessage.Length / charsPerLine);
+        result.Append($"{borderColor}│\x1b[0m");
+
         for (int j = 0; j < numberOfLines; j++)
         {
-            for (int i = 0; i < Math.Min(availableWidthSpace - NumberOfBorders, initialMessage.Length); i++)
+            for (int i = 0; i < Math.Min(charsPerLine, initialMessage.Length); i++)
             {
-                messageWithBorders += $"{fontStyle}{initialMessage[i]}\x1b[21m";
+                result.Append($"{fontStyle}{initialMessage[i]}\x1b[21m");
             }
 
-            if (availableWidthSpace > initialMessage.Length)
+            if (availableWidthSpaceForSecondColumn > initialMessage.Length)
             {
-                for (int k = initialMessage.Length + 1; k < availableWidthSpace - 1; k++)
+                for (int k = initialMessage.Length + 1; k < availableWidthSpaceForFirstColumn - 1; k++)
                 {
-                    messageWithBorders += " ";
+                    result.Append(" ");
                 }
             }
 
-            messageWithBorders += $"{borderColor}│\x1b[0m";
-
-            messageWithBorders += Environment.NewLine;
-
-            initialMessage = initialMessage[Math.Min(availableWidthSpace - NumberOfBorders, initialMessage.Length)..];
-            messageWithBorders = initialMessage.Length > 0 ? messageWithBorders + $"{borderColor}│\x1b[0m" : messageWithBorders;
+            result.Append($"{borderColor}│\x1b[0m");
+            result.AppendLine();
+            result.Append("$REPOSITION$");
+            initialMessage = initialMessage[Math.Min(charsPerLine, initialMessage.Length)..];
+            if (initialMessage.Length > 0)
+            {
+                result.Append($"{borderColor}│\x1b[0m");
+            }
         }
 
-        return messageWithBorders;
+        return result.ToString();
     }
 }
