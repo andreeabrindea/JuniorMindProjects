@@ -2,7 +2,7 @@ namespace GitClientApp;
 
 public class DisplayConfig
 {
-    private const int BorderHeight = 2;
+    private const int NumberOfBorders = 2;
     private int availableWidthSpace = Console.WindowWidth - 2;
     private int windowHeightForCommits;
     private int totalWidth = Console.WindowWidth;
@@ -14,9 +14,9 @@ public class DisplayConfig
         Commits = commits;
         CurrentLine = 0;
         LowerBound = 0;
-        windowHeightForCommits = Console.WindowHeight - BorderHeight;
+        windowHeightForCommits = Console.WindowHeight - NumberOfBorders;
         UpperBound = windowHeightForCommits > Commits.Count ? Commits.Count : windowHeightForCommits;
-        Console.SetWindowSize(totalWidth, windowHeightForCommits + BorderHeight);
+        Console.SetWindowSize(totalWidth, windowHeightForCommits + NumberOfBorders);
         ScrollBarPosition = 0;
         Console.CursorVisible = false;
         isRunning = true;
@@ -264,11 +264,11 @@ public class DisplayConfig
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
-                availableWidthSpace = Console.WindowWidth - BorderHeight;
+                availableWidthSpace = Console.WindowWidth - NumberOfBorders;
                 needsRedraw = true;
             }
 
-            if (Console.WindowHeight - BorderHeight != windowHeightForCommits)
+            if (Console.WindowHeight - NumberOfBorders != windowHeightForCommits)
             {
                 UpdateBoundsAfterWindowHeightResize();
                 needsRedraw = true;
@@ -297,7 +297,7 @@ public class DisplayConfig
 
     private void UpdateBoundsAfterWindowHeightResize()
     {
-        int differenceBetweenCurrentAndPreviousHeight = Console.WindowHeight - (windowHeightForCommits + BorderHeight);
+        int differenceBetweenCurrentAndPreviousHeight = Console.WindowHeight - (windowHeightForCommits + NumberOfBorders);
 
         if (UpperBound + differenceBetweenCurrentAndPreviousHeight <= Commits.Count &&
             UpperBound + differenceBetweenCurrentAndPreviousHeight > 0)
@@ -309,8 +309,8 @@ public class DisplayConfig
             LowerBound = Math.Max(0, LowerBound - differenceBetweenCurrentAndPreviousHeight);
         }
 
-        windowHeightForCommits = Console.WindowHeight - BorderHeight;
-        Console.SetWindowSize(totalWidth, windowHeightForCommits + BorderHeight);
+        windowHeightForCommits = Console.WindowHeight - NumberOfBorders;
+        Console.SetWindowSize(totalWidth, windowHeightForCommits + NumberOfBorders);
 
         if (CurrentLine >= UpperBound)
         {
@@ -344,7 +344,7 @@ public class DisplayConfig
     private void DisplayRightBorder(int currentLineLength, int space, string color = "")
     {
         FillRemainingWidthSpace(currentLineLength, space);
-        Console.Write($"{color}\u2502");
+        Console.Write($"{color}│");
         Console.WriteLine();
     }
 
@@ -353,17 +353,17 @@ public class DisplayConfig
         const string lightGray = "\x1b[90m";
 
         DisplayPanelHeader("Info", lightGray);
-        Console.Write($"{lightGray}\u2502Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
-        int currentLineLength = "\u2502Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
+        Console.Write($"{lightGray}│Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
+        int currentLineLength = "│Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
                             " <>".Length;
         DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
 
-        Console.Write($"{lightGray}\u2502Date: \x1b[0m{Commits[CurrentLine].LongDate}");
-        currentLineLength = "\u2502Date: ".Length + Commits[CurrentLine].LongDate.Length;
+        Console.Write($"{lightGray}│Date: \x1b[0m{Commits[CurrentLine].LongDate}");
+        currentLineLength = "│Date: ".Length + Commits[CurrentLine].LongDate.Length;
         DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
 
-        currentLineLength = "\u2502Sah: ".Length + Commits[CurrentLine].LongHash.Length;
-        Console.Write($"{lightGray}\u2502Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
+        currentLineLength = "│Sah: ".Length + Commits[CurrentLine].LongHash.Length;
+        Console.Write($"{lightGray}│Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
         DisplayRightBorder(currentLineLength, availableWidthSpace - 1, lightGray);
         DisplayPanelFooter(lightGray);
     }
@@ -372,6 +372,44 @@ public class DisplayConfig
     {
         Console.WriteLine();
         const string lightGray = "\x1b[90m";
+        const string boldFontStyle = "\x1b[1m";
         DisplayPanelHeader("Message [..]", lightGray);
+        string message = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
+        string messageBody = AddSideBordersToText(Commits[CurrentLine].MessageBody, lightGray);
+        Console.Write(message);
+        Console.Write($"{lightGray}│\x1b[0m");
+        DisplayRightBorder(0, availableWidthSpace - NumberOfBorders, lightGray);
+        Console.Write(messageBody);
+        DisplayPanelFooter(lightGray);
+    }
+
+    private string AddSideBordersToText(string initialMessage, string borderColor = "", string fontStyle = "")
+    {
+        int numberOfLines = (int)Math.Ceiling((double)initialMessage.Length / availableWidthSpace);
+        string messageWithBorders = $"{borderColor}│\x1b[0m";
+        for (int j = 0; j < numberOfLines; j++)
+        {
+            for (int i = 0; i < Math.Min(availableWidthSpace - NumberOfBorders, initialMessage.Length); i++)
+            {
+                messageWithBorders += $"{fontStyle}{initialMessage[i]}\x1b[21m";
+            }
+
+            if (availableWidthSpace > initialMessage.Length)
+            {
+                for (int k = initialMessage.Length + 1; k < availableWidthSpace - 1; k++)
+                {
+                    messageWithBorders += " ";
+                }
+            }
+
+            messageWithBorders += $"{borderColor}│\x1b[0m";
+
+            messageWithBorders += Environment.NewLine;
+
+            initialMessage = initialMessage[Math.Min(availableWidthSpace - NumberOfBorders, initialMessage.Length)..];
+            messageWithBorders = initialMessage.Length > 0 ? messageWithBorders + $"{borderColor}│\x1b[0m" : messageWithBorders;
+        }
+
+        return messageWithBorders;
     }
 }
