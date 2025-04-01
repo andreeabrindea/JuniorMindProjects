@@ -16,7 +16,7 @@ public class GitClient
 
     public List<CommitInfo> GetCommits()
     {
-        const string command = "log --pretty=format:\"%h,%H,%an,%ae,%ad,%s,%b\" --date=iso";
+        const string command = "log --pretty=format:\"%h|%H|%an|%ae|%ad|%s|%b\" --date=iso";
         string output = ExecuteGitCommand(command);
         char[] newLineEscapeCharacters = { '\r', '\n' };
         const int indexOfShortHash = 0;
@@ -28,7 +28,7 @@ public class GitClient
         const int indexOfMessageBody = 6;
 
         return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
-            .Select(line => line.Split(','))
+            .Select(line => line.Split('|'))
             .Select(entries =>
                 new CommitInfo(
                     entries[indexOfShortHash],
