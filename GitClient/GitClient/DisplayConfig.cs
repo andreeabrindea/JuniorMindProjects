@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text;
 
 namespace GitClientApp;
@@ -6,9 +5,9 @@ namespace GitClientApp;
 public class DisplayConfig
 {
     private const int NumberOfBorders = 2;
-    private int availableWidthSpaceForFirstColumn;
-    private int availableWidthSpaceForSecondColumn;
-    private int windowHeightForCommits;
+    private int firstColumnWidth;
+    private int secondColumnWidth;
+    private int height;
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
     private bool isSecondColumnShown;
@@ -18,13 +17,13 @@ public class DisplayConfig
         Commits = commits;
         CurrentLine = 0;
         LowerBound = 0;
-        windowHeightForCommits = Console.WindowHeight - NumberOfBorders;
-        UpperBound = windowHeightForCommits > Commits.Count ? Commits.Count : windowHeightForCommits;
-        Console.SetWindowSize(totalWidth, windowHeightForCommits + NumberOfBorders);
+        height = Console.WindowHeight - NumberOfBorders;
+        UpperBound = height > Commits.Count ? Commits.Count : height;
+        Console.SetWindowSize(totalWidth, height + NumberOfBorders);
         ScrollBarPosition = 0;
         Console.CursorVisible = false;
-        availableWidthSpaceForSecondColumn = 0;
-        availableWidthSpaceForFirstColumn = totalWidth;
+        secondColumnWidth = 0;
+        firstColumnWidth = totalWidth;
         isRunning = true;
         var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSizeAfterResize)
         {
@@ -47,7 +46,7 @@ public class DisplayConfig
     internal void DisplayCommitsAndPanel()
     {
         Console.SetCursorPosition(0, 0);
-        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}", availableWidthSpaceForFirstColumn);
+        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}", firstColumnWidth);
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
         const int hashColumnWidth = 8;
@@ -57,17 +56,17 @@ public class DisplayConfig
         {
             string endBackgroundColor = i == CurrentLine ? "\x1b[0m" : "";
             int currentLineLength = hashColumnWidth + dateColumnWidth + authorColumnWidth + spaceBetweenEntries + borderLineCountBefore;
-            int messageColumnWidth = Math.Max(availableWidthSpaceForFirstColumn - currentLineLength, 1);
+            int messageColumnWidth = Math.Max(firstColumnWidth - currentLineLength, 1);
             currentLineLength += messageColumnWidth;
 
             DisplayCommitLine(Commits, i, messageColumnWidth);
-            FillRemainingWidthSpace(currentLineLength, availableWidthSpaceForFirstColumn);
+            FillRemainingWidthSpace(currentLineLength, firstColumnWidth);
 
             Console.Write(i == ScrollBarPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
         }
 
-        DisplayPanelFooter(availableWidthSpaceForFirstColumn);
+        DisplayPanelFooter(firstColumnWidth);
         if (!isSecondColumnShown)
         {
             return;
@@ -130,8 +129,8 @@ public class DisplayConfig
     private void DivideColumnsWidth()
     {
         const int half = 2;
-        availableWidthSpaceForFirstColumn = isSecondColumnShown ? totalWidth / half : totalWidth;
-        availableWidthSpaceForSecondColumn = isSecondColumnShown ? totalWidth - availableWidthSpaceForFirstColumn - NumberOfBorders : 0;
+        firstColumnWidth = isSecondColumnShown ? totalWidth / half : totalWidth;
+        secondColumnWidth = isSecondColumnShown ? totalWidth - firstColumnWidth - NumberOfBorders : 0;
     }
 
     private void HandleUpArrowNavigation()
@@ -289,7 +288,7 @@ public class DisplayConfig
                 }
                 else
                 {
-                    availableWidthSpaceForFirstColumn = totalWidth - NumberOfBorders;
+                    firstColumnWidth = totalWidth - NumberOfBorders;
                 }
 
                 Console.Clear();
@@ -297,7 +296,7 @@ public class DisplayConfig
                 DisplayCommitsAndPanel();
             }
 
-            if (Console.WindowHeight - NumberOfBorders != windowHeightForCommits)
+            if (Console.WindowHeight - NumberOfBorders != height)
             {
                 UpdateBoundsAfterWindowHeightResize();
                 Console.Clear();
@@ -312,7 +311,7 @@ public class DisplayConfig
 
     private void UpdateBoundsAfterWindowHeightResize()
     {
-        int differenceBetweenCurrentAndPreviousHeight = Console.WindowHeight - (windowHeightForCommits + NumberOfBorders);
+        int differenceBetweenCurrentAndPreviousHeight = Console.WindowHeight - (height + NumberOfBorders);
 
         if (UpperBound + differenceBetweenCurrentAndPreviousHeight <= Commits.Count &&
             UpperBound + differenceBetweenCurrentAndPreviousHeight > 0)
@@ -324,8 +323,8 @@ public class DisplayConfig
             LowerBound = Math.Max(0, LowerBound - differenceBetweenCurrentAndPreviousHeight);
         }
 
-        windowHeightForCommits = Console.WindowHeight - NumberOfBorders;
-        Console.SetWindowSize(totalWidth, windowHeightForCommits + NumberOfBorders);
+        height = Console.WindowHeight - NumberOfBorders;
+        Console.SetWindowSize(totalWidth, height + NumberOfBorders);
 
         if (CurrentLine >= UpperBound)
         {
@@ -344,7 +343,7 @@ public class DisplayConfig
 
     private void DisplayCommitInfoPanel()
     {
-        int remainingSpace = availableWidthSpaceForFirstColumn + 1;
+        int remainingSpace = firstColumnWidth + 1;
         Console.SetCursorPosition(remainingSpace, 0);
         DisplayInfoSubPanel();
         DisplayMessageSubPanel();
@@ -367,73 +366,72 @@ public class DisplayConfig
 
     private void DisplayInfoSubPanel()
     {
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, 0);
+        Console.SetCursorPosition(firstColumnWidth + 1, 0);
         const string lightGray = "\x1b[90m";
 
-        DisplayPanelHeader("Info", availableWidthSpaceForSecondColumn, lightGray);
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+        DisplayPanelHeader("Info", secondColumnWidth, lightGray);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
         int currentLineLength = "│Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
                             " <>".Length;
-        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
+        DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
 
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Date: \x1b[0m{Commits[CurrentLine].LongDate}");
         currentLineLength = "│Date: ".Length + Commits[CurrentLine].LongDate.Length;
-        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
+        DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
 
         currentLineLength = "│Sah: ".Length + Commits[CurrentLine].LongHash.Length;
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
-        DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelFooter(availableWidthSpaceForSecondColumn, lightGray);
+        DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        DisplayPanelFooter(secondColumnWidth, lightGray);
     }
 
     private void DisplayMessageSubPanel()
     {
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
         Console.WriteLine();
         const string lightGray = "\x1b[90m";
         const string boldFontStyle = "\x1b[1m";
 
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelHeader("Message [..]", availableWidthSpaceForSecondColumn, lightGray);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        DisplayPanelHeader("Message [..]", secondColumnWidth, lightGray);
 
         string formattedMessage = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
         string[] lines = formattedMessage.Split("$REPOSITION$");
-
         foreach (string line in lines)
         {
-            Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+            Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
             Console.Write(line);
         }
 
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
 
         if (Commits[CurrentLine].MessageBody.Length > 0)
         {
             Console.Write($"{lightGray}│\x1b[0m");
-            DisplayRightBorder(1, availableWidthSpaceForSecondColumn - 1, lightGray);
+            DisplayRightBorder(1, secondColumnWidth - 1, lightGray);
 
             string formattedBody = AddSideBordersToText(Commits[CurrentLine].MessageBody, lightGray);
             lines = formattedBody.Split("$REPOSITION$");
 
             foreach (string line in lines)
             {
-                Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
+                Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
                 Console.Write($"{line}");
             }
         }
 
-        Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelFooter(availableWidthSpaceForSecondColumn, lightGray);
+        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        DisplayPanelFooter(secondColumnWidth, lightGray);
     }
 
     private string AddSideBordersToText(string initialMessage, string borderColor = "", string fontStyle = "")
     {
         StringBuilder result = new StringBuilder();
-        int charsPerLine = availableWidthSpaceForSecondColumn - NumberOfBorders;
+        int charsPerLine = secondColumnWidth - NumberOfBorders;
         int numberOfLines = (int)Math.Ceiling((double)initialMessage.Length / charsPerLine);
 
         result.Append($"{borderColor}│\x1b[0m");
