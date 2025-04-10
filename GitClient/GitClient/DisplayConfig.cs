@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 namespace GitClientApp;
@@ -5,7 +6,7 @@ namespace GitClientApp;
 public class DisplayConfig
 {
     private const int NumberOfBorders = 2;
-    private int availableWidthSpaceForFirstColumn = Console.WindowWidth - 2;
+    private int availableWidthSpaceForFirstColumn;
     private int availableWidthSpaceForSecondColumn;
     private int windowHeightForCommits;
     private int totalWidth = Console.WindowWidth;
@@ -22,12 +23,15 @@ public class DisplayConfig
         Console.SetWindowSize(totalWidth, windowHeightForCommits + NumberOfBorders);
         ScrollBarPosition = 0;
         Console.CursorVisible = false;
+        availableWidthSpaceForSecondColumn = 0;
+        availableWidthSpaceForFirstColumn = totalWidth;
         isRunning = true;
         var threadToCheckWindowSize = new Thread(UpdateConsoleWindowSizeAfterResize)
         {
             IsBackground = true
         };
         threadToCheckWindowSize.Start();
+        isSecondColumnShown = false;
     }
 
     internal List<CommitInfo> Commits { get; }
@@ -43,7 +47,7 @@ public class DisplayConfig
     internal void DisplayCommitsAndPanel()
     {
         Console.SetCursorPosition(0, 0);
-        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}");
+        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}", availableWidthSpaceForFirstColumn);
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
         const int hashColumnWidth = 8;
@@ -61,10 +65,15 @@ public class DisplayConfig
 
             Console.Write(i == ScrollBarPosition ? "\x1b[46m \x1b[0m" : $"{endBackgroundColor}│");
             Console.WriteLine();
-            Console.ResetColor();
         }
 
-        DisplayPanelFooter();
+        DisplayPanelFooter(availableWidthSpaceForFirstColumn);
+        if (!isSecondColumnShown)
+        {
+            return;
+        }
+
+        DisplayCommitInfoPanel();
     }
 
     internal void Navigate()
@@ -100,13 +109,15 @@ public class DisplayConfig
                     break;
 
                 case ConsoleKey.Enter:
+                    isSecondColumnShown = true;
                     Console.Clear();
                     DivideColumnsWidth();
                     DisplayCommitsAndPanel();
-                    DisplayCommitInfoPanel();
+                    Console.SetCursorPosition(0, 0);
                     break;
 
                 case ConsoleKey.Escape:
+                    isRunning = false;
                     break;
 
                 default:
@@ -114,20 +125,13 @@ public class DisplayConfig
             }
         }
         while (readKey != ConsoleKey.Escape);
-        isRunning = false;
     }
 
     private void DivideColumnsWidth()
     {
         const int half = 2;
-        if (!isSecondColumnShown)
-        {
-            availableWidthSpaceForFirstColumn /= half;
-            availableWidthSpaceForSecondColumn =
-                Console.WindowWidth - NumberOfBorders - availableWidthSpaceForFirstColumn;
-        }
-
-        isSecondColumnShown = true;
+        availableWidthSpaceForFirstColumn = isSecondColumnShown ? totalWidth / half : totalWidth;
+        availableWidthSpaceForSecondColumn = isSecondColumnShown ? totalWidth - availableWidthSpaceForFirstColumn - NumberOfBorders : 0;
     }
 
     private void HandleUpArrowNavigation()
@@ -242,14 +246,14 @@ public class DisplayConfig
             $"{message}{backgroundColor}");
     }
 
-    private void DisplayPanelHeader(string message, string color = "")
+    private void DisplayPanelHeader(string message, int space, string color = "")
     {
         const string startCorner = "┌";
         const string endCorner = "┐";
         const string border = "─";
         int currentLineLength = startCorner.Length + endCorner.Length + message.Length;
         Console.Write(color + startCorner + message + "\x1b[0m");
-        for (int i = currentLineLength; i < availableWidthSpaceForFirstColumn; i++)
+        for (int i = currentLineLength; i < space; i++)
         {
             Console.Write(color + border + "\x1b[0m");
         }
@@ -258,13 +262,13 @@ public class DisplayConfig
         Console.WriteLine();
     }
 
-    private void DisplayPanelFooter(string color = "")
+    private void DisplayPanelFooter(int space, string color = "")
     {
         const string border = "─";
         const string startCorner = "└";
         const string endCorner = "┘";
         Console.Write($"{color}{startCorner}\x1b[0m");
-        for (int i = startCorner.Length + endCorner.Length; i < availableWidthSpaceForFirstColumn; i++)
+        for (int i = startCorner.Length + endCorner.Length; i < space; i++)
         {
             Console.Write($"{color}{border}\x1b[0m");
         }
@@ -274,28 +278,31 @@ public class DisplayConfig
 
     private void UpdateConsoleWindowSizeAfterResize()
     {
-        bool needsRedraw = false;
         while (isRunning)
         {
             if (Console.WindowWidth != totalWidth)
             {
                 totalWidth = Console.WindowWidth;
-                availableWidthSpaceForFirstColumn = Console.WindowWidth - NumberOfBorders;
-                needsRedraw = true;
+                if (isSecondColumnShown)
+                {
+                    DivideColumnsWidth();
+                }
+                else
+                {
+                    availableWidthSpaceForFirstColumn = totalWidth - NumberOfBorders;
+                }
+
+                Console.Clear();
+                Console.WriteLine("\x1b[3J");
+                DisplayCommitsAndPanel();
             }
 
             if (Console.WindowHeight - NumberOfBorders != windowHeightForCommits)
             {
                 UpdateBoundsAfterWindowHeightResize();
-                needsRedraw = true;
-            }
-
-            if (needsRedraw)
-            {
                 Console.Clear();
                 Console.WriteLine("\x1b[3J");
                 DisplayCommitsAndPanel();
-                needsRedraw = false;
             }
 
             const int timeOut = 50;
@@ -363,7 +370,7 @@ public class DisplayConfig
         Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, 0);
         const string lightGray = "\x1b[90m";
 
-        DisplayPanelHeader("Info", lightGray);
+        DisplayPanelHeader("Info", availableWidthSpaceForSecondColumn, lightGray);
         Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
         Console.Write($"{lightGray}│Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
         int currentLineLength = "│Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
@@ -380,7 +387,7 @@ public class DisplayConfig
         Console.Write($"{lightGray}│Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
         DisplayRightBorder(currentLineLength, availableWidthSpaceForSecondColumn - 1, lightGray);
         Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelFooter(lightGray);
+        DisplayPanelFooter(availableWidthSpaceForSecondColumn, lightGray);
     }
 
     private void DisplayMessageSubPanel()
@@ -391,7 +398,7 @@ public class DisplayConfig
         const string boldFontStyle = "\x1b[1m";
 
         Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelHeader("Message [..]", lightGray);
+        DisplayPanelHeader("Message [..]", availableWidthSpaceForSecondColumn, lightGray);
 
         string formattedMessage = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
         string[] lines = formattedMessage.Split("$REPOSITION$");
@@ -407,7 +414,7 @@ public class DisplayConfig
         if (Commits[CurrentLine].MessageBody.Length > 0)
         {
             Console.Write($"{lightGray}│\x1b[0m");
-            DisplayRightBorder(0, availableWidthSpaceForSecondColumn - NumberOfBorders, lightGray);
+            DisplayRightBorder(1, availableWidthSpaceForSecondColumn - 1, lightGray);
 
             string formattedBody = AddSideBordersToText(Commits[CurrentLine].MessageBody, lightGray);
             lines = formattedBody.Split("$REPOSITION$");
@@ -415,12 +422,12 @@ public class DisplayConfig
             foreach (string line in lines)
             {
                 Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-                Console.Write(line);
+                Console.Write($"{line}");
             }
         }
 
         Console.SetCursorPosition(availableWidthSpaceForFirstColumn + 1, Console.GetCursorPosition().Top);
-        DisplayPanelFooter(lightGray);
+        DisplayPanelFooter(availableWidthSpaceForSecondColumn, lightGray);
     }
 
     private string AddSideBordersToText(string initialMessage, string borderColor = "", string fontStyle = "")
@@ -428,8 +435,8 @@ public class DisplayConfig
         StringBuilder result = new StringBuilder();
         int charsPerLine = availableWidthSpaceForSecondColumn - NumberOfBorders;
         int numberOfLines = (int)Math.Ceiling((double)initialMessage.Length / charsPerLine);
-        result.Append($"{borderColor}│\x1b[0m");
 
+        result.Append($"{borderColor}│\x1b[0m");
         for (int j = 0; j < numberOfLines; j++)
         {
             for (int i = 0; i < Math.Min(charsPerLine, initialMessage.Length); i++)
@@ -437,9 +444,9 @@ public class DisplayConfig
                 result.Append($"{fontStyle}{initialMessage[i]}\x1b[21m");
             }
 
-            if (availableWidthSpaceForSecondColumn > initialMessage.Length)
+            if (charsPerLine > initialMessage.Length - 1)
             {
-                for (int k = initialMessage.Length + 1; k < availableWidthSpaceForFirstColumn - 1; k++)
+                for (int k = 0; k < charsPerLine - initialMessage.Length; k++)
                 {
                     result.Append(" ");
                 }
