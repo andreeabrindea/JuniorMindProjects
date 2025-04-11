@@ -16,28 +16,65 @@ public class GitClient
 
     public List<CommitInfo> GetCommits()
     {
-        const string command = "log --pretty=format:\"%h|%H|%an|%ae|%ad|%s|%b\" --date=iso";
+        const string command = "log --pretty=format:\"COMMIT_START%n%h|%H|%an|%ae|%ad|%s|%b\" --name-status --date=iso";
         string output = ExecuteGitCommand(command);
-        char[] newLineEscapeCharacters = { '\r', '\n' };
-        const int indexOfShortHash = 0;
-        const int indexOfLongHash = 1;
-        const int indexOfAuthor = 2;
-        const int indexOfEmail = 3;
-        const int indexOfDate = 4;
-        const int indexOfMessage = 5;
-        const int indexOfMessageBody = 6;
+        string[] commitBlocks = output.Split("COMMIT_START", StringSplitOptions.RemoveEmptyEntries);
+        List<CommitInfo> commits = new List<CommitInfo>();
 
-        return output.Split(newLineEscapeCharacters, StringSplitOptions.RemoveEmptyEntries)
-            .Select(line => line.Split('|'))
-            .Select(entries =>
-                new CommitInfo(
-                    entries[indexOfShortHash],
-                    entries[indexOfLongHash],
-                    DateTime.Parse(entries[indexOfDate], DateTimeFormatProvider),
-                    entries[indexOfAuthor],
-                    entries[indexOfEmail],
-                    entries[indexOfMessage],
-                    entries[indexOfMessageBody])).ToList();
+        foreach (string commitBlock in commitBlocks)
+        {
+            if (string.IsNullOrWhiteSpace(commitBlock))
+            {
+                continue;
+            }
+
+            string[] lines = commitBlock.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (lines.Length == 0)
+            {
+                continue;
+            }
+
+            string[] commitParts = lines[0].Split('|');
+            const int indexOfShortHash = 0;
+            const int indexOfLongHash = 1;
+            const int indexOfAuthor = 2;
+            const int indexOfEmail = 3;
+            const int indexOfDate = 4;
+            const int indexOfMessage = 5;
+            const int indexOfMessageBody = 6;
+
+            CommitInfo commit = new CommitInfo(
+                commitParts[indexOfShortHash],
+                commitParts[indexOfLongHash],
+                DateTime.Parse(commitParts[indexOfDate], DateTimeFormatProvider),
+                commitParts[indexOfAuthor],
+                commitParts[indexOfEmail],
+                commitParts[indexOfMessage],
+                commitParts.Length > indexOfMessageBody ? commitParts[indexOfMessageBody] : "");
+
+            foreach (var line in lines.Skip(1).ToList())
+            {
+                var part = line.Split('\t');
+                string statusCode = part[0];
+                string[] files = part[1].Split('/');
+                string directory = "•";
+                for (int i = 0; i < files.Length - 1; i++)
+                {
+                    directory += $"{files[i]}\\";
+                }
+
+                if (directory.Length > 2)
+                {
+                    directory = directory[..^1];
+                }
+
+                commit.ListOfModifiedFiles.Add(new ModifiedFile(statusCode, directory, files[^1]));
+            }
+
+            commits.Add(commit);
+        }
+
+        return commits;
     }
 
     private string ExecuteGitCommand(string arguments)

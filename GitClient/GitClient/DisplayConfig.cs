@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 namespace GitClientApp;
@@ -434,6 +435,64 @@ public class DisplayConfig
             }
         }
 
+        DisplayPanelFooter(secondColumnWidth, lightGray);
+        rowNumberInSecondColumn++;
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        DisplayModifiedFiles();
+    }
+
+    private void DisplayModifiedFiles()
+    {
+        const int filePadding = 4;
+        const int directoryPadding = 2;
+        const string lightGray = "\x1b[90m";
+        string color = "";
+        DisplayPanelHeader($"Files: {Commits[CurrentLine].ListOfModifiedFiles.Count}", secondColumnWidth, lightGray);
+        rowNumberInSecondColumn++;
+
+        foreach (var group in Commits[CurrentLine].ListOfModifiedFiles.GroupBy(c => c.Directory))
+        {
+            Debug.WriteLine(group);
+        }
+
+        foreach (var group in Commits[CurrentLine].ListOfModifiedFiles.GroupBy(c => c.Directory))
+        {
+            Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+            Console.Write($"{lightGray}│\x1b[0m  {group.Key}");
+            DisplayRightBorder($"│{group.Key}".Length + directoryPadding, secondColumnWidth - 1, lightGray);
+            rowNumberInSecondColumn++;
+            foreach (var file in group)
+            {
+                Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+                switch (file.StatusCode)
+                {
+                    case "M":
+                        color = "\x1b[38;5;220m";
+                        break;
+                    case "A":
+                        color = "\x1b[38;5;28m";
+                        break;
+                    default:
+                        color = "";
+                        break;
+                }
+
+                Console.Write($"{lightGray}│\x1b[0m{color}{file.StatusCode}    {file.FileName}\x1b[0m");
+                DisplayRightBorder($"│{file.StatusCode}{file.FileName}".Length + filePadding, secondColumnWidth - 1, lightGray);
+                rowNumberInSecondColumn++;
+            }
+        }
+
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        while (rowNumberInSecondColumn <= height)
+        {
+            Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+            Console.Write('│');
+            DisplayRightBorder(1, secondColumnWidth - 1, lightGray);
+            rowNumberInSecondColumn++;
+        }
+
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
         DisplayPanelFooter(secondColumnWidth, lightGray);
     }
 
