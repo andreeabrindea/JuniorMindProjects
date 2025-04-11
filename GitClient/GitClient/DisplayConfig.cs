@@ -11,6 +11,7 @@ public class DisplayConfig
     private int totalWidth = Console.WindowWidth;
     private bool isRunning;
     private bool isSecondColumnShown;
+    private int rowNumberInSecondColumn;
 
     public DisplayConfig(List<CommitInfo> commits)
     {
@@ -72,6 +73,7 @@ public class DisplayConfig
             return;
         }
 
+        Console.SetCursorPosition(firstColumnWidth + 1, 0);
         DisplayCommitInfoPanel();
     }
 
@@ -112,7 +114,6 @@ public class DisplayConfig
                     Console.Clear();
                     DivideColumnsWidth();
                     DisplayCommitsAndPanel();
-                    Console.SetCursorPosition(0, 0);
                     break;
 
                 case ConsoleKey.Escape:
@@ -129,8 +130,8 @@ public class DisplayConfig
     private void DivideColumnsWidth()
     {
         const int half = 2;
-        firstColumnWidth = isSecondColumnShown ? totalWidth / half : totalWidth;
-        secondColumnWidth = isSecondColumnShown ? totalWidth - firstColumnWidth - NumberOfBorders : 0;
+        firstColumnWidth = isSecondColumnShown ? (totalWidth - 1) / half : totalWidth;
+        secondColumnWidth = isSecondColumnShown ? totalWidth - firstColumnWidth - 1 : 0;
     }
 
     private void HandleUpArrowNavigation()
@@ -288,11 +289,11 @@ public class DisplayConfig
                 }
                 else
                 {
-                    firstColumnWidth = totalWidth - NumberOfBorders;
+                    firstColumnWidth = totalWidth;
+                    secondColumnWidth = 0;
                 }
 
                 Console.Clear();
-                Console.WriteLine("\x1b[3J");
                 DisplayCommitsAndPanel();
             }
 
@@ -301,6 +302,7 @@ public class DisplayConfig
                 UpdateBoundsAfterWindowHeightResize();
                 Console.Clear();
                 Console.WriteLine("\x1b[3J");
+                Console.SetCursorPosition(0, 0);
                 DisplayCommitsAndPanel();
             }
 
@@ -366,48 +368,55 @@ public class DisplayConfig
 
     private void DisplayInfoSubPanel()
     {
-        Console.SetCursorPosition(firstColumnWidth + 1, 0);
+        rowNumberInSecondColumn = 0;
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         const string lightGray = "\x1b[90m";
 
         DisplayPanelHeader("Info", secondColumnWidth, lightGray);
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         Console.Write($"{lightGray}│Author: \x1b[0m{Commits[CurrentLine].Author} <{Commits[CurrentLine].Email}>");
         int currentLineLength = "│Author: ".Length + Commits[CurrentLine].Author.Length + Commits[CurrentLine].Email.Length +
                             " <>".Length;
         DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
 
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         Console.Write($"{lightGray}│Date: \x1b[0m{Commits[CurrentLine].LongDate}");
         currentLineLength = "│Date: ".Length + Commits[CurrentLine].LongDate.Length;
         DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
 
         currentLineLength = "│Sah: ".Length + Commits[CurrentLine].LongHash.Length;
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         Console.Write($"{lightGray}│Sah: \x1b[0m{Commits[CurrentLine].LongHash}");
         DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         DisplayPanelFooter(secondColumnWidth, lightGray);
     }
 
     private void DisplayMessageSubPanel()
     {
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         Console.WriteLine();
         const string lightGray = "\x1b[90m";
         const string boldFontStyle = "\x1b[1m";
 
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+        Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
+        rowNumberInSecondColumn++;
         DisplayPanelHeader("Message [..]", secondColumnWidth, lightGray);
 
         string formattedMessage = AddSideBordersToText(Commits[CurrentLine].Message, lightGray, boldFontStyle);
         string[] lines = formattedMessage.Split("$REPOSITION$");
         foreach (string line in lines)
         {
-            Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+            Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
             Console.Write(line);
+            rowNumberInSecondColumn++;
         }
-
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
 
         if (Commits[CurrentLine].MessageBody.Length > 0)
         {
@@ -419,12 +428,12 @@ public class DisplayConfig
 
             foreach (string line in lines)
             {
-                Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
+                Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
                 Console.Write($"{line}");
+                rowNumberInSecondColumn++;
             }
         }
 
-        Console.SetCursorPosition(firstColumnWidth + 1, Console.GetCursorPosition().Top);
         DisplayPanelFooter(secondColumnWidth, lightGray);
     }
 
