@@ -12,6 +12,7 @@ public class CommitInfo
         Message = message;
         Email = email;
         MessageBody = messageBody;
+        ListOfModifiedFiles = new List<ModifiedFile>();
     }
 
     public string ShortHash { get; set; }
@@ -29,4 +30,6 @@ public class CommitInfo
     public string Email { get; set; }
 
     public string MessageBody { get; set; }
+
+    public List<ModifiedFile> ListOfModifiedFiles { get; internal set; }
 }
