@@ -19,6 +19,11 @@ public class GitClient
         const string command = "log --pretty=format:\"COMMIT_START%n%h|%H|%an|%ae|%ad|%s|%b\" --name-status --date=iso";
         string output = ExecuteGitCommand(command);
         string[] commitBlocks = output.Split("COMMIT_START", StringSplitOptions.RemoveEmptyEntries);
+        return ParseCommits(commitBlocks);
+    }
+
+    public List<CommitInfo> ParseCommits(string[] commitBlocks)
+    {
         List<CommitInfo> commits = new List<CommitInfo>();
 
         foreach (string commitBlock in commitBlocks)
@@ -56,25 +61,32 @@ public class GitClient
             {
                 var part = line.Split('\t');
                 string statusCode = part[0];
-                string[] files = part[1].Split('/');
-                string directory = "•";
-                for (int i = 0; i < files.Length - 1; i++)
+                string[] currentFileNames = statusCode.StartsWith('R') ? part[2].Split("/") : part[1].Split('/');
+                string directory = BuildDirectoryPath(currentFileNames);
+                ModifiedFile modifiedFile = new(statusCode, directory, currentFileNames[^1]);
+                if (modifiedFile.StatusCode.StartsWith('R'))
                 {
-                    directory += $"{files[i]}\\";
+                    modifiedFile.PreviousName = part[1].Split('/')[^1];
                 }
 
-                if (directory.Length > 2)
-                {
-                    directory = directory[..^1];
-                }
-
-                commit.ListOfModifiedFiles.Add(new ModifiedFile(statusCode, directory, files[^1]));
+                commit.ListOfModifiedFiles.Add(modifiedFile);
             }
 
             commits.Add(commit);
         }
 
         return commits;
+    }
+
+    private static string BuildDirectoryPath(string[] fileName)
+    {
+        string directory = "•";
+        for (int i = 0; i < fileName.Length - 1; i++)
+        {
+            directory += $"{fileName[i]}\\";
+        }
+
+        return directory;
     }
 
     private string ExecuteGitCommand(string arguments)

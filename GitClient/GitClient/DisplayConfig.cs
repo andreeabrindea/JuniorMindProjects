@@ -348,6 +348,7 @@ public class DisplayConfig
     {
         int remainingSpace = firstColumnWidth + 1;
         Console.SetCursorPosition(remainingSpace, 0);
+        ClearSecondColumn();
         DisplayInfoSubPanel();
         DisplayMessageSubPanel();
     }
@@ -443,17 +444,11 @@ public class DisplayConfig
 
     private void DisplayModifiedFiles()
     {
-        const int filePadding = 4;
         const int directoryPadding = 2;
         const string lightGray = "\x1b[90m";
         string color = "";
         DisplayPanelHeader($"Files: {Commits[CurrentLine].ListOfModifiedFiles.Count}", secondColumnWidth, lightGray);
         rowNumberInSecondColumn++;
-
-        foreach (var group in Commits[CurrentLine].ListOfModifiedFiles.GroupBy(c => c.Directory))
-        {
-            Debug.WriteLine(group);
-        }
 
         foreach (var group in Commits[CurrentLine].ListOfModifiedFiles.GroupBy(c => c.Directory))
         {
@@ -464,21 +459,36 @@ public class DisplayConfig
             foreach (var file in group)
             {
                 Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
-                switch (file.StatusCode)
+                switch (file.StatusCode[0])
                 {
-                    case "M":
+                    case 'M':
                         color = "\x1b[38;5;220m";
                         break;
-                    case "A":
+                    case 'A':
                         color = "\x1b[38;5;28m";
+                        break;
+                    case 'R':
+                        color = "\x1b[38;5;214m";
                         break;
                     default:
                         color = "";
                         break;
                 }
 
-                Console.Write($"{lightGray}│\x1b[0m{color}{file.StatusCode}    {file.FileName}\x1b[0m");
-                DisplayRightBorder($"│{file.StatusCode}{file.FileName}".Length + filePadding, secondColumnWidth - 1, lightGray);
+                int currentLineLength;
+                if (file.StatusCode.StartsWith('R'))
+                {
+                    Console.Write($"{lightGray}│\x1b[0m{color}{file.StatusCode[0]}    \x1B[4m{file.PreviousName}\x1B[24m -> {file.FileName}\x1b[0m");
+                    currentLineLength = $"│{file.StatusCode[0]} {file.PreviousName} -> {file.FileName}".Length +
+                                        $"│{file.StatusCode[0]} {file.PreviousName} -> {file.FileName}".Count(char.IsWhiteSpace);
+                }
+                else
+                {
+                    Console.Write($"{lightGray}│\x1b[0m{color}{file.StatusCode}    {file.FileName}\x1b[0m");
+                    currentLineLength = $"│{file.StatusCode}{file.FileName}".Length + $"{lightGray}│\x1b[0m{color}{file.StatusCode}    {file.FileName}\x1b[0m".Count(char.IsWhiteSpace);
+                }
+
+                DisplayRightBorder(currentLineLength, secondColumnWidth - 1, lightGray);
                 rowNumberInSecondColumn++;
             }
         }
@@ -529,5 +539,23 @@ public class DisplayConfig
         }
 
         return result.ToString();
+    }
+
+    private void ClearSecondColumn()
+    {
+        int row = 1;
+        Console.SetCursorPosition(firstColumnWidth + 1, row);
+        for (int i = row; i < Console.WindowHeight; i++)
+        {
+            string a = "";
+            for (int j = 0; j <= secondColumnWidth; j++)
+            {
+                a += " ";
+            }
+
+            Console.Write($"\x1B[{row};{firstColumnWidth + 1}H{a}");
+            row++;
+            Console.WriteLine();
+        }
     }
 }
