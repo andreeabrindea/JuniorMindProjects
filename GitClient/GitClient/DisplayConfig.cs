@@ -48,7 +48,7 @@ public class DisplayConfig
     internal void DisplayCommitsAndPanel()
     {
         Console.SetCursorPosition(0, 0);
-        DisplayPanelHeader($"{Commits.Count.ToString()}/{CurrentLine + 1}", firstColumnWidth);
+        DisplayPanelHeader($"{CurrentLine + 1}/{Commits.Count.ToString()}", firstColumnWidth);
         const int spaceBetweenEntries = 5;
         const int borderLineCountBefore = 1;
         const int hashColumnWidth = 8;
