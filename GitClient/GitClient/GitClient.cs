@@ -86,7 +86,7 @@ public class GitClient
             directory += $"{fileName[i]}\\";
         }
 
-        return directory;
+        return directory[..^1];
     }
 
     private string ExecuteGitCommand(string arguments)
