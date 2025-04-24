@@ -520,7 +520,7 @@ public class DisplayConfig
         {
             for (int i = 0; i < Math.Min(charsPerLine, initialMessage.Length); i++)
             {
-                result.Append($"{fontStyle}{initialMessage[i]}\x1b[21m");
+                result.Append($"{fontStyle}{initialMessage[i]}");
             }
 
             if (charsPerLine > initialMessage.Length - 1)
