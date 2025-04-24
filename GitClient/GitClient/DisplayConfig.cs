@@ -546,18 +546,16 @@ public class DisplayConfig
 
     private void ClearSecondColumn()
     {
-        int row = 1;
-        Console.SetCursorPosition(firstColumnWidth + 1, row);
-        for (int i = row; i < Console.WindowHeight; i++)
+        Console.SetCursorPosition(firstColumnWidth + 1, 1);
+        for (int row = 1; row < Console.WindowHeight; row++)
         {
-            string a = "";
-            for (int j = 0; j <= secondColumnWidth; j++)
+            string emptySpaces = "";
+            for (int column = 0; column <= secondColumnWidth; column++)
             {
-                a += " ";
+                emptySpaces += " ";
             }
 
-            Console.Write($"\x1B[{row};{firstColumnWidth + 1}H{a}");
-            row++;
+            Console.Write($"\x1B[{row};{firstColumnWidth + 1}H{emptySpaces}");
             Console.WriteLine();
         }
     }
