@@ -470,6 +470,9 @@ public class DisplayConfig
                     case 'R':
                         color = "\x1b[38;5;214m";
                         break;
+                    case 'D':
+                        color = "\x1b[38;5;9m";
+                        break;
                     default:
                         color = "";
                         break;
