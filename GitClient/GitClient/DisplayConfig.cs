@@ -446,7 +446,6 @@ public class DisplayConfig
     {
         const int directoryPadding = 2;
         const string lightGray = "\x1b[90m";
-        string color = "";
         DisplayPanelHeader($"Files: {Commits[CurrentLine].ListOfModifiedFiles.Count}", secondColumnWidth, lightGray);
         rowNumberInSecondColumn++;
 
@@ -459,24 +458,14 @@ public class DisplayConfig
             foreach (var file in group)
             {
                 Console.SetCursorPosition(firstColumnWidth + 1, rowNumberInSecondColumn);
-                switch (file.StatusCode[0])
+                string color = file.StatusCode[0] switch
                 {
-                    case 'M':
-                        color = "\x1b[38;5;220m";
-                        break;
-                    case 'A':
-                        color = "\x1b[38;5;28m";
-                        break;
-                    case 'R':
-                        color = "\x1b[38;5;214m";
-                        break;
-                    case 'D':
-                        color = "\x1b[38;5;9m";
-                        break;
-                    default:
-                        color = "";
-                        break;
-                }
+                    'M' => "\x1b[38;5;220m",
+                    'A' => "\x1b[38;5;28m",
+                    'R' => "\x1b[38;5;214m",
+                    'D' => "\x1b[38;5;9m",
+                    _ => ""
+                };
 
                 int currentLineLength;
                 if (file.StatusCode.StartsWith('R'))
