@@ -111,8 +111,7 @@ public class DisplayConfig
                     break;
 
                 case ConsoleKey.Enter:
-                    isSecondColumnShown = true;
-                    Console.Clear();
+                    isSecondColumnShown = !isSecondColumnShown;
                     DivideColumnsWidth();
                     DisplayCommitsAndPanel();
                     break;
